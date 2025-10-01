@@ -1,0 +1,126 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\eMuhasebe\\eMuhasebeServer\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{710707C1-DEAB-4FFB-9413-6149FBA1A699}|eMuhasebeServer.Domain\\eMuhasebeServer.Domain.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.domain\\events\\sendconfirmemailevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{710707C1-DEAB-4FFB-9413-6149FBA1A699}|eMuhasebeServer.Domain\\eMuhasebeServer.Domain.csproj|solutionrelative:emuhasebeserver.domain\\events\\sendconfirmemailevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.application\\features\\auth\\sendconfirmemail\\sendconfirmemailcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|solutionrelative:emuhasebeserver.application\\features\\auth\\sendconfirmemail\\sendconfirmemailcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.application\\features\\auth\\sendconfirmemail\\sendconfirmemailcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|solutionrelative:emuhasebeserver.application\\features\\auth\\sendconfirmemail\\sendconfirmemailcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.application\\features\\auth\\confirmemail\\confirmemailcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|solutionrelative:emuhasebeserver.application\\features\\auth\\confirmemail\\confirmemailcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.application\\features\\auth\\confirmemail\\confirmemailcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|solutionrelative:emuhasebeserver.application\\features\\auth\\confirmemail\\confirmemailcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5AFA4DB2-49F6-4604-A694-1E5E7B91FAA2}|eMuhasebeServer.WebAPI\\eMuhasebeServer.WebAPI.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.webapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5AFA4DB2-49F6-4604-A694-1E5E7B91FAA2}|eMuhasebeServer.WebAPI\\eMuhasebeServer.WebAPI.csproj|solutionrelative:emuhasebeserver.webapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SendConfirmEmailEvent.cs",
+              "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Domain\\Events\\SendConfirmEmailEvent.cs",
+              "RelativeDocumentMoniker": "eMuhasebeServer.Domain\\Events\\SendConfirmEmailEvent.cs",
+              "ToolTip": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Domain\\Events\\SendConfirmEmailEvent.cs",
+              "RelativeToolTip": "eMuhasebeServer.Domain\\Events\\SendConfirmEmailEvent.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-24T19:48:42.782Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SendConfirmEmailCommandHandler.cs",
+              "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Auth\\SendConfirmEmail\\SendConfirmEmailCommandHandler.cs",
+              "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\Auth\\SendConfirmEmail\\SendConfirmEmailCommandHandler.cs",
+              "ToolTip": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Auth\\SendConfirmEmail\\SendConfirmEmailCommandHandler.cs",
+              "RelativeToolTip": "eMuhasebeServer.Application\\Features\\Auth\\SendConfirmEmail\\SendConfirmEmailCommandHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-24T19:48:37.179Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ConfirmEmailCommand.cs",
+              "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Auth\\ConfirmEmail\\ConfirmEmailCommand.cs",
+              "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\Auth\\ConfirmEmail\\ConfirmEmailCommand.cs",
+              "ToolTip": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Auth\\ConfirmEmail\\ConfirmEmailCommand.cs",
+              "RelativeToolTip": "eMuhasebeServer.Application\\Features\\Auth\\ConfirmEmail\\ConfirmEmailCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-24T19:48:32.326Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ConfirmEmailCommandHandler.cs",
+              "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Auth\\ConfirmEmail\\ConfirmEmailCommandHandler.cs",
+              "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\Auth\\ConfirmEmail\\ConfirmEmailCommandHandler.cs",
+              "ToolTip": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Auth\\ConfirmEmail\\ConfirmEmailCommandHandler.cs",
+              "RelativeToolTip": "eMuhasebeServer.Application\\Features\\Auth\\ConfirmEmail\\ConfirmEmailCommandHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-24T19:36:25.467Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SendConfirmEmailCommand.cs",
+              "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Auth\\SendConfirmEmail\\SendConfirmEmailCommand.cs",
+              "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\Auth\\SendConfirmEmail\\SendConfirmEmailCommand.cs",
+              "ToolTip": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Auth\\SendConfirmEmail\\SendConfirmEmailCommand.cs",
+              "RelativeToolTip": "eMuhasebeServer.Application\\Features\\Auth\\SendConfirmEmail\\SendConfirmEmailCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-24T19:34:16.491Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.WebAPI\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "eMuhasebeServer.WebAPI\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.WebAPI\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "eMuhasebeServer.WebAPI\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-24T19:12:11.806Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
