@@ -9,6 +9,7 @@ namespace eMuhasebeServer.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
+            services.AddSignalR();
             services.AddFluentEmail("info@muhasebe.com").AddSmtpSender("localhost",2525);
             services.AddAutoMapper(typeof(DependencyInjection).Assembly);
 

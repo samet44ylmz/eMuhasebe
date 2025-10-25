@@ -8,6 +8,7 @@ import { FlexiGridModule } from 'flexi-grid';
 import { FlexiSelectModule } from 'flexi-select';
 import { UserPipe } from '../pipes/user.pipe';
 import { FormValidateDirective } from 'form-validate-angular';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 
@@ -21,7 +22,8 @@ import { FormValidateDirective } from 'form-validate-angular';
     SectionComponent,
     FormsModule,
     TrCurrencyPipe,
-    FormValidateDirective
+    FormValidateDirective,
+    NgxPaginationModule
   ],
   exports: [
     CommonModule,
@@ -29,7 +31,8 @@ import { FormValidateDirective } from 'form-validate-angular';
     SectionComponent,
     FormsModule,
     TrCurrencyPipe,
-    FormValidateDirective
+    FormValidateDirective,
+    NgxPaginationModule,
   ]
 })
 export class SharedModule { }

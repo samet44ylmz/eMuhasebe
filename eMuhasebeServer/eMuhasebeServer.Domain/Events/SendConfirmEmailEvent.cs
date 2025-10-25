@@ -19,7 +19,7 @@ namespace eMuhasebeServer.Domain.Events
                 await fluentEmail
                     .To(appUser.Email)
                     .Subject("Mail Onayı")
-                    .Body(CreateBody(appUser),true)
+                    .Body(CreateBody(appUser), true)
                     .SendAsync(cancellationToken);
             }
         }
@@ -30,6 +30,7 @@ namespace eMuhasebeServer.Domain.Events
             string body = $@"
             Mail adresinizi onaylamak için aşağıdaki linke tıklayın.
                           <a href=""http://localhost:4200/confirm-email/{safeEmail}"" target=""_blank"" rel=""noopener noreferrer"">Maili onaylamak için tıklayın</a>";
+
 
             return body;
 

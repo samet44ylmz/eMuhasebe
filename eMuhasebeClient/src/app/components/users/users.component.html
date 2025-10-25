@@ -21,7 +21,9 @@
                         <th>Ad Soyad</th>
                         <th>UserName</th>
                         <th>Mail Adresi</th>
-                         <th>İşlemler</th>
+                        <th>Bağlı Olduğu Şirketler</th>
+                        <th>Admin Mi?</th>
+                        <th>İşlemler</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,7 +34,26 @@
                         <td>{{data.userName}}</td>
                         <td>{{data.email}}</td>
                         <td>
-                            <button data-toggle="modal" data-target="#updateModal" (click)="get(data)" class="btn btn-outline-primary btn-sm me-1">
+                            <ul>
+                                @for (companyUser of data.companyUsers; track companyUser) {
+                                <li>{{companyUser.company.name}}</li>
+                                }
+                                @if (!data.companyUsers || data.companyUsers.length === 0) {
+                                <li class="text-muted">Şirket bulunamadı</li>
+                                }
+                            </ul>
+                        </td>
+                        <td>
+                            @if(data.isAdmin){
+                            <span class="text-success">Evet</span>
+                            }
+                            @else {
+                            <span class="text-danger">Hayır</span>
+                            }
+                        </td>
+                        <td>
+                            <button data-toggle="modal" data-target="#updateModal" (click)="get(data)"
+                                class="btn btn-outline-primary btn-sm me-1">
                                 <i class="fa-solid fa-edit"></i>
                             </button>
                             <button (click)="deleteById(data)" class="btn btn-outline-danger btn-sm">
@@ -52,7 +73,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5">Kullanıcı Ekleme Formu</h1>
+                <h3 class="modal-title fs-5">Kullanıcı Ekleme Formu</h3>
                 <button type="button" #createModalCloseBtn class="btn btn-outline-danger" data-dismiss="modal">
                     <i class="fa-solid fa-x"></i>
                 </button>
@@ -61,36 +82,65 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Ad</label>
-                        <input type="text" required minlength="3" [(ngModel)]="createModel.firstName" class="form-control" name="firstName">
+                        <input type="text" required minlength="3" [(ngModel)]="createModel.firstName"
+                            class="form-control" name="firstName">
                         <div class="invalid-feedback"></div>
                     </div>
-                    
+
                     <div class="form-group mt-2">
                         <label>Soyad</label>
-                        <input type="text" required minlength="3" [(ngModel)]="createModel.lastName" class="form-control" name="lastName">
-                        <div class="invalid-feedback"></div>
-                    </div>            
-                    
-                     <div class="form-group mt-2">
-                        <label>UserName</label>
-                        <input type="text" required minlength="3" [(ngModel)]="createModel.userName" class="form-control" name="userName">
-                        <div class="invalid-feedback"></div>
-                    </div>        
-
-                     <div class="form-group mt-2">
-                        <label>Mail Adresi</label>
-                        <input type="email" required minlength="3" [(ngModel)]="createModel.email" class="form-control" name="email">
+                        <input type="text" required minlength="3" [(ngModel)]="createModel.lastName"
+                            class="form-control" name="lastName">
                         <div class="invalid-feedback"></div>
                     </div>
-                    
-                      <div class="form-group mt-2">
-                        <label>Şifre</label>
-                        <input type="password" required  [(ngModel)]="createModel.password" class="form-control" name="password">
+
+                    <div class="form-group mt-2">
+                        <label>UserName</label>
+                        <input type="text" required minlength="3" [(ngModel)]="createModel.userName"
+                            class="form-control" name="userName">
                         <div class="invalid-feedback"></div>
-                    </div>    
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Mail Adresi</label>
+                        <input type="email" required minlength="3" [(ngModel)]="createModel.email" class="form-control"
+                            name="email">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Şifre</label>
+                        <input type="password" required [(ngModel)]="createModel.password" class="form-control"
+                            name="password">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Bağlı Olduğu Şirketler</label>
+                        <select name="companyIds" [(ngModel)]="createModel.companyIds" class="form-control" multiple
+                            required>
+                            @for (company of companies; track company) {
+                            <option [value]="company.id" [selected]="isSelected(createModel.companyIds, company.id)"
+                                (mousedown)="$event.preventDefault(); toggleSelection(createModel.companyIds, company.id)">
+                                {{company.name}}
+                            </option>
+                            }
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="createModel.isAdmin"
+                                name="isAdmin" id="isAdminCheck">
+                            <label class="form-check-label" for="isAdminCheck">
+                                Admin Mi?
+                            </label>
+                        </div>
+                    </div>
 
                 </div>
-                <div class="modal-footer">                    
+                <div class="modal-footer">
                     <button type="submit" class="btn btn-dark w-100">Kaydet</button>
                 </div>
             </form>
@@ -103,45 +153,74 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5">Kullanıcı Güncelleme Formu</h1>
+                <h3 class="modal-title fs-5">Kullanıcı Güncelleme Formu</h3>
                 <button type="button" #updateModalCloseBtn class="btn btn-outline-danger" data-dismiss="modal">
                     <i class="fa-solid fa-x"></i>
                 </button>
             </div>
             <form formValidate #updateForm="ngForm" autocomplete="off" (ngSubmit)="update(updateForm)">
-               <div class="modal-body">
+                <div class="modal-body">
                     <div class="form-group">
                         <label>Ad</label>
-                        <input type="text" required minlength="3" [(ngModel)]="updateModel.firstName" class="form-control" name="updateFirstName">
+                        <input type="text" required minlength="3" [(ngModel)]="updateModel.firstName"
+                            class="form-control" name="updateFirstName">
                         <div class="invalid-feedback"></div>
                     </div>
-                    
+
                     <div class="form-group mt-2">
                         <label>Soyad</label>
-                        <input type="text" required minlength="3" [(ngModel)]="updateModel.lastName" class="form-control" name="updateLastName">
+                        <input type="text" required minlength="3" [(ngModel)]="updateModel.lastName"
+                            class="form-control" name="updateLastName">
                         <div class="invalid-feedback"></div>
-                    </div>            
-                    
-                     <div class="form-group mt-2">
+                    </div>
+
+                    <div class="form-group mt-2">
                         <label>UserName</label>
-                        <input type="text" required minlength="3" [(ngModel)]="updateModel.userName" class="form-control" name="updateUserName">
+                        <input type="text" required minlength="3" [(ngModel)]="updateModel.userName"
+                            class="form-control" name="updateUserName">
                         <div class="invalid-feedback"></div>
-                    </div>        
+                    </div>
 
-                     <div class="form-group mt-2">
+                    <div class="form-group mt-2">
                         <label>Mail Adresi</label>
-                        <input type="email" required minlength="3" [(ngModel)]="updateModel.email" class="form-control" name="updateEmail">
+                        <input type="email" required minlength="3" [(ngModel)]="updateModel.email" class="form-control"
+                            name="updateEmail">
                         <div class="invalid-feedback"></div>
-                    </div>     
+                    </div>
 
-                     <div class="form-group mt-2">
+                    <div class="form-group mt-2">
                         <label>Şifre</label>
-                        <input type="password"   [(ngModel)]="updateModel.password" class="form-control" name="updatePassword">
+                        <input type="password" [(ngModel)]="updateModel.password" class="form-control"
+                            name="updatePassword">
                         <div class="invalid-feedback"></div>
-                    </div>     
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Bağlı Olduğu Şirketler</label>
+                        <select name="updateCompanyIds" [(ngModel)]="updateModel.companyIds" class="form-control"
+                            multiple required>
+                            @for (company of companies; track company) {
+                            <option [value]="company.id" [selected]="isSelected(updateModel.companyIds, company.id)"
+                                (mousedown)="$event.preventDefault(); toggleSelection(updateModel.companyIds, company.id)">
+                                {{company.name}}
+                            </option>
+                            }
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="createModel.isAdmin"
+                                name="isAdmin" id="isAdminCheck">
+                            <label class="form-check-label" for="isAdminCheck">
+                                Admin Mi?
+                            </label>
+                        </div>
+                    </div>
 
                 </div>
-                <div class="modal-footer">                    
+                <div class="modal-footer">
                     <button type="submit" class="btn btn-primary w-100">Güncelle</button>
                 </div>
             </form>

@@ -6,12 +6,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TS.Result;
 using eMuhasebeServer.Domain.Events;
+using eMuhasebeServer.Domain.Repositories;
+using GenericRepository;
+using eMuhasebeServer.Application.Services;
 
 namespace eMuhasebeServer.Application.Features.Users.CreateUser
 {
     internal sealed class CreateUserCommandHandler(
+        ICacheService cacheService,
         IMediator mediator,
-        UserManager<AppUser> userManager,
+        UserManager<AppUser> userManager,   
+        ICompanyUserRepository companyUserRepository,
+        IUnitOfWork unitOfWork,
         IMapper mapper) : IRequestHandler<CreateUserCommand, Result<string>>
     {
         public async Task<Result<string>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -29,6 +35,8 @@ namespace eMuhasebeServer.Application.Features.Users.CreateUser
             }
 
             AppUser appUser = mapper.Map<AppUser>(request);
+
+            
             IdentityResult identityResult = await userManager.CreateAsync(appUser, request.Password);
 
             if (!identityResult.Succeeded)
@@ -36,9 +44,23 @@ namespace eMuhasebeServer.Application.Features.Users.CreateUser
                 return Result<string>.Failure(identityResult.Errors.Select(s => s.Description).ToList());
             }
 
-           await mediator.Publish(new AppUserEvent(appUser.Id));
 
-            return "Kullanıvıcı başarıyla oluşturuldu";
+           List<CompanyUser> companyUsers = request.CompanyIds.Select(s => new CompanyUser
+            {
+               AppUserId = appUser.Id,
+                CompanyId = s
+            }).ToList();
+
+            await companyUserRepository.AddRangeAsync(companyUsers, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            cacheService.Remove("users");
+
+            await mediator.Publish(new AppUserEvent(appUser.Id));
+
+       
+
+            return ("Kullanıcı başarıyla oluşturuldu");
 
         }
 

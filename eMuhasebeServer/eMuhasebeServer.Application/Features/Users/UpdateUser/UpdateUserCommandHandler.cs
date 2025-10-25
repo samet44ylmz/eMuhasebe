@@ -6,16 +6,25 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TS.Result;
 using eMuhasebeServer.Domain.Events;
+using eMuhasebeServer.Domain.Repositories;
+using GenericRepository;
+using eMuhasebeServer.Application.Services;
 namespace eMuhasebeServer.Application.Features.Users.UpdateUser
 {
     internal sealed class UpdateUserCommandHandler(
+        ICacheService cacheService,
         IMediator mediator,
         UserManager<AppUser> userManager,
+        ICompanyUserRepository companyUserRepository,
+        IUnitOfWork unitOfWork,
         IMapper mapper) : IRequestHandler<UpdateUserCommand, Result<string>>
     {
         public async Task<Result<string>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
-            AppUser? appUser = await userManager.FindByIdAsync(request.Id.ToString());
+            AppUser? appUser = await userManager.Users
+                .Where(p => p.Id == request.Id)
+                .Include(p => p.CompanyUsers)
+                .FirstOrDefaultAsync(cancellationToken);
             bool isEmailChanged = false;
 
             if (appUser is null)
@@ -63,7 +72,18 @@ namespace eMuhasebeServer.Application.Features.Users.UpdateUser
                     }
                 }
 
-              
+              List<CompanyUser> companyUsers = request.CompanyIds.Select(s => new CompanyUser
+              {
+                  AppUserId = appUser.Id,
+                  CompanyId = s
+              }).ToList();
+
+                await companyUserRepository.AddRangeAsync(companyUsers, cancellationToken);
+                await unitOfWork.SaveChangesAsync(cancellationToken);
+
+                cacheService.Remove("users");
+
+
 
                 if (isEmailChanged)
                 {
@@ -71,7 +91,7 @@ namespace eMuhasebeServer.Application.Features.Users.UpdateUser
                 }
             
             }
-            return "Kullanıcı başarıyla güncellendi";
+            return ("Kullanıcı başarıyla güncellendi");
         }
     }
 

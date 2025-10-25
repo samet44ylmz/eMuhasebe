@@ -84,6 +84,8 @@
           "configurations": {
             "production": {
               "buildTarget": "ERPClient:build:production"
+           
+
             },
             "development": {
               "buildTarget": "ERPClient:build:development"

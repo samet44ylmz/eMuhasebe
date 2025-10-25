@@ -7,6 +7,17 @@ import { AuthService } from './services/auth.service';
 import { ExamplesComponent } from './components/examples/examples.component';
 import { UsersComponent } from './components/users/users.component';
 import { ConfirmEmailComponent } from './components/confirm-email/confirm-email.component';
+import { CompaniesComponent } from './components/companies/companies.component';
+import { CashRegistersComponent } from './components/cash-registers/cash-registers.component';
+import { CashRegisterDetailsComponent } from './components/cash-register-details/cash-register-details.component';
+import { BanksComponent } from './components/banks/banks.component';
+import { BankDetailsComponent } from './components/bank-details/bank-details.component';
+import { CustomersComponent } from './components/customers/customers.component';
+import { CustomerDetailsComponent } from './components/customer-details/customer-details.component';
+import { ProductsComponent } from './components/products/products.component';
+import { ProductDetailsComponent } from './components/product-details/product-details.component';
+import { InvoicesComponent } from './components/invoices/invoices.component';
+import { ProductProfitabilityReportsComponent } from './components/product-profitability-reports/product-profitability-reports.component';
 
 export const routes: Routes = [
     {
@@ -25,8 +36,8 @@ export const routes: Routes = [
     {
         path: "",
         component: LayoutsComponent,
-        canActivate: [()=> inject(AuthService).isAuthenticated()],
-        canActivateChild: [()=> inject(AuthService).isAuthenticated()],
+        canActivate: [() => inject(AuthService).isAuthenticated()],
+        canActivateChild: [() => inject(AuthService).isAuthenticated()],
         children: [
             {
                 path: "",
@@ -35,7 +46,86 @@ export const routes: Routes = [
             {
                 path: "users",
                 component: UsersComponent
+            },
+
+            {
+                path: "companies",
+                component: CompaniesComponent
+            },
+
+            {
+                path: "cash-registers",
+                children: [
+
+                    {
+                        path: "",
+                        component: CashRegistersComponent
+                    },
+                    {
+                        path: "details/:id",
+                        component: CashRegisterDetailsComponent
+                    }
+
+                ]
+
+            },
+
+            {
+                path: "banks",
+                children: [
+                    {
+                        path: "",
+                        component: BanksComponent
+                    },
+
+                    {
+                        path: "details/:id",
+                        component: BankDetailsComponent
+                    },
+                ]
+            },
+
+            {
+                path: "customers",
+                children: [
+                    {
+                        path: "",
+                        component: CustomersComponent
+                    },
+                    {
+                        path: "details/:id",
+                        component: CustomerDetailsComponent
+                    }
+                ]
+            },
+            {
+                path: "products",
+                children: [
+                    {
+                        path: "",
+                        component: ProductsComponent
+                    },
+                    {
+                        path: "details/:id",
+                        component: ProductDetailsComponent
+                    }
+                ]
+            },
+            {
+                path: "invoices",
+                component: InvoicesComponent
+            },
+            {
+                path: "reports",
+                children: [
+                    {
+                        path: "product-profitability-reports",
+                        component: ProductProfitabilityReportsComponent
+                    }
+                ]
             }
+
+
         ]
     }
 ];

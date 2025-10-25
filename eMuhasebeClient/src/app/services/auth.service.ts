@@ -14,38 +14,33 @@ export class AuthService {
     private router: Router
   ) { }
 
-  isAuthenticated(){
-    try{
-      this.token = localStorage.getItem("token") ?? "";
-      if(this.token === ""){
+ isAuthenticated(){
+    this.token = localStorage.getItem("token") ?? "";
+
+    if(this.token === ""){
         this.router.navigateByUrl("/login");
         return false;
-      }
-
-      const decode: JwtPayload | any = jwtDecode(this.token);
-      const exp = decode?.exp;
-      const now = new Date().getTime() / 1000;
-
-      if(!exp || now > exp){
-        this.logout();
-        return false;
-      }
-
-      this.user.id = decode["Id"];
-      this.user.name = decode["Name"];
-      this.user.email = decode["Email"];
-      this.user.userName = decode["UserName"];
-
-      return true;
-    } catch {
-      this.logout();
-      return false;
     }
-  }
 
-  logout(){
-    localStorage.clear();
-    this.token = "";
-    this.router.navigateByUrl("/login");
+    const decode: JwtPayload | any = jwtDecode(this.token);
+    const exp = decode.exp;
+    const now = new Date().getTime() / 1000;
+
+    if(now > exp){
+        this.router.navigateByUrl("/login");
+        return false;
+    }
+
+    this.user.id = decode["Id"];
+    this.user.name = decode["Name"];
+    this.user.email = decode["Email"];
+    this.user.userName = decode["UserName"];
+    this.user.companyId = decode["CompanyId"];
+    this.user.companyResponse = JSON.parse(decode["Companies"]);
+    this.user.isAdmin = decode["IsAdmin"] == "True" ?  true : false;
+
+    return true;
   }
 }
+
+
