@@ -1,0 +1,1570 @@
+[
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/Auth/Login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Auth.Login.LoginCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.BankDetailsController",
+    "Method": "Create",
+    "RelativePath": "api/BankDetails/Create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.BankDetails.CreateBankDetail.CreateBankDetailCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.BankDetailsController",
+    "Method": "DeleteById",
+    "RelativePath": "api/BankDetails/DeleteById",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.BankDetails.DeleteBankById.DeleteBankDetailByIdCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.BankDetailsController",
+    "Method": "GetAll",
+    "RelativePath": "api/BankDetails/GetAll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.BankDetails.GetAllBankDetails.GetAllBankDetailsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.BankDetailsController",
+    "Method": "Update",
+    "RelativePath": "api/BankDetails/Update",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.BankDetails.UpdateBankDetail.UpdateBankDetailCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.BanksController",
+    "Method": "BulkPermanentDelete",
+    "RelativePath": "api/Banks/BulkPermanentDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Banks.BulkPermanentDeleteBanks.BulkPermanentDeleteBanksCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.BanksController",
+    "Method": "BulkRestore",
+    "RelativePath": "api/Banks/BulkRestore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Banks.BulkRestoreBanks.BulkRestoreBanksCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.BanksController",
+    "Method": "Create",
+    "RelativePath": "api/Banks/Create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Banks.CreateBank.CreateBankCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.BanksController",
+    "Method": "DeleteById",
+    "RelativePath": "api/Banks/DeleteById",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Banks.DeleteBankById.DeleteBankByIdCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.BanksController",
+    "Method": "GetAll",
+    "RelativePath": "api/Banks/GetAll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Banks.GetAllBanks.GetAllBanksQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.BanksController",
+    "Method": "GetAllDeleted",
+    "RelativePath": "api/Banks/GetAllDeleted",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Banks.GetAllDeletedBanks.GetAllDeletedBanksQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.BanksController",
+    "Method": "PermanentDelete",
+    "RelativePath": "api/Banks/PermanentDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Banks.PermanentDeleteBank.PermanentDeleteBankCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.BanksController",
+    "Method": "Restore",
+    "RelativePath": "api/Banks/Restore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Banks.RestoreBank.RestoreBankCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.BanksController",
+    "Method": "Update",
+    "RelativePath": "api/Banks/Update",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Banks.UpdateBank.UpdateBankCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CashRegisterDetailsController",
+    "Method": "Create",
+    "RelativePath": "api/CashRegisterDetails/Create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.CashRegisterDetails.CreateCashRegisterDetail.CreateCashRegisterDetailCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CashRegisterDetailsController",
+    "Method": "DeleteById",
+    "RelativePath": "api/CashRegisterDetails/DeleteById",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.CashRegisterDetails.DeleteCashRegisterById.DeleteCashRegisterDetailByIdCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CashRegisterDetailsController",
+    "Method": "GetAll",
+    "RelativePath": "api/CashRegisterDetails/GetAll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.CashRegisterDetails.GetAllCashRegisterDetail.GetAllCashRegisterDetailsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CashRegisterDetailsController",
+    "Method": "Update",
+    "RelativePath": "api/CashRegisterDetails/Update",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.CashRegisters.UpdateCashRegister.UpdateCashRegisterCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CashRegistersController",
+    "Method": "BulkPermanentDelete",
+    "RelativePath": "api/CashRegisters/BulkPermanentDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.CashRegisters.BulkPermanentDeleteCashRegisters.BulkPermanentDeleteCashRegistersCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CashRegistersController",
+    "Method": "BulkRestore",
+    "RelativePath": "api/CashRegisters/BulkRestore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.CashRegisters.BulkRestoreCashRegisters.BulkRestoreCashRegistersCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CashRegistersController",
+    "Method": "Create",
+    "RelativePath": "api/CashRegisters/Create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.CashRegisters.CreateCashRegister.CreateCashRegisterCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CashRegistersController",
+    "Method": "DeleteById",
+    "RelativePath": "api/CashRegisters/DeleteById",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.CashRegisters.DeleteCashRegisterById.DeleteCashRegisterByIdCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CashRegistersController",
+    "Method": "GetAll",
+    "RelativePath": "api/CashRegisters/GetAll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.CashRegisters.GetAllCashRegisters.GetAllCashRegistersQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CashRegistersController",
+    "Method": "GetAllDeleted",
+    "RelativePath": "api/CashRegisters/GetAllDeleted",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.CashRegisters.GetAllDeletedCashRegisters.GetAllDeletedCashRegistersQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CashRegistersController",
+    "Method": "PermanentDelete",
+    "RelativePath": "api/CashRegisters/PermanentDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.CashRegisters.PermanentDeleteCashRegister.PermanentDeleteCashRegisterCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CashRegistersController",
+    "Method": "Restore",
+    "RelativePath": "api/CashRegisters/Restore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.CashRegisters.RestoreCashRegister.RestoreCashRegisterCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CashRegistersController",
+    "Method": "Update",
+    "RelativePath": "api/CashRegisters/Update",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.CashRegisters.UpdateCashRegister.UpdateCashRegisterCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CustomerDetailsController",
+    "Method": "GetAll",
+    "RelativePath": "api/CustomerDetails/GetAll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.CustomerDetails.GetAllCustomerDetails.GetAllCustomerDetailsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CustomersController",
+    "Method": "BulkPermanentDelete",
+    "RelativePath": "api/Customers/BulkPermanentDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Customers.BulkPermanentDeleteCustomers.BulkPermanentDeleteCustomersCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CustomersController",
+    "Method": "BulkRestore",
+    "RelativePath": "api/Customers/BulkRestore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Customers.BulkRestoreCustomers.BulkRestoreCustomersCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CustomersController",
+    "Method": "Create",
+    "RelativePath": "api/Customers/Create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Customers.CreateCustomer.CreateCustomerCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CustomersController",
+    "Method": "DeleteById",
+    "RelativePath": "api/Customers/DeleteById",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Customers.DeleteCustomerById.DeleteCustomerByIdCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CustomersController",
+    "Method": "GetAll",
+    "RelativePath": "api/Customers/GetAll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Customers.GetAllCustomers.GetAllCustomersQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CustomersController",
+    "Method": "GetAllDeleted",
+    "RelativePath": "api/Customers/GetAllDeleted",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Customers.GetAllDeletedCustomers.GetAllDeletedCustomersQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CustomersController",
+    "Method": "PermanentDelete",
+    "RelativePath": "api/Customers/PermanentDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Customers.PermanentDeleteCustomer.PermanentDeleteCustomerCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CustomersController",
+    "Method": "Restore",
+    "RelativePath": "api/Customers/Restore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Customers.RestoreCustomer.RestoreCustomerCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.CustomersController",
+    "Method": "Update",
+    "RelativePath": "api/Customers/Update",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Customers.UpdateCustomer.UpdateCustomerCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.EmployeeDetailsController",
+    "Method": "GetAll",
+    "RelativePath": "api/EmployeeDetails/GetAll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.EmloyeeDetails.GetAllEmployeeDetailsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.EmployeesController",
+    "Method": "BulkPermanentDelete",
+    "RelativePath": "api/Employees/BulkPermanentDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Employees.BulkPermanentDeleteEmployees.BulkPermanentDeleteEmployeesCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.EmployeesController",
+    "Method": "BulkRestore",
+    "RelativePath": "api/Employees/BulkRestore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Employees.BulkRestoreEmployees.BulkRestoreEmployeesCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.EmployeesController",
+    "Method": "Create",
+    "RelativePath": "api/Employees/Create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Employees.CreateEmployee.CreateEmployeeCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.EmployeesController",
+    "Method": "DeleteById",
+    "RelativePath": "api/Employees/DeleteById",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Employees.DeleteEmployeeById.DeleteEmployeeByIdCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.EmployeesController",
+    "Method": "GetAll",
+    "RelativePath": "api/Employees/GetAll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Employees.GetAllEmployees.GetAllEmployeesQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.EmployeesController",
+    "Method": "GetAllDeleted",
+    "RelativePath": "api/Employees/GetAllDeleted",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Employees.GetAllDeletedEmployees.GetAllDeletedEmployeesQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.EmployeesController",
+    "Method": "PermanentDelete",
+    "RelativePath": "api/Employees/PermanentDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Employees.PermanentDeleteEmployee.PermanentDeleteEmployeeCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.EmployeesController",
+    "Method": "Restore",
+    "RelativePath": "api/Employees/Restore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Employees.RestoreEmployee.RestoreEmployeeCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.EmployeesController",
+    "Method": "Update",
+    "RelativePath": "api/Employees/Update",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Employees.UpdateEmployee.UpdateEmployeeCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.GiderlerController",
+    "Method": "BulkPermanentDelete",
+    "RelativePath": "api/Giderler/BulkPermanentDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Giderler.BulkPermanentDeleteGiderler.BulkPermanentDeleteGiderlerCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.GiderlerController",
+    "Method": "BulkRestore",
+    "RelativePath": "api/Giderler/BulkRestore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Giderler.BulkRestoreGiderler.BulkRestoreGiderlerCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.GiderlerController",
+    "Method": "Create",
+    "RelativePath": "api/Giderler/Create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Giderler.CreateGider.CreateGiderCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.GiderlerController",
+    "Method": "DeleteById",
+    "RelativePath": "api/Giderler/DeleteById",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Giderler.DeleteGiderById.DeleteGiderByIdCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.GiderlerController",
+    "Method": "GetAll",
+    "RelativePath": "api/Giderler/GetAll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Giderler.GetAllGiderler.GetAllGiderlerQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.GiderlerController",
+    "Method": "GetAllDeleted",
+    "RelativePath": "api/Giderler/GetAllDeleted",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Giderler.GetAllDeletedGiderler.GetAllDeletedGiderlerQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.GiderlerController",
+    "Method": "Pay",
+    "RelativePath": "api/Giderler/Pay",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Giderler.PayExpense.PayExpenseCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.GiderlerController",
+    "Method": "PermanentDelete",
+    "RelativePath": "api/Giderler/PermanentDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Giderler.PermanentDeleteGider.PermanentDeleteGiderCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.GiderlerController",
+    "Method": "Restore",
+    "RelativePath": "api/Giderler/Restore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Giderler.RestoreGider.RestoreGiderCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.GiderlerController",
+    "Method": "Update",
+    "RelativePath": "api/Giderler/Update",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Giderler.UpdateGider.UpdateGiderCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.InvoicesController",
+    "Method": "BulkPermanentDelete",
+    "RelativePath": "api/Invoices/BulkPermanentDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Invoices.BulkPermanentDeleteInvoices.BulkPermanentDeleteInvoicesCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.InvoicesController",
+    "Method": "BulkRestore",
+    "RelativePath": "api/Invoices/BulkRestore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Invoices.BulkRestoreInvoices.BulkRestoreInvoicesCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.InvoicesController",
+    "Method": "Create",
+    "RelativePath": "api/Invoices/Create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Invoices.CreateInvoice.CreateInvoiceCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.InvoicesController",
+    "Method": "DeleteById",
+    "RelativePath": "api/Invoices/DeleteById",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Invoices.DeleteInvoiceById.DeleteInvoiceByIdCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.InvoicesController",
+    "Method": "GetAll",
+    "RelativePath": "api/Invoices/GetAll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Invoices.GetAllInvoices.GetAllInvoicesQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.InvoicesController",
+    "Method": "GetAllDeleted",
+    "RelativePath": "api/Invoices/GetAllDeleted",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Invoices.GetAllDeletedInvoices.GetAllDeletedInvoicesQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.InvoicesController",
+    "Method": "Pay",
+    "RelativePath": "api/Invoices/Pay",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Invoices.PayInvoice.PayInvoiceCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.InvoicesController",
+    "Method": "PermanentDelete",
+    "RelativePath": "api/Invoices/PermanentDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Invoices.PermanentDeleteInvoice.PermanentDeleteInvoiceCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.InvoicesController",
+    "Method": "Restore",
+    "RelativePath": "api/Invoices/Restore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Invoices.RestoreInvoice.RestoreInvoiceCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ProductDetailsController",
+    "Method": "GetAll",
+    "RelativePath": "api/ProductDetails/GetAll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.ProductDetails.GetAllProductDetails.GetAllProductDetailsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ProductsController",
+    "Method": "BulkPermanentDelete",
+    "RelativePath": "api/Products/BulkPermanentDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Products.BulkPermanentDeleteProducts.BulkPermanentDeleteProductsCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ProductsController",
+    "Method": "BulkRestore",
+    "RelativePath": "api/Products/BulkRestore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Products.BulkRestoreProducts.BulkRestoreProductsCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ProductsController",
+    "Method": "Create",
+    "RelativePath": "api/Products/Create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Products.CreateProduct.CreateProductCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ProductsController",
+    "Method": "DeleteById",
+    "RelativePath": "api/Products/DeleteById",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Products.DeleteProductById.DeleteProductByIdCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ProductsController",
+    "Method": "GetAll",
+    "RelativePath": "api/Products/GetAll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Products.GetAllProducts.GetAllProductsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ProductsController",
+    "Method": "GetAllDeleted",
+    "RelativePath": "api/Products/GetAllDeleted",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Products.GetAllDeletedProducts.GetAllDeletedProductsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ProductsController",
+    "Method": "PermanentDelete",
+    "RelativePath": "api/Products/PermanentDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Products.PermanentDeleteProduct.PermanentDeleteProductCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ProductsController",
+    "Method": "Restore",
+    "RelativePath": "api/Products/Restore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Products.RestoreProduct.RestoreProductCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ProductsController",
+    "Method": "Update",
+    "RelativePath": "api/Products/Update",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Products.UpdateProduct.UpdateProductCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ReportsController",
+    "Method": "GetBankBalanceReports",
+    "RelativePath": "api/Reports/GetBankBalanceReports",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Reports.BankBalanceReports.BankBalanceReportsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ReportsController",
+    "Method": "GetCashRegisterBalanceReports",
+    "RelativePath": "api/Reports/GetCashRegisterBalanceReports",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Reports.CashRegisterBalanceReports.CashRegisterBalanceReportsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ReportsController",
+    "Method": "GetCustomerCount",
+    "RelativePath": "api/Reports/GetCustomerCount",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Reports.CustomerCount.CustomerCountQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ReportsController",
+    "Method": "GetExpenseBalanceReports",
+    "RelativePath": "api/Reports/GetExpenseBalanceReports",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Reports.ExpenseBalanceReports.ExpenseBalanceReportsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ReportsController",
+    "Method": "GetInvoiceBalanceReports",
+    "RelativePath": "api/Reports/GetInvoiceBalanceReports",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Reports.InvoiceBalanceReports.InvoiceBalanceReportsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ReportsController",
+    "Method": "GetProductCount",
+    "RelativePath": "api/Reports/GetProductCount",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Reports.ProductCount.ProductCountQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ReportsController",
+    "Method": "GetProductProfitabilityReports",
+    "RelativePath": "api/Reports/GetProductProfitabilityReports",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Reports.ProductProfitabilityReports.ProductProfitabilityReportsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ReportsController",
+    "Method": "GetRecentBankTransactions",
+    "RelativePath": "api/Reports/GetRecentBankTransactions",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Reports.RecentBankTransactions.RecentBankTransactionsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.ReportsController",
+    "Method": "GetRecentCashTransactions",
+    "RelativePath": "api/Reports/GetRecentCashTransactions",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Reports.RecentCashTransactions.RecentCashTransactionsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.SalaryPaymentsController",
+    "Method": "Create",
+    "RelativePath": "api/SalaryPayments/Create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.SalaryPayments.CreateSalaryPayment.CreateSalaryPaymentCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.SalaryPaymentsController",
+    "Method": "DeleteById",
+    "RelativePath": "api/SalaryPayments/DeleteById",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.SalaryPayments.DeleteSalaryPaymentById.DeleteSalaryPaymentByIdCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.SalaryPaymentsController",
+    "Method": "GetAll",
+    "RelativePath": "api/SalaryPayments/GetAll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.SalaryPayments.GetAllSalaryPayments.GetAllSalaryPaymentsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.SalaryPaymentsController",
+    "Method": "GetByEmployeeId",
+    "RelativePath": "api/SalaryPayments/GetByEmployeeId",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.SalaryPayments.GetSalaryPaymentsByEmployeeId.GetSalaryPaymentsByEmployeeIdQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.SalaryPaymentsController",
+    "Method": "Update",
+    "RelativePath": "api/SalaryPayments/Update",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.SalaryPayments.UpdateSalaryPayment.UpdateSalaryPaymentCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.UsersController",
+    "Method": "BulkDelete",
+    "RelativePath": "api/Users/BulkDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Users.BulkDeleteUsers.BulkDeleteUsersCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.UsersController",
+    "Method": "Create",
+    "RelativePath": "api/Users/Create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Users.CreateUser.CreateUserCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.UsersController",
+    "Method": "DeleteById",
+    "RelativePath": "api/Users/DeleteById",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Users.DeleteUserById.DeleteUserByIdCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.UsersController",
+    "Method": "GetAll",
+    "RelativePath": "api/Users/GetAll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Users.GetAllUsers.GetAllUsersQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.UsersController",
+    "Method": "GetAllDeleted",
+    "RelativePath": "api/Users/GetAllDeleted",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Users.GetAllDeletedUsers.GetAllDeletedUsersQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.UsersController",
+    "Method": "PermanentDelete",
+    "RelativePath": "api/Users/PermanentDelete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Users.PermanentDeleteUser.PermanentDeleteUserCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.UsersController",
+    "Method": "Restore",
+    "RelativePath": "api/Users/Restore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Users.RestoreUser.RestoreUserCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "eMuhasebeServer.WebAPI.Controllers.UsersController",
+    "Method": "Update",
+    "RelativePath": "api/Users/Update",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "eMuhasebeServer.Application.Features.Users.UpdateUser.UpdateUserCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

@@ -1,0 +1,68 @@
+/* Table styling */
+.table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  border-top: none;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Badge styling */
+.badge {
+  padding: 0.5em 0.8em;
+  font-size: 0.85em;
+}
+
+.bg-success {
+  background-color: #28a745 !important;
+}
+
+.bg-secondary {
+  background-color: #6c757d !important;
+}
+
+/* Button styling */
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.2rem;
+}
+
+.btn-outline-success:hover {
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+/* Modal styling */
+.modal-header {
+  border-bottom: 1px solid #e9ecef;
+}
+
+.modal-footer {
+  border-top: 1px solid #e9ecef;
+}
+
+/* Form styling */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-control {
+  border-radius: 0.25rem;
+  border: 1px solid #ced4da;
+}
+
+.form-control:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+}

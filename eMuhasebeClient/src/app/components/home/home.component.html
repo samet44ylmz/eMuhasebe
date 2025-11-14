@@ -1,0 +1,173 @@
+<app-blank pageName="Ana Sayfa">
+    <!-- Stats Cards Section -->
+    <div class="row">
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>{{cashRegisterBalance | currency:'₺'}}</h3>
+                    <p>Kasa Bakiyesi</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-cash-register"></i>
+                </div>
+                <a routerLink="/cash-registers" class="small-box-footer">Detaylar <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>{{bankBalance | currency:'₺'}}</h3>
+                    <p>Banka Bakiyesi</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-piggy-bank"></i>
+                </div>
+                <a routerLink="/banks" class="small-box-footer">Detaylar <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3>{{totalCustomers}}</h3>
+                    <p>Toplam Cari</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <a routerLink="/customers" class="small-box-footer">Detaylar <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3>{{totalProducts}}</h3>
+                    <p>Toplam Ürün</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <a routerLink="/products" class="small-box-footer">Detaylar <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row">
+        <div class="col-md-6">
+            <app-section sectionTitle="Fatura Bakiye Raporu">
+                <div class="d-flex justify-content-center">
+                    <section class="text-center" style="width: 100%;">
+                        <h1>Fatura Bakiye Raporu</h1>
+                        <hr>
+                        <canvas id="invoiceBalanceChart"></canvas>
+                    </section>
+                </div>
+            </app-section>
+        </div>
+        <div class="col-md-6">
+            <app-section sectionTitle="Gider Bakiye Raporu">
+                <div class="d-flex justify-content-center">
+                    <section class="text-center" style="width: 100%;">
+                        <h1>Gider Bakiye Raporu</h1>
+                        <hr>
+                        <canvas id="expenseBalanceChart"></canvas>
+                    </section>
+                </div>
+            </app-section>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-12">
+                    <app-section sectionTitle="Son Kasa İşlemleri">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Tarih</th>
+                                        <th>Kasa</th>
+                                        <th>Açıklama</th>
+                                        <th>Giriş</th>
+                                        <th>Çıkış</th>
+                                        <th>Bakiye</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Show only the last 3 cash transactions -->
+                                    @for(transaction of recentCashTransactions.slice(0, 3); track transaction.cashRegisterName + transaction.date) {
+                                        <tr>
+                                            <td>{{transaction.date | date:'dd.MM.yyyy'}}</td>
+                                            <td>{{transaction.cashRegisterName}}</td>
+                                            <td>{{transaction.description}}</td>
+                                            <td class="text-success">{{transaction.depositAmount > 0 ? (transaction.depositAmount | currency:'₺') : '-'}}</td>
+                                            <td class="text-danger">{{transaction.withdrawalAmount > 0 ? (transaction.withdrawalAmount | currency:'₺') : '-'}}</td>
+                                            <td [class.text-success]="transaction.balance >= 0" [class.text-danger]="transaction.balance < 0">
+                                                {{transaction.balance | currency:'₺'}}
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Add link to cash details page -->
+                        <div class="mt-2 text-end">
+                            <a routerLink="/cash-registers" class="btn btn-primary">
+                                <i class="fas fa-list me-1"></i>
+                                Tüm Kasa İşlemleri
+                            </a>
+                        </div>
+                    </app-section>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- <app-section sectionTitle="Ürün Karlılık Raporu">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Ürün Adı</th>
+                                        <th>Kar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for(product of productProfitability; track product.id; let i = $index) {
+                                        <tr>
+                                            <td>{{product.name}}</td>
+                                            <td [class.text-success]="product.profit >= 0" [class.text-danger]="product.profit < 0">
+                                                {{product.profit | currency:'₺'}}
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </app-section> -->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <!-- <app-section sectionTitle="Son İşlemler">
+                <div class="timeline">
+                    @for(activity of recentActivities; track activity.id) {
+                        <div>
+                            <i class="{{activity.icon}} bg-{{activity.color}}"></i>
+                            <div class="timeline-item">
+                                <span class="time"><i class="fas fa-clock"></i> {{activity.time}}</span>
+                                <h3 class="timeline-header">{{activity.title}}</h3>
+                                <div class="timeline-body">
+                                    {{activity.description}}
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div>
+                        <i class="fas fa-clock bg-gray"></i>
+                    </div>
+                </div>
+            </app-section> -->
+        </div>
+    </div>
+</app-blank>

@@ -1,0 +1,1234 @@
+<app-blank pageName="Çalışanlar" [routes]="['Admin','Çalışanlar']">
+    <app-section sectionTitle="Çalışan Listesi">
+        <div class="form-group row">
+            <div class="col-9">
+                <button class="btn btn-dark" data-toggle="modal" data-target="#createModal">
+                    <i class="fa-solid fa-plus me-1"></i>
+                    Çalışan Ekle
+                </button>
+                <button class="btn btn-danger ms-2" (click)="openTrash()">
+                    <i class="fa-solid fa-trash me-1"></i>
+                    Çöp Kutusu
+                </button>
+            </div>
+
+            <div class="col-3">
+                <input [(ngModel)]="search" type="search" class="form-control" placeholder="Aranacak değer girin...">
+            </div>
+        </div>
+
+        <div class="form-group mt-2">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Ad Soyad</th>
+                        <th>Departman</th>
+                        <th>Pozisyon</th>
+                        <th>Telefon</th>
+                        <th>Maaş</th>
+                        <th>Başlama Tarihi</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(data of employees | employee: search ;track data){
+                    <tr>
+                        <td>{{$index + 1}}</td>
+                        <td>{{data.name}}</td>
+                        <td>{{data.department}}</td>
+                        <td>{{data.position}}</td>
+                        <td>{{data.phone}}</td>
+                        <td>{{data.salary | trCurrency}}</td>
+                        <td>{{data.startDate | date: 'dd.MM.yyyy'}}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button data-toggle="modal" data-target="#updateModal" (click)="get(data)" class="btn btn-outline-primary btn-sm me-1">
+                                    <i class="fa-solid fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle dropdown-toggle-split me-1" data-toggle="dropdown" aria-expanded="false">
+                                    <span class="sr-only">Aksiyonlar</span>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#" (click)="$event.preventDefault(); openSalaryPayments(data)">Maaş Ödemeleri</a>
+                                    <a class="dropdown-item" href="#" (click)="$event.preventDefault(); viewEmployee(data)">Çalışanı Görüntüle</a>
+                                </div>
+                            </div>
+                            <button (click)="deleteById(data)" class="btn btn-outline-danger btn-sm">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </app-section>
+</app-blank>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Çalışan Ekleme Formu</h1>
+                <button type="button" #createModalCloseBtn class="btn btn-outline-danger" data-dismiss="modal">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+            </div>
+            <form form formValidate #createForm="ngForm" autocomplete="off" (ngSubmit)="create(createForm)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Ad Soyad <span class="text-danger">*</span></label>
+                        <input type="text" required minlength="3" [(ngModel)]="createModel.name" class="form-control" name="name">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Adres</label>
+                        <input type="text" [(ngModel)]="createModel.address" class="form-control" name="address">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>TC Kimlik Numarası <span class="text-danger">*</span></label>
+                        <input type="text" required minlength="11" maxlength="11" pattern="[0-9]{11}" [(ngModel)]="createModel.identityNumber" class="form-control" name="identityNumber" placeholder="11 haneli TC Kimlik Numarası">
+                        <div class="invalid-feedback">TC Kimlik Numarası tam olarak 11 haneli olmalıdır.</div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Telefon <span class="text-danger">*</span></label>
+                        <input type="text" required minlength="10" [(ngModel)]="createModel.phone" class="form-control" name="phone">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Departman</label>
+                        <input type="text" [(ngModel)]="createModel.department" class="form-control" name="department">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Pozisyon</label>
+                        <input type="text" [(ngModel)]="createModel.position" class="form-control" name="position">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Maaş <span class="text-danger">*</span></label>
+                        <input type="number" required min="0" [(ngModel)]="createModel.salary" class="form-control" name="salary">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Başlama Tarihi <span class="text-danger">*</span></label>
+                        <input type="date" [(ngModel)]="createModel.startDate" class="form-control" name="startDate">
+                        <div class="invalid-feedback"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-dark w-100">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update Modal -->
+<div class="modal fade" id="updateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Çalışan Güncelleme Formu</h1>
+                <button type="button" #updateModalCloseBtn class="btn btn-outline-danger" data-dismiss="modal">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+            </div>
+            <form formValidate #updateForm="ngForm" autocomplete="off" (ngSubmit)="update(updateForm)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Ad Soyad <span class="text-danger">*</span></label>
+                        <input type="text" required minlength="3" [(ngModel)]="updateModel.name" class="form-control" name="updateName">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Adres</label>
+                        <input type="text" [(ngModel)]="updateModel.address" class="form-control" name="updateAddress">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>TC Kimlik Numarası <span class="text-danger">*</span></label>
+                        <input type="text" required minlength="11" maxlength="11" pattern="[0-9]{11}" [(ngModel)]="updateModel.identityNumber" class="form-control" name="updateIdentityNumber" placeholder="11 haneli TC Kimlik Numarası">
+                        <div class="invalid-feedback">TC Kimlik Numarası tam olarak 11 haneli olmalıdır.</div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Telefon <span class="text-danger">*</span></label>
+                        <input type="text" required minlength="10" [(ngModel)]="updateModel.phone" class="form-control" name="updatePhone">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Departman</label>
+                        <input type="text" [(ngModel)]="updateModel.department" class="form-control" name="updateDepartment">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Pozisyon</label>
+                        <input type="text" [(ngModel)]="updateModel.position" class="form-control" name="updatePosition">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Maaş <span class="text-danger">*</span></label>
+                        <input type="number" required min="0" [(ngModel)]="updateModel.salary" class="form-control" name="updateSalary">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Başlama Tarihi</label>
+                        <input type="date" [(ngModel)]="updateModel.startDate" class="form-control" name="updateStartDate">
+                        <div class="invalid-feedback"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary w-100">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden button to trigger view modal -->
+<button #viewModalTriggerBtn style="display: none;" data-toggle="modal" data-target="#viewModal"></button>
+
+<!-- Hidden button to trigger salary payments modal -->
+<button #salaryPaymentsModalTriggerBtn style="display: none;" data-toggle="modal" data-target="#salaryPaymentsModal"></button>
+
+<!-- Hidden button to trigger payslip modal -->
+<button #payslipModalTriggerBtn style="display: none;" data-toggle="modal" data-target="#payslipModal"></button>
+
+<!-- View Modal -->
+<div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Çalışan Detayları</h1>
+                <button type="button" #viewModalCloseBtn class="btn btn-outline-danger" data-dismiss="modal" (click)="closeViewModal()">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="font-weight-bold">Ad Soyad:</label>
+                            <p class="form-control-plaintext">{{viewModel.name}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="font-weight-bold">TC Kimlik Numarası:</label>
+                            <p class="form-control-plaintext">{{viewModel.identityNumber}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="font-weight-bold">Adres:</label>
+                            <p class="form-control-plaintext">{{viewModel.address}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="font-weight-bold">Telefon:</label>
+                            <p class="form-control-plaintext">{{viewModel.phone}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="font-weight-bold">Departman:</label>
+                            <p class="form-control-plaintext">{{viewModel.department}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="font-weight-bold">Pozisyon:</label>
+                            <p class="form-control-plaintext">{{viewModel.position}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="font-weight-bold">Maaş:</label>
+                            <p class="form-control-plaintext">{{viewModel.salary | trCurrency}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="font-weight-bold">Başlama Tarihi:</label>
+                            <p class="form-control-plaintext">{{viewModel.startDate | date: 'dd.MM.yyyy'}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeViewModal()">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Salary Payments Modal -->
+<div class="modal fade" id="salaryPaymentsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h3 class="modal-title fs-5">
+                    <i class="fa-solid fa-money-check me-2"></i>
+                    Maaş Ödemeleri - {{selectedEmployee?.name}}
+                </h3>
+                <button type="button" class="btn btn-outline-light" data-dismiss="modal">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <button class="btn btn-dark" data-toggle="modal" data-target="#createSalaryModal">
+                            <i class="fa-solid fa-plus me-1"></i>
+                            Maaş Ödemesi Ekle
+                        </button>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button class="btn btn-success me-2" (click)="selectAllPayments()">
+                            <i class="fa-solid fa-check-double me-1"></i>
+                            {{selectedPaymentsForPrint.size === salaryPayments.length ? 'Tümünü Kaldır' : 'Tümünü Seç'}}
+                        </button>
+                        <button class="btn btn-primary" (click)="printSelectedPayslips()" [disabled]="selectedPaymentsForPrint.size === 0">
+                            <i class="fa-solid fa-print me-1"></i>
+                            Seçili Bordroları Yazdır ({{selectedPaymentsForPrint.size}})
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th width="50">
+                                    <input type="checkbox" 
+                                        class="form-check-input" 
+                                        [checked]="selectedPaymentsForPrint.size === salaryPayments.length && salaryPayments.length > 0"
+                                        (change)="selectAllPayments()"
+                                        title="Tümünü Seç/Kaldır">
+                                </th>
+                                <th>#</th>
+                                <th>Ödeme Tarihi</th>
+                                <th>Dönem</th>
+                                <th>Brüt Maaş</th>
+                                <th>Kesintiler</th>
+                                <th>Net Maaş</th>
+                                <th>Ödeme Tipi</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for(data of salaryPayments; track data.id){
+                            <tr>
+                                <td>
+                                    <input type="checkbox" 
+                                        class="form-check-input" 
+                                        [checked]="isPaymentSelected(data.id)"
+                                        (change)="togglePaymentSelection(data.id)"
+                                        title="Bordro için seç">
+                                </td>
+                                <td>{{$index + 1}}</td>
+                                <td>{{formatDateTurkish(data.paymentDate)}}</td>
+                                <td>
+                                    <small class="text-muted">
+                                        {{formatDateTurkish(data.periodStart)}} - {{formatDateTurkish(data.periodEnd)}}
+                                    </small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">
+                                        {{data.grossSalary | trCurrency: '₺': true}}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning text-dark">
+                                        -{{data.totalDeductions | trCurrency: '₺': true}}
+                                    </span>
+                                </td>
+                                <td>
+                                    <strong class="text-success">
+                                        {{data.netSalary | trCurrency: '₺': true}}
+                                    </strong>
+                                </td>
+                                <td>
+                                    <span [ngClass]="data.cashRegisterDetailId ? 'badge bg-success' : 'badge bg-secondary'">
+                                        {{data.cashRegisterDetailId ? 'Kasa' : 'Diğer'}}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button (click)="getSalaryPayment(data)" data-toggle="modal" data-target="#updateSalaryModal" 
+                                            class="btn btn-outline-primary btn-sm" title="Düzenle">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </button>
+                                        <button (click)="viewPayslip(data)" class="btn btn-outline-info btn-sm" title="Bordro Görüntüle">
+                                            <i class="fa-solid fa-file-invoice"></i>
+                                        </button>
+                                        <button (click)="deleteSalaryPayment(data)" class="btn btn-outline-danger btn-sm" title="Sil">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            }
+                            @empty {
+                            <tr>
+                                <td colspan="9" class="text-center text-muted">
+                                    Henüz maaş ödemesi yok
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Salary Payment Modal -->
+<div class="modal fade" id="createSalaryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title fs-5">Maaş Ödemesi Ekleme Formu - {{selectedEmployee?.name}}</h3>
+                <button type="button" #createSalaryModalCloseBtn class="btn btn-outline-danger" data-dismiss="modal">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+            </div>
+            <form formValidate #createSalaryForm="ngForm" autocomplete="off" (ngSubmit)="createSalaryPayment(createSalaryForm)">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Ödeme Tarihi <span class="text-danger">*</span></label>
+                                <input type="date" required [(ngModel)]="createSalaryModel.paymentDate" class="form-control"
+                                    name="paymentDate">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Dönem Başlangıç <span class="text-danger">*</span></label>
+                                <input type="date" required [(ngModel)]="createSalaryModel.periodStart" class="form-control"
+                                    name="periodStart">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Dönem Bitiş <span class="text-danger">*</span></label>
+                                <input type="date" required [(ngModel)]="createSalaryModel.periodEnd" class="form-control"
+                                    name="periodEnd">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="mt-3 mb-3">
+                    <h6 class="text-primary"><i class="fa-solid fa-coins me-2"></i>Kazanlar</h6>
+
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Temel Maaş <span class="text-danger">*</span></label>
+                                <input type="number" required min="0.01" step="0.01" 
+                                    [(ngModel)]="createSalaryModel.baseSalary" 
+                                    (input)="calculateSalary()"
+                                    class="form-control" name="baseSalary">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Mesai Ücreti</label>
+                                <input type="number" min="0" step="0.01" 
+                                    [(ngModel)]="createSalaryModel.overtime" 
+                                    (input)="calculateSalary()"
+                                    class="form-control" name="overtime">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Prim</label>
+                                <input type="number" min="0" step="0.01" 
+                                    [(ngModel)]="createSalaryModel.bonus" 
+                                    (input)="calculateSalary()"
+                                    class="form-control" name="bonus">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Yan Haklar</label>
+                                <input type="number" min="0" step="0.01" 
+                                    [(ngModel)]="createSalaryModel.allowances" 
+                                    (input)="calculateSalary()"
+                                    class="form-control" name="allowances">
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="mt-3 mb-3">
+                    <h6 class="text-danger"><i class="fa-solid fa-minus-circle me-2"></i>Kesintiler</h6>
+
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Vergi Kesintisi</label>
+                                <input type="number" min="0" step="0.01" 
+                                    [(ngModel)]="createSalaryModel.taxDeduction" 
+                                    (input)="calculateSalary()"
+                                    class="form-control" name="taxDeduction">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>SGK Kesintisi</label>
+                                <input type="number" min="0" step="0.01" 
+                                    [(ngModel)]="createSalaryModel.socialSecurityDeduction" 
+                                    (input)="calculateSalary()"
+                                    class="form-control" name="socialSecurityDeduction">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Sağlık Sigortası Kesintisi</label>
+                                <input type="number" min="0" step="0.01" 
+                                    [(ngModel)]="createSalaryModel.healthInsuranceDeduction" 
+                                    (input)="calculateSalary()"
+                                    class="form-control" name="healthInsuranceDeduction">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Diğer Kesintiler</label>
+                                <input type="number" min="0" step="0.01" 
+                                    [(ngModel)]="createSalaryModel.otherDeductions" 
+                                    (input)="calculateSalary()"
+                                    class="form-control" name="otherDeductions">
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="mt-3 mb-3">
+                    <h6 class="text-success"><i class="fa-solid fa-calculator me-2"></i>Hesaplama Özeti</h6>
+
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <div class="alert alert-info">
+                                <small class="text-muted">Brüt Maaş</small>
+                                <h5 class="mb-0">{{createSalaryModel.grossSalary | trCurrency: '₺': true}}</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="alert alert-warning">
+                                <small class="text-muted">Toplam Kesinti</small>
+                                <h5 class="mb-0">{{createSalaryModel.totalDeductions | trCurrency: '₺': true}}</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="alert alert-success">
+                                <small class="text-muted">Net Maaş</small>
+                                <h5 class="mb-0">{{createSalaryModel.netSalary | trCurrency: '₺': true}}</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Çalışılan Gün Sayısı</label>
+                                <input type="number" min="1" max="31" 
+                                    [(ngModel)]="createSalaryModel.workDays" 
+                                    (input)="calculateSalary()"
+                                    class="form-control" name="workDays">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Mesai Saatleri</label>
+                                <input type="number" min="0" step="0.5" 
+                                    [(ngModel)]="createSalaryModel.overtimeHours" 
+                                    class="form-control" name="overtimeHours">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Açıklama</label>
+                        <textarea rows="2" [(ngModel)]="createSalaryModel.description" class="form-control"
+                            name="description"></textarea>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="createSalaryModel.payFromCash" 
+                                name="payFromCash" id="createPayFromCash">
+                            <label class="form-check-label" for="createPayFromCash">
+                                Kasadan Öde
+                            </label>
+                        </div>
+                    </div>
+
+                    @if(createSalaryModel.payFromCash){
+                    <div class="form-group mt-2">
+                        <label>Kasa</label>
+                        <select class="form-control" name="cashRegister" [(ngModel)]="createSalaryModel.cashRegisterId" required>
+                            <option [value]="null">Kasa Seçiniz</option>
+                            @for(cashRegister of cashRegisters; track cashRegister.id){
+                            <option [value]="cashRegister.id">
+                                {{cashRegister.name}}
+                            </option>
+                            }
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-dark w-100">
+                        <i class="fa-solid fa-save me-2"></i>Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update Salary Payment Modal -->
+<div class="modal fade" id="updateSalaryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title fs-5">Maaş Ödemesi Güncelleme Formu - {{selectedEmployee?.name}}</h3>
+                <button type="button" #updateSalaryModalCloseBtn class="btn btn-outline-danger" data-dismiss="modal">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+            </div>
+            <form formValidate #updateSalaryForm="ngForm" autocomplete="off" (ngSubmit)="updateSalaryPayment(updateSalaryForm)">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Ödeme Tarihi <span class="text-danger">*</span></label>
+                                <input type="date" required [(ngModel)]="updateSalaryModel.paymentDate" class="form-control"
+                                    name="updatePaymentDate">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Dönem Başlangıç <span class="text-danger">*</span></label>
+                                <input type="date" required [(ngModel)]="updateSalaryModel.periodStart" class="form-control"
+                                    name="updatePeriodStart">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Dönem Bitiş <span class="text-danger">*</span></label>
+                                <input type="date" required [(ngModel)]="updateSalaryModel.periodEnd" class="form-control"
+                                    name="updatePeriodEnd">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="mt-3 mb-3">
+                    <h6 class="text-primary"><i class="fa-solid fa-coins me-2"></i>Kazanlar</h6>
+
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Temel Maaş <span class="text-danger">*</span></label>
+                                <input type="number" required min="0.01" step="0.01" 
+                                    [(ngModel)]="updateSalaryModel.baseSalary" 
+                                    (input)="calculateSalaryUpdate()"
+                                    class="form-control" name="updateBaseSalary">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Mesai Ücreti</label>
+                                <input type="number" min="0" step="0.01" 
+                                    [(ngModel)]="updateSalaryModel.overtime" 
+                                    (input)="calculateSalaryUpdate()"
+                                    class="form-control" name="updateOvertime">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Prim</label>
+                                <input type="number" min="0" step="0.01" 
+                                    [(ngModel)]="updateSalaryModel.bonus" 
+                                    (input)="calculateSalaryUpdate()"
+                                    class="form-control" name="updateBonus">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Yan Haklar</label>
+                                <input type="number" min="0" step="0.01" 
+                                    [(ngModel)]="updateSalaryModel.allowances" 
+                                    (input)="calculateSalaryUpdate()"
+                                    class="form-control" name="updateAllowances">
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="mt-3 mb-3">
+                    <h6 class="text-danger"><i class="fa-solid fa-minus-circle me-2"></i>Kesintiler</h6>
+
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Vergi Kesintisi</label>
+                                <input type="number" min="0" step="0.01" 
+                                    [(ngModel)]="updateSalaryModel.taxDeduction" 
+                                    (input)="calculateSalaryUpdate()"
+                                    class="form-control" name="updateTaxDeduction">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>SGK Kesintisi</label>
+                                <input type="number" min="0" step="0.01" 
+                                    [(ngModel)]="updateSalaryModel.socialSecurityDeduction" 
+                                    (input)="calculateSalaryUpdate()"
+                                    class="form-control" name="updateSocialSecurityDeduction">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Sağlık Sigortası Kesintisi</label>
+                                <input type="number" min="0" step="0.01" 
+                                    [(ngModel)]="updateSalaryModel.healthInsuranceDeduction" 
+                                    (input)="calculateSalaryUpdate()"
+                                    class="form-control" name="updateHealthInsuranceDeduction">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Diğer Kesintiler</label>
+                                <input type="number" min="0" step="0.01" 
+                                    [(ngModel)]="updateSalaryModel.otherDeductions" 
+                                    (input)="calculateSalaryUpdate()"
+                                    class="form-control" name="updateOtherDeductions">
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="mt-3 mb-3">
+                    <h6 class="text-success"><i class="fa-solid fa-calculator me-2"></i>Hesaplama Özeti</h6>
+
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <div class="alert alert-info">
+                                <small class="text-muted">Brüt Maaş</small>
+                                <h5 class="mb-0">{{updateSalaryModel.grossSalary | trCurrency: '₺': true}}</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="alert alert-warning">
+                                <small class="text-muted">Toplam Kesinti</small>
+                                <h5 class="mb-0">{{updateSalaryModel.totalDeductions | trCurrency: '₺': true}}</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="alert alert-success">
+                                <small class="text-muted">Net Maaş</small>
+                                <h5 class="mb-0">{{updateSalaryModel.netSalary | trCurrency: '₺': true}}</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Çalışılan Gün Sayısı</label>
+                                <input type="number" min="1" max="31" 
+                                    [(ngModel)]="updateSalaryModel.workDays" 
+                                    (input)="calculateSalaryUpdate()"
+                                    class="form-control" name="updateWorkDays">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Mesai Saatleri</label>
+                                <input type="number" min="0" step="0.5" 
+                                    [(ngModel)]="updateSalaryModel.overtimeHours" 
+                                    class="form-control" name="updateOvertimeHours">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Açıklama</label>
+                        <textarea rows="2" [(ngModel)]="updateSalaryModel.description" class="form-control"
+                            name="updateDescription"></textarea>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="updateSalaryModel.payFromCash" 
+                                name="updatePayFromCash" id="updatePayFromCash">
+                            <label class="form-check-label" for="updatePayFromCash">
+                                Kasadan Öde
+                            </label>
+                        </div>
+                    </div>
+
+                    @if(updateSalaryModel.payFromCash){
+                    <div class="form-group mt-2">
+                        <label>Kasa</label>
+                        <select class="form-control" name="updateCashRegister" [(ngModel)]="updateSalaryModel.cashRegisterId" required>
+                            <option [value]="null">Kasa Seçiniz</option>
+                            @for(cashRegister of cashRegisters; track cashRegister.id){
+                            <option [value]="cashRegister.id">
+                                {{cashRegister.name}}
+                            </option>
+                            }
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fa-solid fa-save me-2"></i>Güncelle
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Payslip Modal -->
+<div class="modal fade" id="payslipModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white print-hide">
+                <h3 class="modal-title fs-5">
+                    <i class="fa-solid fa-file-invoice me-2"></i>Maaş Bordrosu
+                </h3>
+                <button type="button" class="btn btn-outline-light" data-dismiss="modal">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="payslipContent">
+                @if(selectedPayment && selectedEmployee){
+                <div class="payslip-container">
+                    <!-- Header with Logo Space -->
+                    <div class="text-center mb-4 border-bottom pb-3">
+                        <h1 class="fw-bold text-primary mb-2">MAAŞ BORDROSU</h1>
+                        <h5 class="text-muted">Maaş Ödeme Belgesi</h5>
+                        <p class="mb-0"><small>Belge No: {{selectedPayment.id.substring(0, 8).toUpperCase()}}</small></p>
+                    </div>
+
+                    <!-- Employee Info -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fa-solid fa-user me-2"></i>Çalışan Bilgileri</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-borderless table-sm">
+                                        <tr>
+                                            <td class="fw-bold" width="40%">Ad Soyad:</td>
+                                            <td>{{selectedEmployee.name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">TC Kimlik No:</td>
+                                            <td>{{selectedEmployee.identityNumber}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Pozisyon:</td>
+                                            <td>{{selectedEmployee.position}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Departman:</td>
+                                            <td>{{selectedEmployee.department}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-borderless table-sm">
+                                        <tr>
+                                            <td class="fw-bold" width="40%">Telefon:</td>
+                                            <td>{{selectedEmployee.phone}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Adres:</td>
+                                            <td>{{selectedEmployee.address}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">İşe Başlama:</td>
+                                            <td>{{formatDateTurkish(selectedEmployee.startDate)}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Temel Maaş:</td>
+                                            <td>{{selectedEmployee.salary | trCurrency: '₺': true}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Period -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0"><i class="fa-solid fa-calendar me-2"></i>Dönem ve Çalışma Bilgileri</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-borderless table-sm">
+                                        <tr>
+                                            <td class="fw-bold" width="40%">Dönem Başlangıç:</td>
+                                            <td>{{formatDateTurkish(selectedPayment.periodStart)}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Dönem Bitiş:</td>
+                                            <td>{{formatDateTurkish(selectedPayment.periodEnd)}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Ödeme Tarihi:</td>
+                                            <td>{{formatDateTurkish(selectedPayment.paymentDate)}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-borderless table-sm">
+                                        <tr>
+                                            <td class="fw-bold" width="40%">Çalışılan Gün:</td>
+                                            <td>{{selectedPayment.workDays}} gün</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Mesai Saati:</td>
+                                            <td>{{selectedPayment.overtimeHours}} saat</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Ödeme Yöntemi:</td>
+                                            <td>
+                                                <span class="badge" [ngClass]="selectedPayment.cashRegisterDetailId ? 'bg-success' : 'bg-secondary'">
+                                                    {{selectedPayment.cashRegisterDetailId ? 'Kasa' : 'Banka Transferi'}}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Earnings & Deductions -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="mb-0"><i class="fa-solid fa-calculator me-2"></i>Maaş Hesaplama Detayı</h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <table class="table table-bordered mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th width="50%">Kazanlar</th>
+                                                <th width="50%">Kesintiler</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <table class="table table-sm table-borderless mb-0">
+                                                        <tr>
+                                                            <td class="fw-bold">Temel Maaş</td>
+                                                            <td class="text-end">{{selectedPayment.baseSalary | trCurrency: '₺': true}}</td>
+                                                        </tr>
+                                                        @if(selectedPayment.overtime > 0){
+                                                        <tr>
+                                                            <td>Mesai Ücreti ({{selectedPayment.overtimeHours}} saat)</td>
+                                                            <td class="text-end">{{selectedPayment.overtime | trCurrency: '₺': true}}</td>
+                                                        </tr>
+                                                        }
+                                                        @if(selectedPayment.bonus > 0){
+                                                        <tr>
+                                                            <td>Prim</td>
+                                                            <td class="text-end">{{selectedPayment.bonus | trCurrency: '₺': true}}</td>
+                                                        </tr>
+                                                        }
+                                                        @if(selectedPayment.allowances > 0){
+                                                        <tr>
+                                                            <td>Yan Haklar</td>
+                                                            <td class="text-end">{{selectedPayment.allowances | trCurrency: '₺': true}}</td>
+                                                        </tr>
+                                                        }
+                                                        <tr class="border-top border-2">
+                                                            <td class="fw-bold">BRÜT MAAŞ</td>
+                                                            <td class="text-end fw-bold text-success">{{selectedPayment.grossSalary | trCurrency: '₺': true}}</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td>
+                                                    <table class="table table-sm table-borderless mb-0">
+                                                        @if(selectedPayment.taxDeduction > 0){
+                                                        <tr>
+                                                            <td>Gelir Vergisi</td>
+                                                            <td class="text-end">{{selectedPayment.taxDeduction | trCurrency: '₺': true}}</td>
+                                                        </tr>
+                                                        }
+                                                        @if(selectedPayment.socialSecurityDeduction > 0){
+                                                        <tr>
+                                                            <td>SGK Kesintisi</td>
+                                                            <td class="text-end">{{selectedPayment.socialSecurityDeduction | trCurrency: '₺': true}}</td>
+                                                        </tr>
+                                                        }
+                                                        @if(selectedPayment.healthInsuranceDeduction > 0){
+                                                        <tr>
+                                                            <td>Sağlık Sigortası</td>
+                                                            <td class="text-end">{{selectedPayment.healthInsuranceDeduction | trCurrency: '₺': true}}</td>
+                                                        </tr>
+                                                        }
+                                                        @if(selectedPayment.otherDeductions > 0){
+                                                        <tr>
+                                                            <td>Diğer Kesintiler</td>
+                                                            <td class="text-end">{{selectedPayment.otherDeductions | trCurrency: '₺': true}}</td>
+                                                        </tr>
+                                                        }
+                                                        @if(selectedPayment.taxDeduction === 0 && selectedPayment.socialSecurityDeduction === 0 && selectedPayment.healthInsuranceDeduction === 0 && selectedPayment.otherDeductions === 0){
+                                                        <tr>
+                                                            <td colspan="2" class="text-center text-muted">Kesinti bulunmamaktadır</td>
+                                                        </tr>
+                                                        }
+                                                        <tr class="border-top border-2">
+                                                            <td class="fw-bold">TOPLAM KESİNTİ</td>
+                                                            <td class="text-end fw-bold text-danger">{{selectedPayment.totalDeductions | trCurrency: '₺': true}}</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Net Salary -->
+                    <div class="card mb-3 border-3 border-success">
+                        <div class="card-body bg-light">
+                            <div class="row align-items-center py-2">
+                                <div class="col-md-6">
+                                    <h3 class="mb-0 text-success"><i class="fa-solid fa-wallet me-2"></i>NET MAAŞ</h3>
+                                    <small class="text-muted">Brüt Maaş - Toplam Kesintiler</small>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <h1 class="mb-0 text-success fw-bold" style="font-size: 2.5rem;">{{selectedPayment.netSalary | trCurrency: '₺': true}}</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calculation Summary -->
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-4">
+                                            <p class="text-muted mb-1 small">BRÜT MAAŞ</p>
+                                            <h5 class="text-info mb-0">{{selectedPayment.grossSalary | trCurrency: '₺': true}}</h5>
+                                        </div>
+                                        <div class="col-4">
+                                            <p class="text-muted mb-1 small">TOPLAM KESİNTİ</p>
+                                            <h5 class="text-danger mb-0">-{{selectedPayment.totalDeductions | trCurrency: '₺': true}}</h5>
+                                        </div>
+                                        <div class="col-4">
+                                            <p class="text-muted mb-1 small">NET MAAŞ</p>
+                                            <h5 class="text-success mb-0">{{selectedPayment.netSalary | trCurrency: '₺': true}}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    @if(selectedPayment.description){
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="fa-solid fa-note-sticky me-2"></i>Açıklama / Notlar</h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-0">{{selectedPayment.description}}</p>
+                        </div>
+                    </div>
+                    }
+
+                    <!-- Transaction Information -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-warning">
+                            <h6 class="mb-0"><i class="fa-solid fa-info-circle me-2"></i>İşlem Bilgileri</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-borderless table-sm mb-0">
+                                        <tr>
+                                            <td class="fw-bold" width="40%">Belge No:</td>
+                                            <td>{{selectedPayment.id.substring(0, 8).toUpperCase()}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Ödeme Yöntemi:</td>
+                                            <td>
+                                                <span class="badge" [ngClass]="selectedPayment.cashRegisterDetailId ? 'bg-success' : 'bg-info'">
+                                                    {{selectedPayment.cashRegisterDetailId ? 'Kasa Ödemesi' : 'Banka Transferi'}}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-borderless table-sm mb-0">
+                                        <tr>
+                                            <td class="fw-bold" width="40%">İşlemi Yapan:</td>
+                                            <td>{{auth.user.name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Düzenlenme Tarihi:</td>
+                                            <td>{{formatDateTurkish(selectedPayment.paymentDate)}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Legal Notice -->
+                    <div class="alert alert-light border mb-3">
+                        <p class="mb-0 small text-muted">
+                            <i class="fa-solid fa-shield-alt me-1"></i>
+                            <strong>Yasal Uyarı:</strong> Bu bordro, çalışanın belirtilen dönem için maaş ödeme bilgilerini içermektedir. 
+                            Tüm hesaplamalar ilgili mevzuata uygun olarak yapılmıştır. Bordro üzerine düzeltme veya itirazlarınızı İnsan Kaynakları bölümüne 5 iş günü içinde iletmeniz gerekmektedir.
+                        </p>
+                    </div>
+
+                    <!-- Signatures -->
+                    <div class="row mt-5 pt-4 mb-4">
+                        <div class="col-md-4 text-center">
+                            <div class="signature-box">
+                                <div class="signature-line"></div>
+                                <p class="mb-0 mt-2 fw-bold">Çalışan İmzası</p>
+                                <small class="text-muted">{{selectedEmployee.name}}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="signature-box">
+                                <div class="signature-line"></div>
+                                <p class="mb-0 mt-2 fw-bold">İnsan Kaynakları</p>
+                                <small class="text-muted">Onay ve İmza</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="signature-box">
+                                <div class="signature-line"></div>
+                                <p class="mb-0 mt-2 fw-bold">İşveren / Şirket Yetkilisi</p>
+                                <small class="text-muted">Onay ve Mühür</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="border-top pt-3 mt-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-0 small text-muted">
+                                    <i class="fa-solid fa-clock me-1"></i>
+                                    Baskı Tarihi: {{formatDateTurkish(getToday())}}
+                                </p>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <p class="mb-0 small text-muted">
+                                    <i class="fa-solid fa-file-alt me-1"></i>
+                                    Bu belge elektronik ortamda oluşturulmuş olup geçerlidir.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+            <div class="modal-footer print-hide">
+                <button type="button" class="btn btn-primary" (click)="printPayslip()">
+                    <i class="fa-solid fa-print me-2"></i>Yazdır
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fa-solid fa-times me-2"></i>Kapat
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

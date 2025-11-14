@@ -1,0 +1,72 @@
+<app-blank pageName="Müşteri Çöp Kutusu" [routes]="['Kayıtlar','Müşteri Çöp Kutusu']">
+    <app-section sectionTitle="Silinen Müşteriler">
+        <div class="form-group row">
+            <div class="col-9">
+                <!-- Removed "Seçilenleri Geri Yükle" button -->
+                <button class="btn btn-danger" (click)="bulkDelete()" [disabled]="selectedCustomerIds.length === 0">
+                    <i class="fa-solid fa-trash me-1"></i>
+                    Seçilenleri Kalıcı Olarak Sil
+                </button>
+                <button class="btn btn-secondary ms-2" (click)="goBack()">
+                    <i class="fa-solid fa-arrow-left me-1"></i>
+                    Geri
+                </button>
+            </div>
+
+            <div class="col-3">
+                <input [(ngModel)]="search" type="search" class="form-control" placeholder="Aranacak değer girin...">
+            </div>
+        </div>
+
+        <div class="form-group mt-2">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" [checked]="selectedCustomerIds.length === deletedCustomers.length && deletedCustomers.length > 0" 
+                                   (change)="selectAll()">
+                        </th>
+                        <th>#</th>
+                        <th>Müşteri Adı</th>
+                        <th>İl/İlçe</th>
+                        <th>Adres</th>
+                        <th>Vergi Dairesi</th>
+                        <th>Vergi Numarası</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(data of deletedCustomers | customer: search | paginate: { itemsPerPage: 10, currentPage: p };track data){
+                    <tr>
+                        <td>
+                            <input type="checkbox" [checked]="isSelected(data.id)" (change)="toggleSelection(data.id)">
+                        </td>
+                        <td>{{($index + 1)}}</td>
+                        <td>{{data.name}}</td>
+                        <td>{{data.city}} / {{data.town}}</td>
+                        <td>{{data.fullAddress}}</td>
+                        <td>{{data.taxDepartment}}</td>
+                        <td>{{data.taxNumber}}</td>
+                        <td class="d-flex">
+                            <button (click)="restoreCustomer(data)" class="btn btn-success btn-sm me-1" title="Geri Yükle">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                            <button (click)="permanentDeleteCustomer(data)" class="btn btn-danger btn-sm" title="Kalıcı Olarak Sil">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    }
+                    @if (deletedCustomers.length === 0) {
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">Çöp kutusu boş</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="text-center">
+                <pagination-controls nextLabel="Sonraki" previousLabel="Önceki" (pageChange)="p = $event"></pagination-controls>
+            </div>
+        </div>
+    </app-section>
+</app-blank>

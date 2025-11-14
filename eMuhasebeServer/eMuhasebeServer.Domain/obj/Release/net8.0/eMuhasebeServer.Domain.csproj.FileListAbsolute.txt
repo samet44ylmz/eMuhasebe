@@ -1,0 +1,12 @@
+C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\bin\Release\net8.0\eMuhasebeServer.Domain.deps.json
+C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\bin\Release\net8.0\eMuhasebeServer.Domain.dll
+C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\bin\Release\net8.0\eMuhasebeServer.Domain.pdb
+C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\obj\Release\net8.0\eMuhasebeServer.Domain.csproj.AssemblyReference.cache
+C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\obj\Release\net8.0\eMuhasebeServer.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\obj\Release\net8.0\eMuhasebeServer.Domain.AssemblyInfoInputs.cache
+C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\obj\Release\net8.0\eMuhasebeServer.Domain.AssemblyInfo.cs
+C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\obj\Release\net8.0\eMuhasebeServer.Domain.csproj.CoreCompileInputs.cache
+C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\obj\Release\net8.0\eMuhasebeServer.Domain.dll
+C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\obj\Release\net8.0\refint\eMuhasebeServer.Domain.dll
+C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\obj\Release\net8.0\eMuhasebeServer.Domain.pdb
+C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\obj\Release\net8.0\ref\eMuhasebeServer.Domain.dll

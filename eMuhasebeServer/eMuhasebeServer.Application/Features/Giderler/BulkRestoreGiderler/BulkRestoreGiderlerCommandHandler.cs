@@ -1,0 +1,67 @@
+using eMuhasebeServer.Application.Services;
+using eMuhasebeServer.Domain.Entities;
+using eMuhasebeServer.Domain.Repositories;
+using GenericRepository;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using TS.Result;
+
+namespace eMuhasebeServer.Application.Features.Giderler.BulkRestoreGiderler;
+
+internal sealed class BulkRestoreGiderlerCommandHandler(
+    IGiderRepository giderRepository,
+    ICashRegisterRepository cashRegisterRepository,
+    ICashRegisterDetailRepository cashRegisterDetailRepository,
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService) : IRequestHandler<BulkRestoreGiderlerCommand, Result<string>>
+{
+    public async Task<Result<string>> Handle(BulkRestoreGiderlerCommand request, CancellationToken cancellationToken)
+    {
+        // IgnoreQueryFilters() ile query filter'ı bypass ediyoruz (silinen giderleri bulabilmek için)
+        List<Gider> giderler = await giderRepository
+            .GetAll()
+            .IgnoreQueryFilters()
+            .Where(p => request.Ids.Contains(p.Id) && p.IsDeleted)
+            .ToListAsync(cancellationToken);
+
+        if (giderler.Count == 0)
+        {
+            return Result<string>.Failure("Geri yüklenecek gider bulunamadı");
+        }
+
+        foreach (var gider in giderler)
+        {
+            // If there was a cash register detail associated with this expense, we need to restore it
+            if (gider.CashRegisterDetailId is not null)
+            {
+                CashRegisterDetail? detail = await cashRegisterDetailRepository
+                    .GetAll()
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(p => p.Id == gider.CashRegisterDetailId, cancellationToken);
+                
+                if (detail is not null)
+                {
+                    CashRegister? cash = await cashRegisterRepository.GetByExpressionWithTrackingAsync(p => p.Id == detail.CashRegisterId, cancellationToken);
+                    if (cash is not null)
+                    {
+                        cash.WithdrawalAmount += detail.WithdrawalAmount;
+                        cashRegisterRepository.Update(cash);
+                    }
+                    
+                    detail.IsDeleted = false;
+                    cashRegisterDetailRepository.Update(detail);
+                }
+            }
+
+            gider.IsDeleted = false;
+            giderRepository.Update(gider);
+        }
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        cacheService.Remove(cacheService.GetCompanyCacheKey("giderler"));
+        cacheService.Remove(cacheService.GetCompanyCacheKey("cashRegisters"));
+
+        return $"{giderler.Count} gider başarıyla geri yüklendi";
+    }
+}

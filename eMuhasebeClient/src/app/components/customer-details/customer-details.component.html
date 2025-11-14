@@ -1,0 +1,58 @@
+<app-blank pageName="{{customer.name}} Cari Hareketleri"
+    [routes]="['Kayıtlar','Cariler',customer.name + 'Cari Hareketleri']">
+    <!-- Return button section -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-12">
+            <button class="btn btn-secondary" onclick="history.back()">
+              <i class="fas fa-arrow-left"></i> Geri Dön
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <app-section sectionTitle="{{customer.name}} Cari Hareketleri ">
+        <div class="form-group row">
+            <div class="col-9">
+              
+            </div>
+
+           
+
+            <div class="col-3">
+                <input [(ngModel)]="search" type="search" class="form-control" placeholder="Aranacak değer girin...">
+            </div>
+        </div>
+
+        <div class="form-group mt-2">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tarih</th>
+                        <!-- <th>Tip</th> -->
+                        <th>Açıklama</th>
+                        <th>Tutar</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(data of customer.details|customerDetail: search ;track data){
+                    <tr>
+                        <td>{{$index + 1}}</td>
+                        <td>{{data.date | date: 'dd.MM.yyyy'}}</td>
+                        <td>{{data.type.name}}</td>
+                        <td>{{data.description}}</td>
+                        <td>
+                            <span [ngClass]="(data.depositAmount - data.withdrawalAmount) >= 0 ? 'text-success' : 'text-danger'">
+                                {{(data.depositAmount - data.withdrawalAmount) | trCurrency: '₺': true}}
+                            </span>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </app-section>
+</app-blank>
