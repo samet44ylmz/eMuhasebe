@@ -52,8 +52,8 @@ internal sealed class PayExpenseCommandHandler(
 
             if (cashRegister is not null)
             {
-                // For expenses, when receiving payment, money is coming in (deposit)
-                cashRegister.DepositAmount += request.PaymentAmount;
+                // For expenses, when making a payment, money is going out (withdrawal)
+                cashRegister.WithdrawalAmount += request.PaymentAmount;
 
                 // Create cash register detail record
                 CashRegisterDetail cashRegisterDetail = new()
@@ -61,8 +61,8 @@ internal sealed class PayExpenseCommandHandler(
                     CashRegisterId = cashRegister.Id,
                     Date = request.PaymentDate,
                     Description = $"{expense.Name} Gideri Ödemesi - {request.Description}",
-                    DepositAmount = request.PaymentAmount, // Deposit for received payments
-                    WithdrawalAmount = 0 // No withdrawal for payments
+                    DepositAmount = 0, // No deposit for expense payments
+                    WithdrawalAmount = request.PaymentAmount // Withdrawal for expense payments
                 };
 
                 await cashRegisterDetailRepository.AddAsync(cashRegisterDetail, cancellationToken);

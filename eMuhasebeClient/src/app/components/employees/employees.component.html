@@ -466,8 +466,9 @@
                                 <input type="number" required min="0.01" step="0.01" 
                                     [(ngModel)]="createSalaryModel.baseSalary" 
                                     (input)="calculateSalary()"
-                                    class="form-control" name="baseSalary">
+                                    class="form-control" name="baseSalary" readonly>
                                 <div class="invalid-feedback"></div>
+                                <small class="text-muted">Temel maaş çalışanın sabit maaşıdır ve çalışılan gün sayısına göre otomatik hesaplanır</small>
                             </div>
                         </div>
 
@@ -692,8 +693,9 @@
                                 <input type="number" required min="0.01" step="0.01" 
                                     [(ngModel)]="updateSalaryModel.baseSalary" 
                                     (input)="calculateSalaryUpdate()"
-                                    class="form-control" name="updateBaseSalary">
+                                    class="form-control" name="updateBaseSalary" readonly>
                                 <div class="invalid-feedback"></div>
+                                <small class="text-muted">Temel maaş çalışanın sabit maaşıdır ve çalışılan gün sayısına göre otomatik hesaplanır</small>
                             </div>
                         </div>
 
@@ -881,21 +883,21 @@
                 @if(selectedPayment && selectedEmployee){
                 <div class="payslip-container">
                     <!-- Header with Logo Space -->
-                    <div class="text-center mb-4 border-bottom pb-3">
-                        <h1 class="fw-bold text-primary mb-2">MAAŞ BORDROSU</h1>
-                        <h5 class="text-muted">Maaş Ödeme Belgesi</h5>
+                    <div class="text-center mb-3 border-bottom pb-2">
+                        <h1 class="fw-bold text-primary mb-1">MAAŞ BORDROSU</h1>
+                        <h5 class="text-muted mb-1">Maaş Ödeme Belgesi</h5>
                         <p class="mb-0"><small>Belge No: {{selectedPayment.id.substring(0, 8).toUpperCase()}}</small></p>
                     </div>
 
                     <!-- Employee Info -->
-                    <div class="card mb-3">
-                        <div class="card-header bg-primary text-white">
+                    <div class="card mb-2">
+                        <div class="card-header bg-primary text-white py-2">
                             <h5 class="mb-0"><i class="fa-solid fa-user me-2"></i>Çalışan Bilgileri</h5>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body py-2">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <table class="table table-borderless table-sm">
+                                    <table class="table table-borderless table-sm mb-0">
                                         <tr>
                                             <td class="fw-bold" width="40%">Ad Soyad:</td>
                                             <td>{{selectedEmployee.name}}</td>
@@ -915,7 +917,7 @@
                                     </table>
                                 </div>
                                 <div class="col-md-6">
-                                    <table class="table table-borderless table-sm">
+                                    <table class="table table-borderless table-sm mb-0">
                                         <tr>
                                             <td class="fw-bold" width="40%">Telefon:</td>
                                             <td>{{selectedEmployee.phone}}</td>
@@ -939,14 +941,14 @@
                     </div>
 
                     <!-- Payment Period -->
-                    <div class="card mb-3">
-                        <div class="card-header bg-info text-white">
+                    <div class="card mb-2">
+                        <div class="card-header bg-info text-white py-2">
                             <h5 class="mb-0"><i class="fa-solid fa-calendar me-2"></i>Dönem ve Çalışma Bilgileri</h5>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body py-2">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <table class="table table-borderless table-sm">
+                                    <table class="table table-borderless table-sm mb-0">
                                         <tr>
                                             <td class="fw-bold" width="40%">Dönem Başlangıç:</td>
                                             <td>{{formatDateTurkish(selectedPayment.periodStart)}}</td>
@@ -962,7 +964,7 @@
                                     </table>
                                 </div>
                                 <div class="col-md-6">
-                                    <table class="table table-borderless table-sm">
+                                    <table class="table table-borderless table-sm mb-0">
                                         <tr>
                                             <td class="fw-bold" width="40%">Çalışılan Gün:</td>
                                             <td>{{selectedPayment.workDays}} gün</td>
@@ -986,117 +988,113 @@
                     </div>
 
                     <!-- Earnings & Deductions -->
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-header bg-success text-white">
-                                    <h5 class="mb-0"><i class="fa-solid fa-calculator me-2"></i>Maaş Hesaplama Detayı</h5>
-                                </div>
-                                <div class="card-body p-0">
-                                    <table class="table table-bordered mb-0">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th width="50%">Kazanlar</th>
-                                                <th width="50%">Kesintiler</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <table class="table table-sm table-borderless mb-0">
-                                                        <tr>
-                                                            <td class="fw-bold">Temel Maaş</td>
-                                                            <td class="text-end">{{selectedPayment.baseSalary | trCurrency: '₺': true}}</td>
-                                                        </tr>
-                                                        @if(selectedPayment.overtime > 0){
-                                                        <tr>
-                                                            <td>Mesai Ücreti ({{selectedPayment.overtimeHours}} saat)</td>
-                                                            <td class="text-end">{{selectedPayment.overtime | trCurrency: '₺': true}}</td>
-                                                        </tr>
-                                                        }
-                                                        @if(selectedPayment.bonus > 0){
-                                                        <tr>
-                                                            <td>Prim</td>
-                                                            <td class="text-end">{{selectedPayment.bonus | trCurrency: '₺': true}}</td>
-                                                        </tr>
-                                                        }
-                                                        @if(selectedPayment.allowances > 0){
-                                                        <tr>
-                                                            <td>Yan Haklar</td>
-                                                            <td class="text-end">{{selectedPayment.allowances | trCurrency: '₺': true}}</td>
-                                                        </tr>
-                                                        }
-                                                        <tr class="border-top border-2">
-                                                            <td class="fw-bold">BRÜT MAAŞ</td>
-                                                            <td class="text-end fw-bold text-success">{{selectedPayment.grossSalary | trCurrency: '₺': true}}</td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                                <td>
-                                                    <table class="table table-sm table-borderless mb-0">
-                                                        @if(selectedPayment.taxDeduction > 0){
-                                                        <tr>
-                                                            <td>Gelir Vergisi</td>
-                                                            <td class="text-end">{{selectedPayment.taxDeduction | trCurrency: '₺': true}}</td>
-                                                        </tr>
-                                                        }
-                                                        @if(selectedPayment.socialSecurityDeduction > 0){
-                                                        <tr>
-                                                            <td>SGK Kesintisi</td>
-                                                            <td class="text-end">{{selectedPayment.socialSecurityDeduction | trCurrency: '₺': true}}</td>
-                                                        </tr>
-                                                        }
-                                                        @if(selectedPayment.healthInsuranceDeduction > 0){
-                                                        <tr>
-                                                            <td>Sağlık Sigortası</td>
-                                                            <td class="text-end">{{selectedPayment.healthInsuranceDeduction | trCurrency: '₺': true}}</td>
-                                                        </tr>
-                                                        }
-                                                        @if(selectedPayment.otherDeductions > 0){
-                                                        <tr>
-                                                            <td>Diğer Kesintiler</td>
-                                                            <td class="text-end">{{selectedPayment.otherDeductions | trCurrency: '₺': true}}</td>
-                                                        </tr>
-                                                        }
-                                                        @if(selectedPayment.taxDeduction === 0 && selectedPayment.socialSecurityDeduction === 0 && selectedPayment.healthInsuranceDeduction === 0 && selectedPayment.otherDeductions === 0){
-                                                        <tr>
-                                                            <td colspan="2" class="text-center text-muted">Kesinti bulunmamaktadır</td>
-                                                        </tr>
-                                                        }
-                                                        <tr class="border-top border-2">
-                                                            <td class="fw-bold">TOPLAM KESİNTİ</td>
-                                                            <td class="text-end fw-bold text-danger">{{selectedPayment.totalDeductions | trCurrency: '₺': true}}</td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                    <div class="card mb-2">
+                        <div class="card-header bg-success text-white py-2">
+                            <h5 class="mb-0"><i class="fa-solid fa-calculator me-2"></i>Maaş Hesaplama Detayı</h5>
+                        </div>
+                        <div class="card-body py-2 p-0">
+                            <table class="table table-bordered mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="50%">Kazanlar</th>
+                                        <th width="50%">Kesintiler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table class="table table-sm table-borderless mb-0">
+                                                <tr>
+                                                    <td class="fw-bold">Temel Maaş</td>
+                                                    <td class="text-end">{{selectedPayment.baseSalary | trCurrency: '₺': true}}</td>
+                                                </tr>
+                                                @if(selectedPayment.overtime > 0){
+                                                <tr>
+                                                    <td>Mesai Ücreti ({{selectedPayment.overtimeHours}} saat)</td>
+                                                    <td class="text-end">{{selectedPayment.overtime | trCurrency: '₺': true}}</td>
+                                                </tr>
+                                                }
+                                                @if(selectedPayment.bonus > 0){
+                                                <tr>
+                                                    <td>Prim</td>
+                                                    <td class="text-end">{{selectedPayment.bonus | trCurrency: '₺': true}}</td>
+                                                </tr>
+                                                }
+                                                @if(selectedPayment.allowances > 0){
+                                                <tr>
+                                                    <td>Yan Haklar</td>
+                                                    <td class="text-end">{{selectedPayment.allowances | trCurrency: '₺': true}}</td>
+                                                </tr>
+                                                }
+                                                <tr class="border-top border-2">
+                                                    <td class="fw-bold">BRÜT MAAŞ</td>
+                                                    <td class="text-end fw-bold text-success">{{selectedPayment.grossSalary | trCurrency: '₺': true}}</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table class="table table-sm table-borderless mb-0">
+                                                @if(selectedPayment.taxDeduction > 0){
+                                                <tr>
+                                                    <td>Gelir Vergisi</td>
+                                                    <td class="text-end">{{selectedPayment.taxDeduction | trCurrency: '₺': true}}</td>
+                                                </tr>
+                                                }
+                                                @if(selectedPayment.socialSecurityDeduction > 0){
+                                                <tr>
+                                                    <td>SGK Kesintisi</td>
+                                                    <td class="text-end">{{selectedPayment.socialSecurityDeduction | trCurrency: '₺': true}}</td>
+                                                </tr>
+                                                }
+                                                @if(selectedPayment.healthInsuranceDeduction > 0){
+                                                <tr>
+                                                    <td>Sağlık Sigortası</td>
+                                                    <td class="text-end">{{selectedPayment.healthInsuranceDeduction | trCurrency: '₺': true}}</td>
+                                                </tr>
+                                                }
+                                                @if(selectedPayment.otherDeductions > 0){
+                                                <tr>
+                                                    <td>Diğer Kesintiler</td>
+                                                    <td class="text-end">{{selectedPayment.otherDeductions | trCurrency: '₺': true}}</td>
+                                                </tr>
+                                                }
+                                                @if(selectedPayment.taxDeduction === 0 && selectedPayment.socialSecurityDeduction === 0 && selectedPayment.healthInsuranceDeduction === 0 && selectedPayment.otherDeductions === 0){
+                                                <tr>
+                                                    <td colspan="2" class="text-center text-muted">Kesinti bulunmamaktadır</td>
+                                                </tr>
+                                                }
+                                                <tr class="border-top border-2">
+                                                    <td class="fw-bold">TOPLAM KESİNTİ</td>
+                                                    <td class="text-end fw-bold text-danger">{{selectedPayment.totalDeductions | trCurrency: '₺': true}}</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
                     <!-- Net Salary -->
-                    <div class="card mb-3 border-3 border-success">
-                        <div class="card-body bg-light">
-                            <div class="row align-items-center py-2">
+                    <div class="card mb-2 border-2 border-success">
+                        <div class="card-body bg-light py-2">
+                            <div class="row align-items-center">
                                 <div class="col-md-6">
                                     <h3 class="mb-0 text-success"><i class="fa-solid fa-wallet me-2"></i>NET MAAŞ</h3>
                                     <small class="text-muted">Brüt Maaş - Toplam Kesintiler</small>
                                 </div>
                                 <div class="col-md-6 text-end">
-                                    <h1 class="mb-0 text-success fw-bold" style="font-size: 2.5rem;">{{selectedPayment.netSalary | trCurrency: '₺': true}}</h1>
+                                    <h1 class="mb-0 text-success fw-bold" style="font-size: 1.8rem;">{{selectedPayment.netSalary | trCurrency: '₺': true}}</h1>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Calculation Summary -->
-                    <div class="row mb-3">
+                    <div class="row mb-2">
                         <div class="col-md-12">
                             <div class="card">
-                                <div class="card-body">
+                                <div class="card-body py-2">
                                     <div class="row text-center">
                                         <div class="col-4">
                                             <p class="text-muted mb-1 small">BRÜT MAAŞ</p>
@@ -1118,22 +1116,22 @@
 
                     <!-- Notes -->
                     @if(selectedPayment.description){
-                    <div class="card mb-3">
-                        <div class="card-header bg-light">
+                    <div class="card mb-2">
+                        <div class="card-header bg-light py-2">
                             <h6 class="mb-0"><i class="fa-solid fa-note-sticky me-2"></i>Açıklama / Notlar</h6>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body py-2">
                             <p class="mb-0">{{selectedPayment.description}}</p>
                         </div>
                     </div>
                     }
 
                     <!-- Transaction Information -->
-                    <div class="card mb-4">
-                        <div class="card-header bg-warning">
+                    <div class="card mb-3">
+                        <div class="card-header bg-warning py-2">
                             <h6 class="mb-0"><i class="fa-solid fa-info-circle me-2"></i>İşlem Bilgileri</h6>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body py-2">
                             <div class="row">
                                 <div class="col-md-6">
                                     <table class="table table-borderless table-sm mb-0">
@@ -1168,7 +1166,7 @@
                     </div>
 
                     <!-- Legal Notice -->
-                    <div class="alert alert-light border mb-3">
+                    <div class="alert alert-light border mb-3 py-2">
                         <p class="mb-0 small text-muted">
                             <i class="fa-solid fa-shield-alt me-1"></i>
                             <strong>Yasal Uyarı:</strong> Bu bordro, çalışanın belirtilen dönem için maaş ödeme bilgilerini içermektedir. 
@@ -1177,7 +1175,7 @@
                     </div>
 
                     <!-- Signatures -->
-                    <div class="row mt-5 pt-4 mb-4">
+                    <div class="row mb-3">
                         <div class="col-md-4 text-center">
                             <div class="signature-box">
                                 <div class="signature-line"></div>
@@ -1202,7 +1200,7 @@
                     </div>
 
                     <!-- Footer -->
-                    <div class="border-top pt-3 mt-4">
+                    <div class="border-top pt-2 mt-3">
                         <div class="row">
                             <div class="col-md-6">
                                 <p class="mb-0 small text-muted">

@@ -29,3 +29,4 @@ C:\GitHub\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Application\obj\Debug\net8.0
 C:\GitHub\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Application\obj\Debug\net8.0\refint\eMuhasebeServer.Application.dll
 C:\GitHub\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Application\obj\Debug\net8.0\eMuhasebeServer.Application.pdb
 C:\GitHub\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Application\obj\Debug\net8.0\ref\eMuhasebeServer.Application.dll
+C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Application\obj\Debug\net8.0\eMuhasebeServer.Application.sourcelink.json

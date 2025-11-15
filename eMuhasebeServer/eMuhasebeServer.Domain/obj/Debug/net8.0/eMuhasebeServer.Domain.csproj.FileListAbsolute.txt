@@ -23,3 +23,4 @@ C:\GitHub\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\obj\Debug\net8.0\eMuh
 C:\GitHub\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\obj\Debug\net8.0\refint\eMuhasebeServer.Domain.dll
 C:\GitHub\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\obj\Debug\net8.0\eMuhasebeServer.Domain.pdb
 C:\GitHub\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\obj\Debug\net8.0\ref\eMuhasebeServer.Domain.dll
+C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.Domain\obj\Debug\net8.0\eMuhasebeServer.Domain.sourcelink.json

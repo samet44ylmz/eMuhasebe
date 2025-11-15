@@ -86,7 +86,7 @@ internal sealed class CreateSalaryPaymentCommandHandler(
             CashRegisterDetail detail = new()
             {
                 Date = request.PaymentDate,
-                Description = $"Maaş Ödemesi - {request.Description}",
+                Description = $"Maaş Ödemesi - {employee.Name} - {request.Description}",
                 DepositAmount = 0,
                 WithdrawalAmount = request.NetSalary,
                 CashRegisterId = request.CashRegisterId.Value

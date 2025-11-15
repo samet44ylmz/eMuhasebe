@@ -310,7 +310,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
   }
 
   calculateSalary(): void {
-    // Calculate base salary based on work days (out of 30 days)
+    // Calculate base salary based on work days (out of 30 days) but keep it read-only in UI
     const fullSalary = this.selectedEmployee?.salary || 0;
     const workDays = this.createSalaryModel.workDays || 30;
     this.createSalaryModel.baseSalary = (fullSalary / 30) * workDays;
@@ -398,7 +398,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
   }
 
   calculateSalaryUpdate(): void {
-    // Calculate base salary based on work days (out of 30 days)
+    // Calculate base salary based on work days (out of 30 days) but keep it read-only in UI
     const fullSalary = this.selectedEmployee?.salary || 0;
     const workDays = this.updateSalaryModel.workDays || 30;
     this.updateSalaryModel.baseSalary = (fullSalary / 30) * workDays;
@@ -506,12 +506,94 @@ export class EmployeesComponent implements OnInit, OnDestroy {
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
           @media print {
-            @page { size: A4 portrait; margin: 15mm; }
-            .page-break { page-break-after: always; }
+            @page { 
+              size: A4 portrait; 
+              margin: 0;
+            }
+            body { 
+              font-family: Arial, sans-serif;
+              font-size: 9pt;
+              line-height: 1.2;
+              margin: 0;
+              padding: 0;
+            }
+            .payslip-container { 
+              width: 210mm;
+              height: 297mm;
+              padding: 10mm;
+              margin: 0;
+              background: white;
+              box-sizing: border-box;
+              page-break-after: always;
+            }
+            .page-break { 
+              page-break-after: always; 
+            }
+            .card {
+              page-break-inside: avoid;
+              border: 1px solid #ddd !important;
+              margin-bottom: 5px !important;
+              box-shadow: none !important;
+            }
+            .card-header {
+              border-radius: 4px 4px 0 0 !important;
+              padding: 6px 10px !important;
+              font-size: 10pt;
+            }
+            .card-body {
+              padding: 5px !important;
+            }
+            h1, h2, h3, h4, h5, h6 {
+              page-break-after: avoid;
+              margin-top: 3px;
+              margin-bottom: 3px;
+            }
+            table {
+              page-break-inside: avoid;
+              font-size: 9pt;
+            }
+            .table th {
+              font-weight: 600;
+            }
+            .table-sm td, .table-sm th {
+              padding: 2px 4px;
+            }
+            .table-borderless td {
+              border: none !important;
+            }
+            .signature-line {
+              border-bottom: 1px solid #333;
+              width: 100px;
+              height: 30px;
+              margin: 0 auto;
+            }
+            .mb-0 { margin-bottom: 0 !important; }
+            .mb-1 { margin-bottom: 0.15rem !important; }
+            .mb-2 { margin-bottom: 0.3rem !important; }
+            .mt-1 { margin-top: 0.2rem !important; }
+            .mt-2 { margin-top: 0.3rem !important; }
+            .py-1 { padding-top: 0.2rem !important; padding-bottom: 0.2rem !important; }
+            .text-center { text-align: center; }
+            .text-end { text-align: right; }
+            .fw-bold { font-weight: bold; }
+            small, .small { font-size: 8pt; }
+            .fs-5 { font-size: 1rem; }
+            .fs-6 { font-size: 0.9rem; }
           }
-          body { font-family: Arial, sans-serif; }
-          .payslip-container { padding: 20px; max-width: 210mm; margin: 0 auto; }
-          .signature-line { border-bottom: 2px solid #333; width: 180px; height: 60px; margin: 0 auto; }
+          body { 
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+          }
+          .payslip-container {
+            background: white;
+            padding: 15mm;
+            width: 210mm;
+            height: 297mm;
+            margin: 20px auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 4px;
+          }
         </style>
       </head>
       <body>
@@ -537,139 +619,161 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     
     return `
       <div class="payslip-container ${addPageBreak ? 'page-break' : ''}">
-        <div class="text-center mb-4 border-bottom pb-3">
-          <h1 class="fw-bold text-primary mb-2">MAAŞ BORDROSU</h1>
-          <h5 class="text-muted">Maaş Ödeme Belgesi</h5>
-          <p class="mb-0"><small>Belge No: ${payment.id.substring(0, 8).toUpperCase()}</small></p>
+        <div class="text-center mb-2 border-bottom pb-1">
+          <h1 class="fw-bold text-primary mb-0">MAAŞ BORDROSU</h1>
+          <h5 class="text-muted mb-0 small">Maaş Ödeme Belgesi</h5>
+          <p class="mb-0 small"><small>Belge No: ${payment.id.substring(0, 8).toUpperCase()}</small></p>
         </div>
 
-        <div class="card mb-3">
-          <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Çalışan Bilgileri</h5>
+        <div class="card mb-1">
+          <div class="card-header bg-primary text-white py-1">
+            <h5 class="mb-0 fs-6">Çalışan Bilgileri</h5>
           </div>
-          <div class="card-body">
+          <div class="card-body py-1">
             <div class="row">
               <div class="col-6">
-                <table class="table table-borderless table-sm">
-                  <tr><td class="fw-bold">Ad Soyad:</td><td>${emp.name}</td></tr>
-                  <tr><td class="fw-bold">TC Kimlik No:</td><td>${emp.identityNumber}</td></tr>
-                  <tr><td class="fw-bold">Pozisyon:</td><td>${emp.position}</td></tr>
-                  <tr><td class="fw-bold">Departman:</td><td>${emp.department}</td></tr>
+                <table class="table table-borderless table-sm mb-0">
+                  <tr><td class="fw-bold small">Ad Soyad:</td><td class="small">${emp.name}</td></tr>
+                  <tr><td class="fw-bold small">TC No:</td><td class="small">${emp.identityNumber}</td></tr>
+                  <tr><td class="fw-bold small">Pozisyon:</td><td class="small">${emp.position}</td></tr>
                 </table>
               </div>
               <div class="col-6">
-                <table class="table table-borderless table-sm">
-                  <tr><td class="fw-bold">Telefon:</td><td>${emp.phone}</td></tr>
-                  <tr><td class="fw-bold">Adres:</td><td>${emp.address}</td></tr>
-                  <tr><td class="fw-bold">İşe Başlama:</td><td>${this.formatDateTurkish(emp.startDate)}</td></tr>
-                  <tr><td class="fw-bold">Temel Maaş:</td><td>${emp.salary.toLocaleString('tr-TR')} ₺</td></tr>
+                <table class="table table-borderless table-sm mb-0">
+                  <tr><td class="fw-bold small">Telefon:</td><td class="small">${emp.phone}</td></tr>
+                  <tr><td class="fw-bold small">Başlama:</td><td class="small">${this.formatDateTurkish(emp.startDate)}</td></tr>
+                  <tr><td class="fw-bold small">Maaş:</td><td class="small">${emp.salary.toLocaleString('tr-TR')} ₺</td></tr>
                 </table>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="card mb-3">
-          <div class="card-header bg-info text-white">
-            <h5 class="mb-0">Dönem ve Çalışma Bilgileri</h5>
+        <div class="card mb-1">
+          <div class="card-header bg-info text-white py-1">
+            <h5 class="mb-0 fs-6">Dönem Bilgileri</h5>
           </div>
-          <div class="card-body">
+          <div class="card-body py-1">
             <div class="row">
               <div class="col-6">
-                <table class="table table-borderless table-sm">
-                  <tr><td class="fw-bold">Dönem Başlangıç:</td><td>${this.formatDateTurkish(payment.periodStart)}</td></tr>
-                  <tr><td class="fw-bold">Dönem Bitiş:</td><td>${this.formatDateTurkish(payment.periodEnd)}</td></tr>
-                  <tr><td class="fw-bold">Ödeme Tarihi:</td><td>${this.formatDateTurkish(payment.paymentDate)}</td></tr>
+                <table class="table table-borderless table-sm mb-0">
+                  <tr><td class="fw-bold small">Dönem:</td><td class="small">${this.formatDateTurkish(payment.periodStart)} - ${this.formatDateTurkish(payment.periodEnd)}</td></tr>
+                  <tr><td class="fw-bold small">Ödeme:</td><td class="small">${this.formatDateTurkish(payment.paymentDate)}</td></tr>
                 </table>
               </div>
               <div class="col-6">
-                <table class="table table-borderless table-sm">
-                  <tr><td class="fw-bold">Çalışılan Gün:</td><td>${payment.workDays} gün</td></tr>
-                  <tr><td class="fw-bold">Mesai Saati:</td><td>${payment.overtimeHours} saat</td></tr>
-                  <tr><td class="fw-bold">Ödeme Yöntemi:</td><td>${payment.cashRegisterDetailId ? 'Kasa' : 'Banka Transferi'}</td></tr>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mb-3">
-          <div class="card-header bg-success text-white">
-            <h5 class="mb-0">Maaş Hesaplama Detayı</h5>
-          </div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-6">
-                <h6 class="text-success">Kazanlar</h6>
-                <table class="table table-sm">
-                  <tr><td>Temel Maaş</td><td class="text-end">${payment.baseSalary.toLocaleString('tr-TR')} ₺</td></tr>
-                  ${payment.overtime > 0 ? `<tr><td>Mesai Ücreti</td><td class="text-end">${payment.overtime.toLocaleString('tr-TR')} ₺</td></tr>` : ''}
-                  ${payment.bonus > 0 ? `<tr><td>Prim</td><td class="text-end">${payment.bonus.toLocaleString('tr-TR')} ₺</td></tr>` : ''}
-                  ${payment.allowances > 0 ? `<tr><td>Yan Haklar</td><td class="text-end">${payment.allowances.toLocaleString('tr-TR')} ₺</td></tr>` : ''}
-                  <tr class="border-top fw-bold"><td>BRÜT MAAŞ</td><td class="text-end text-success">${payment.grossSalary.toLocaleString('tr-TR')} ₺</td></tr>
-                </table>
-              </div>
-              <div class="col-6">
-                <h6 class="text-danger">Kesintiler</h6>
-                <table class="table table-sm">
-                  ${payment.taxDeduction > 0 ? `<tr><td>Gelir Vergisi</td><td class="text-end">${payment.taxDeduction.toLocaleString('tr-TR')} ₺</td></tr>` : ''}
-                  ${payment.socialSecurityDeduction > 0 ? `<tr><td>SGK Kesintisi</td><td class="text-end">${payment.socialSecurityDeduction.toLocaleString('tr-TR')} ₺</td></tr>` : ''}
-                  ${payment.healthInsuranceDeduction > 0 ? `<tr><td>Sağlık Sigortası</td><td class="text-end">${payment.healthInsuranceDeduction.toLocaleString('tr-TR')} ₺</td></tr>` : ''}
-                  ${payment.otherDeductions > 0 ? `<tr><td>Diğer Kesintiler</td><td class="text-end">${payment.otherDeductions.toLocaleString('tr-TR')} ₺</td></tr>` : ''}
-                  <tr class="border-top fw-bold"><td>TOPLAM KESİNTİ</td><td class="text-end text-danger">${payment.totalDeductions.toLocaleString('tr-TR')} ₺</td></tr>
+                <table class="table table-borderless table-sm mb-0">
+                  <tr><td class="fw-bold small">Çalışılan:</td><td class="small">${payment.workDays} gün</td></tr>
+                  <tr><td class="fw-bold small">Mesai:</td><td class="small">${payment.overtimeHours} saat</td></tr>
                 </table>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="card mb-3 border-3 border-success">
-          <div class="card-body bg-light">
-            <div class="row align-items-center py-2">
-              <div class="col-6"><h3 class="mb-0 text-success">NET MAAŞ</h3></div>
-              <div class="col-6 text-end"><h1 class="mb-0 text-success fw-bold">${payment.netSalary.toLocaleString('tr-TR')} ₺</h1></div>
+        <div class="card mb-1">
+          <div class="card-header bg-success text-white py-1">
+            <h5 class="mb-0 fs-6">Maaş Detayı</h5>
+          </div>
+          <div class="card-body py-1 p-0">
+            <table class="table table-bordered mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="small">Kazanlar</th>
+                  <th class="small">Kesintiler</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="p-0">
+                    <table class="table table-sm table-borderless mb-0">
+                      <tr><td class="small">Temel Maaş</td><td class="text-end small">${payment.baseSalary.toLocaleString('tr-TR')} ₺</td></tr>
+                      ${payment.overtime > 0 ? `<tr><td class="small">Mesai</td><td class="text-end small">${payment.overtime.toLocaleString('tr-TR')} ₺</td></tr>` : ''}
+                      ${payment.bonus > 0 ? `<tr><td class="small">Prim</td><td class="text-end small">${payment.bonus.toLocaleString('tr-TR')} ₺</td></tr>` : ''}
+                      <tr class="border-top"><td class="fw-bold small">BRÜT</td><td class="text-end fw-bold text-success small">${payment.grossSalary.toLocaleString('tr-TR')} ₺</td></tr>
+                    </table>
+                  </td>
+                  <td class="p-0">
+                    <table class="table table-sm table-borderless mb-0">
+                      ${payment.taxDeduction > 0 ? `<tr><td class="small">Gelir Vergisi</td><td class="text-end small">${payment.taxDeduction.toLocaleString('tr-TR')} ₺</td></tr>` : ''}
+                      ${payment.socialSecurityDeduction > 0 ? `<tr><td class="small">SGK</td><td class="text-end small">${payment.socialSecurityDeduction.toLocaleString('tr-TR')} ₺</td></tr>` : ''}
+                      ${payment.healthInsuranceDeduction > 0 ? `<tr><td class="small">Sağlık</td><td class="text-end small">${payment.healthInsuranceDeduction.toLocaleString('tr-TR')} ₺</td></tr>` : ''}
+                      ${payment.otherDeductions > 0 ? `<tr><td class="small">Diğer</td><td class="text-end small">${payment.otherDeductions.toLocaleString('tr-TR')} ₺</td></tr>` : ''}
+                      <tr class="border-top"><td class="fw-bold small">TOPLAM</td><td class="text-end fw-bold text-danger small">${payment.totalDeductions.toLocaleString('tr-TR')} ₺</td></tr>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card mb-1 border-2 border-success">
+          <div class="card-body bg-light py-1">
+            <div class="row align-items-center">
+              <div class="col-6">
+                <h3 class="mb-0 text-success fs-5">NET MAAŞ</h3>
+              </div>
+              <div class="col-6 text-end">
+                <h1 class="mb-0 text-success fw-bold" style="font-size: 1.4rem;">${payment.netSalary.toLocaleString('tr-TR')} ₺</h1>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="card mb-4">
-          <div class="card-header bg-warning">
-            <h6 class="mb-0">İşlem Bilgileri</h6>
+        <div class="card mb-2">
+          <div class="card-header bg-warning py-1">
+            <h6 class="mb-0 fs-6">İşlem Bilgileri</h6>
           </div>
-          <div class="card-body">
-            <div class="row">
+          <div class="card-body py-1">
+            <div class="row small">
               <div class="col-6">
-                <small><strong>Belge No:</strong> ${payment.id.substring(0, 8).toUpperCase()}</small><br>
-                <small><strong>Ödeme Yöntemi:</strong> ${payment.cashRegisterDetailId ? 'Kasa Ödemesi' : 'Banka Transferi'}</small>
+                <small><strong>Belge:</strong> ${payment.id.substring(0, 8).toUpperCase()}</small><br>
+                <small><strong>Yöntem:</strong> ${payment.cashRegisterDetailId ? 'Kasa' : 'Banka'}</small>
               </div>
               <div class="col-6">
-                <small><strong>İşlemi Yapan:</strong> ${this.auth.user.name}</small><br>
-                <small><strong>Düzenlenme Tarihi:</strong> ${this.formatDateTurkish(payment.paymentDate)}</small>
+                <small><strong>İşlem:</strong> ${this.auth.user.name}</small><br>
+                <small><strong>Tarih:</strong> ${this.formatDateTurkish(payment.paymentDate)}</small>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="row mt-5 pt-4 mb-4">
+        <div class="row mb-2">
           <div class="col-4 text-center">
-            <div class="signature-line"></div>
-            <p class="mb-0 mt-2 fw-bold">Çalışan İmzası</p>
-            <small class="text-muted">${emp.name}</small>
+            <div class="signature-box">
+              <div class="signature-line"></div>
+              <p class="mb-0 mt-1 small fw-bold">Çalışan</p>
+            </div>
           </div>
           <div class="col-4 text-center">
-            <div class="signature-line"></div>
-            <p class="mb-0 mt-2 fw-bold">İnsan Kaynakları</p>
+            <div class="signature-box">
+              <div class="signature-line"></div>
+              <p class="mb-0 mt-1 small fw-bold">İK</p>
+            </div>
           </div>
           <div class="col-4 text-center">
-            <div class="signature-line"></div>
-            <p class="mb-0 mt-2 fw-bold">İşveren / Şirket Yetkilisi</p>
+            <div class="signature-box">
+              <div class="signature-line"></div>
+              <p class="mb-0 mt-1 small fw-bold">İşveren</p>
+            </div>
           </div>
         </div>
 
-        <div class="border-top pt-3 mt-4">
+        <div class="border-top pt-1 mt-1">
           <div class="row">
-            <div class="col-6"><small class="text-muted">Baskı Tarihi: ${this.formatDateTurkish(this.getToday())}</small></div>
-            <div class="col-6 text-end"><small class="text-muted">Bu belge elektronik ortamda oluşturulmuş olup geçerlidir.</small></div>
+            <div class="col-6">
+              <p class="mb-0 small text-muted">
+                <i class="fa-solid fa-clock me-1"></i>
+                Baskı: ${this.formatDateTurkish(this.getToday())}
+              </p>
+            </div>
+            <div class="col-6 text-end">
+              <p class="mb-0 small text-muted">
+                <i class="fa-solid fa-file-alt me-1"></i>
+                Elektronik belge
+              </p>
+            </div>
           </div>
         </div>
       </div>
