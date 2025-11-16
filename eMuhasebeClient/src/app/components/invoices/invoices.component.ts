@@ -121,7 +121,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.swal.callSwal("Faturayı Sil?",`${model.invoiceNumber} numaralı faturayı silmek istiyor musunuz?`,()=> {
       this.http.post<string>("Invoices/DeleteById",{id: model.id},(res)=> {
         this.getAll();
-        this.swal.callToast(res,"info");
+        this.swal.callToast("Fatura silindi","info");
       });
     })
   }

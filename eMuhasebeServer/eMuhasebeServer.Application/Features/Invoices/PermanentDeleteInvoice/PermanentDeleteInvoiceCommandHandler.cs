@@ -1,5 +1,6 @@
 using eMuhasebeServer.Application.Services;
 using eMuhasebeServer.Domain.Entities;
+using eMuhasebeServer.Domain.Enums;
 using eMuhasebeServer.Domain.Repositories;
 using GenericRepository;
 using MediatR;
@@ -12,6 +13,7 @@ internal sealed class PermanentDeleteInvoiceCommandHandler(
     IInvoiceRepository invoiceRepository,
     ICustomerDetailRepository customerDetailRepository,
     IProductDetailRepository productDetailRepository,
+    ICashRegisterDetailRepository cashRegisterDetailRepository,
     IUnitOfWork unitOfWork,
     ICacheService cacheService) : IRequestHandler<PermanentDeleteInvoiceCommand, Result<string>>
 {
@@ -44,6 +46,30 @@ internal sealed class PermanentDeleteInvoiceCommandHandler(
             customerDetailRepository.Delete(customerDetail);
         }
 
+        // Permanently delete any invoice payments
+        List<CustomerDetail> invoicePayments = await customerDetailRepository
+            .GetAll()
+            .IgnoreQueryFilters()
+            .Where(p => p.InvoiceId == request.Id && p.Type == CustomerDetailTypeEnum.InvoicePayment && p.IsDeleted)
+            .ToListAsync(cancellationToken);
+
+        if (invoicePayments.Any())
+        {
+            customerDetailRepository.DeleteRange(invoicePayments);
+        }
+
+        // Permanently delete any cash register details associated with this invoice or its payments
+        List<CashRegisterDetail> cashRegisterDetails = await cashRegisterDetailRepository
+            .GetAll()
+            .IgnoreQueryFilters()
+            .Where(p => p.Description.Contains($"{invoice.InvoiceNumber} Numaralı Fatura") && p.IsDeleted)
+            .ToListAsync(cancellationToken);
+
+        if (cashRegisterDetails.Any())
+        {
+            cashRegisterDetailRepository.DeleteRange(cashRegisterDetails);
+        }
+
         // Permanently delete the product details
         List<ProductDetail> productDetails = await productDetailRepository
             .GetAll()
@@ -62,6 +88,7 @@ internal sealed class PermanentDeleteInvoiceCommandHandler(
         cacheService.Remove(cacheService.GetCompanyCacheKey("invoices"));
         cacheService.Remove(cacheService.GetCompanyCacheKey("customers"));
         cacheService.Remove(cacheService.GetCompanyCacheKey("products"));
+        cacheService.Remove(cacheService.GetCompanyCacheKey("cashRegisters"));
 
         return "Fatura kaydı kalıcı olarak silindi";
     }

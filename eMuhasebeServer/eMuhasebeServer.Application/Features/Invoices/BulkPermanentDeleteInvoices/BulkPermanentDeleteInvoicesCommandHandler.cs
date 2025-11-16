@@ -1,5 +1,6 @@
 using eMuhasebeServer.Application.Services;
 using eMuhasebeServer.Domain.Entities;
+using eMuhasebeServer.Domain.Enums;
 using eMuhasebeServer.Domain.Repositories;
 using GenericRepository;
 using MediatR;
@@ -12,6 +13,7 @@ internal sealed class BulkPermanentDeleteInvoicesCommandHandler(
     IInvoiceRepository invoiceRepository,
     ICustomerDetailRepository customerDetailRepository,
     IProductDetailRepository productDetailRepository,
+    ICashRegisterDetailRepository cashRegisterDetailRepository,
     IUnitOfWork unitOfWork,
     ICacheService cacheService) : IRequestHandler<BulkPermanentDeleteInvoicesCommand, Result<string>>
 {
@@ -32,6 +34,8 @@ internal sealed class BulkPermanentDeleteInvoicesCommandHandler(
         // Collect all customer detail IDs and product detail IDs to permanently delete
         List<Guid> customerDetailIds = new List<Guid>();
         List<Guid> productDetailIds = new List<Guid>();
+        List<Guid> invoicePaymentIds = new List<Guid>();
+        List<Guid> cashRegisterDetailIds = new List<Guid>();
 
         foreach (var invoice in invoices)
         {
@@ -44,6 +48,24 @@ internal sealed class BulkPermanentDeleteInvoicesCommandHandler(
             {
                 customerDetailIds.Add(customerDetail.Id);
             }
+
+            // Find invoice payments
+            List<CustomerDetail> invoicePayments = await customerDetailRepository
+                .GetAll()
+                .IgnoreQueryFilters()
+                .Where(p => p.InvoiceId == invoice.Id && p.Type == CustomerDetailTypeEnum.InvoicePayment && p.IsDeleted)
+                .ToListAsync(cancellationToken);
+
+            invoicePaymentIds.AddRange(invoicePayments.Select(p => p.Id));
+
+            // Find cash register details
+            List<CashRegisterDetail> cashRegisterDetails = await cashRegisterDetailRepository
+                .GetAll()
+                .IgnoreQueryFilters()
+                .Where(p => p.Description.Contains($"{invoice.InvoiceNumber} Numaralı Fatura") && p.IsDeleted)
+                .ToListAsync(cancellationToken);
+
+            cashRegisterDetailIds.AddRange(cashRegisterDetails.Select(crd => crd.Id));
 
             List<ProductDetail> productDetails = await productDetailRepository
                 .GetAll()
@@ -69,6 +91,36 @@ internal sealed class BulkPermanentDeleteInvoicesCommandHandler(
             }
         }
 
+        // Permanently delete invoice payments
+        if (invoicePaymentIds.Any())
+        {
+            List<CustomerDetail> invoicePayments = await customerDetailRepository
+                .GetAll()
+                .IgnoreQueryFilters()
+                .Where(p => invoicePaymentIds.Contains(p.Id))
+                .ToListAsync(cancellationToken);
+            
+            if (invoicePayments.Any())
+            {
+                customerDetailRepository.DeleteRange(invoicePayments);
+            }
+        }
+
+        // Permanently delete cash register details
+        if (cashRegisterDetailIds.Any())
+        {
+            List<CashRegisterDetail> cashRegisterDetails = await cashRegisterDetailRepository
+                .GetAll()
+                .IgnoreQueryFilters()
+                .Where(p => cashRegisterDetailIds.Contains(p.Id))
+                .ToListAsync(cancellationToken);
+            
+            if (cashRegisterDetails.Any())
+            {
+                cashRegisterDetailRepository.DeleteRange(cashRegisterDetails);
+            }
+        }
+
         // Permanently delete the product details
         if (productDetailIds.Any())
         {
@@ -90,6 +142,7 @@ internal sealed class BulkPermanentDeleteInvoicesCommandHandler(
         cacheService.Remove(cacheService.GetCompanyCacheKey("invoices"));
         cacheService.Remove(cacheService.GetCompanyCacheKey("customers"));
         cacheService.Remove(cacheService.GetCompanyCacheKey("products"));
+        cacheService.Remove(cacheService.GetCompanyCacheKey("cashRegisters"));
 
         return $"{invoices.Count} fatura kalıcı olarak silindi";
     }

@@ -10,6 +10,7 @@ namespace eMuhasebeServer.Application.Features.Giderler.BulkPermanentDeleteGider
 
 internal sealed class BulkPermanentDeleteGiderlerCommandHandler(
     IGiderRepository giderRepository,
+    ICashRegisterRepository cashRegisterRepository,
     ICashRegisterDetailRepository cashRegisterDetailRepository,
     IUnitOfWork unitOfWork,
     ICacheService cacheService) : IRequestHandler<BulkPermanentDeleteGiderlerCommand, Result<string>>
@@ -26,6 +27,36 @@ internal sealed class BulkPermanentDeleteGiderlerCommandHandler(
         if (giderler.Count == 0)
         {
             return Result<string>.Failure("Silinecek gider bulunamadı");
+        }
+
+        // Process each expense to handle payments
+        foreach (var gider in giderler)
+        {
+            // Find all cash register details related to payments for this expense
+            List<CashRegisterDetail> paymentDetails = await cashRegisterDetailRepository
+                .GetAll()
+                .IgnoreQueryFilters()
+                .Where(p => p.Description.Contains($"{gider.Name} Gideri Ödemesi") && p.IsDeleted == false)
+                .ToListAsync(cancellationToken);
+
+            // Reverse all payments made for this expense
+            foreach (var paymentDetail in paymentDetails)
+            {
+                CashRegister? paymentCashRegister = await cashRegisterRepository
+                    .GetAll()
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(p => p.Id == paymentDetail.CashRegisterId, cancellationToken);
+                    
+                if (paymentCashRegister is not null)
+                {
+                    // Reverse the payment by adding back the withdrawal amount
+                    paymentCashRegister.WithdrawalAmount -= paymentDetail.WithdrawalAmount;
+                    cashRegisterRepository.Update(paymentCashRegister);
+                }
+
+                // Permanently delete the payment detail
+                cashRegisterDetailRepository.Delete(paymentDetail);
+            }
         }
 
         // If there were cash register details associated with these expenses, we need to permanently delete them too
@@ -52,6 +83,7 @@ internal sealed class BulkPermanentDeleteGiderlerCommandHandler(
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         cacheService.Remove(cacheService.GetCompanyCacheKey("giderler"));
+        cacheService.Remove(cacheService.GetCompanyCacheKey("cashRegisters"));
 
         return $"{giderler.Count} gider kalıcı olarak silindi";
     }

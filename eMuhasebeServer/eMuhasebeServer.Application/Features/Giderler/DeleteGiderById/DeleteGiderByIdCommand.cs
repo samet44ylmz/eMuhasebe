@@ -3,6 +3,7 @@ using eMuhasebeServer.Domain.Entities;
 using eMuhasebeServer.Domain.Repositories;
 using GenericRepository;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using TS.Result;
 
 namespace eMuhasebeServer.Application.Features.Giderler.DeleteGiderById;
@@ -25,6 +26,31 @@ internal sealed class DeleteGiderByIdCommandHandler(
             return Result<string>.Failure("Gider bulunamadı");
         }
 
+        // Find all cash register details related to payments for this expense
+        List<CashRegisterDetail> paymentDetails = await cashRegisterDetailRepository
+            .GetAll()
+            .Where(p => p.Description.Contains($"{gider.Name} Gideri Ödemesi"))
+            .ToListAsync(cancellationToken);
+
+        // Reverse all payments made for this expense
+        foreach (var paymentDetail in paymentDetails)
+        {
+            CashRegister? paymentCashRegister = await cashRegisterRepository
+                .GetByExpressionWithTrackingAsync(p => p.Id == paymentDetail.CashRegisterId, cancellationToken);
+                
+            if (paymentCashRegister is not null)
+            {
+                // Reverse the payment by adding back the withdrawal amount
+                paymentCashRegister.WithdrawalAmount -= paymentDetail.WithdrawalAmount;
+                cashRegisterRepository.Update(paymentCashRegister);
+            }
+
+            // Mark the payment detail as deleted
+            paymentDetail.IsDeleted = true;
+            cashRegisterDetailRepository.Update(paymentDetail);
+        }
+
+        // Handle the initial cash register detail when the expense was created
         if (gider.CashRegisterDetailId is not null)
         {
             CashRegisterDetail? detail = await cashRegisterDetailRepository.GetByExpressionWithTrackingAsync(p => p.Id == gider.CashRegisterDetailId, cancellationToken);

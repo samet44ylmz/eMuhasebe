@@ -11,8 +11,10 @@ export class CashRegisterDetailPipe implements PipeTransform {
        if(!search) return value;
    
        return value.filter(p=> 
-         p.description.toLocaleLowerCase().includes(search.toLocaleLowerCase()) 
-         
+         p.description.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
+         p.date.includes(search) ||
+         p.depositAmount.toString().includes(search) ||
+         p.withdrawalAmount.toString().includes(search)
        );
      }
 
