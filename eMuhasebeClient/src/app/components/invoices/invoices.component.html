@@ -27,10 +27,10 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Ürün Kodları</th>  <!-- Changed from "Fatura No" to "Ürün Kodları" -->
+                        <th>Fatura No</th>
+                        <th>Ürünler</th>
                         <th>Tarih</th>
                         <th>Müşteri</th>
-                        <th>Ürünler</th>
                         <th>Tutar</th>
                         <th>Ödenen</th>
                         <th>Kalan</th>
@@ -42,14 +42,20 @@
                     @for(data of getFilteredInvoices() | invoice: search; track data.id){
                     <tr>
                         <td>{{$index + 1}}</td>
-                        <td>{{getProductCodes(data)}}</td>  <!-- Show product codes instead of invoice number -->
-                        <td>{{data.date | date: 'dd.MM.yyyy'}}</td>
-                        <td>{{data.customer.name}}</td>
+                        <td>{{data.invoiceNumber}}</td>
                         <td>
                             @for(detail of data.details; track detail; let first = $first; let last = $last) {
-                                {{detail.product.name}} - {{detail.product.description}}@if(!last) {, }
+                                <div>
+                                    {{detail.product.productCode && detail.product.productCode.trim() !== '' ? detail.product.productCode + ' - ' + detail.product.name : detail.product.name}}
+                                    @if(detail.product.description && detail.product.description.trim() !== '') {
+                                        <br><small class="text-muted">{{detail.product.description}}</small>
+                                    }
+                                </div>
+                                @if(!last) {<br>}
                             }
                         </td>
+                        <td>{{data.date | date: 'dd.MM.yyyy'}}</td>
+                        <td>{{data.customer.name}}</td>
                         <td>{{data.amount | trCurrency: '₺': true}}</td>
                         <td>{{data.paidAmount | trCurrency: '₺': true}}</td>
                         <td>

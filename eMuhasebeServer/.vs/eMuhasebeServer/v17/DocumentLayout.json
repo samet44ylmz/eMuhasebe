@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\eMuhasebe\\eMuhasebeServer\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{4B774E4A-FD54-4715-8905-12B9F1B2332F}|eMuhasebeServer.Infrastructure\\eMuhasebeServer.Infrastructure.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.infrastructure\\dependencyinjection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4B774E4A-FD54-4715-8905-12B9F1B2332F}|eMuhasebeServer.Infrastructure\\eMuhasebeServer.Infrastructure.csproj|solutionrelative:emuhasebeserver.infrastructure\\dependencyinjection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4B774E4A-FD54-4715-8905-12B9F1B2332F}|eMuhasebeServer.Infrastructure\\eMuhasebeServer.Infrastructure.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.infrastructure\\services\\companyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4B774E4A-FD54-4715-8905-12B9F1B2332F}|eMuhasebeServer.Infrastructure\\eMuhasebeServer.Infrastructure.csproj|solutionrelative:emuhasebeserver.infrastructure\\services\\companyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{5AFA4DB2-49F6-4604-A694-1E5E7B91FAA2}|eMuhasebeServer.WebAPI\\eMuhasebeServer.WebAPI.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.webapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{5AFA4DB2-49F6-4604-A694-1E5E7B91FAA2}|eMuhasebeServer.WebAPI\\eMuhasebeServer.WebAPI.csproj|solutionrelative:emuhasebeserver.webapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
@@ -62,7 +70,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -70,7 +78,32 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DependencyInjection.cs",
+              "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Infrastructure\\DependencyInjection.cs",
+              "RelativeDocumentMoniker": "eMuhasebeServer.Infrastructure\\DependencyInjection.cs",
+              "ToolTip": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Infrastructure\\DependencyInjection.cs",
+              "RelativeToolTip": "eMuhasebeServer.Infrastructure\\DependencyInjection.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAB0AAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T17:35:57.534Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "CompanyService.cs",
+              "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Infrastructure\\Services\\CompanyService.cs",
+              "RelativeDocumentMoniker": "eMuhasebeServer.Infrastructure\\Services\\CompanyService.cs",
+              "ToolTip": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Infrastructure\\Services\\CompanyService.cs",
+              "RelativeToolTip": "eMuhasebeServer.Infrastructure\\Services\\CompanyService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T17:35:40.686Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "LoginCommandHandler.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Auth\\Login\\LoginCommandHandler.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\Auth\\Login\\LoginCommandHandler.cs",
@@ -82,20 +115,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.WebAPI\\appsettings.json",
               "RelativeDocumentMoniker": "eMuhasebeServer.WebAPI\\appsettings.json",
               "ToolTip": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.WebAPI\\appsettings.json",
               "RelativeToolTip": "eMuhasebeServer.WebAPI\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAqwBEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-11-14T13:09:38.954Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-14T13:09:38.954Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "20251114085820_mg16.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Infrastructure\\Migrations\\20251114085820_mg16.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Infrastructure\\Migrations\\20251114085820_mg16.cs",
@@ -107,7 +139,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "CreateProductCommand.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Products\\CreateProduct\\CreateProductCommand.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\Products\\CreateProduct\\CreateProductCommand.cs",
@@ -119,7 +151,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "20251114084712_mg15.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Infrastructure\\Migrations\\20251114084712_mg15.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Infrastructure\\Migrations\\20251114084712_mg15.cs",
@@ -131,7 +163,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "20251114084002_mg14.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Infrastructure\\Migrations\\20251114084002_mg14.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Infrastructure\\Migrations\\20251114084002_mg14.cs",
@@ -143,7 +175,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "UpdateEmployeeCommand.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Employees\\UpdateEmployee\\UpdateEmployeeCommand.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\Employees\\UpdateEmployee\\UpdateEmployeeCommand.cs",
@@ -155,7 +187,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "CreateEployeeCommand.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Employees\\CreateEmployee\\CreateEployeeCommand.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\Employees\\CreateEmployee\\CreateEployeeCommand.cs",
@@ -167,7 +199,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "CreateEmployeeComandHandler.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Employees\\CreateEmployee\\CreateEmployeeComandHandler.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\Employees\\CreateEmployee\\CreateEmployeeComandHandler.cs",
@@ -179,7 +211,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "CreateInvoiceCommand.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Invoices\\CreateInvoice\\CreateInvoiceCommand.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\Invoices\\CreateInvoice\\CreateInvoiceCommand.cs",
@@ -191,7 +223,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "GetAllGiderQueryHandler.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Giderler\\GetAllGiderler\\GetAllGiderQueryHandler.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\Giderler\\GetAllGiderler\\GetAllGiderQueryHandler.cs",
@@ -203,7 +235,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "UpdateUserCommand.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Users\\UpdateUser\\UpdateUserCommand.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\Users\\UpdateUser\\UpdateUserCommand.cs",
@@ -215,7 +247,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "CreateUserCommand.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Users\\CreateUser\\CreateUserCommand.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\Users\\CreateUser\\CreateUserCommand.cs",
