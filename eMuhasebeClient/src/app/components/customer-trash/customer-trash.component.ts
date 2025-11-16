@@ -57,10 +57,10 @@ export class CustomerTrashComponent {
   }
 
   restoreCustomer(customer: CustomerModel) {
-    this.swal.callSwal("Geri Yükle?", `${customer.name} carisini geri yüklemek istiyor musunuz?`, () => {
+    this.swal.callSwal("Geri Yükle?", `${customer.name} Müşterisini geri yüklemek istiyor musunuz?`, () => {
       this.http.post<string>("Customers/Restore", { id: customer.id }, (res) => {
         // Improve notification for restore operation
-        this.swal.callToast("Cari başarıyla geri yüklendi", "success");
+        this.swal.callToast("Müşteri başarıyla geri yüklendi", "success");
         this.getAllDeletedCustomers();
         this.selectedCustomerIds = [];
       });
@@ -68,10 +68,10 @@ export class CustomerTrashComponent {
   }
 
   permanentDeleteCustomer(customer: CustomerModel) {
-    this.swal.callSwal("Kalıcı Olarak Sil?", `${customer.name} carisini kalıcı olarak silmek istiyor musunuz? Bu işlem geri alınamaz!`, () => {
+    this.swal.callSwal("Kalıcı Olarak Sil?", `${customer.name} Müşterisini kalıcı olarak silmek istiyor musunuz? Bu işlem geri alınamaz!`, () => {
       this.http.post<string>("Customers/PermanentDelete", { id: customer.id }, (res) => {
         // Improve notification for delete operation
-        this.swal.callToast("Cari kalıcı olarak silindi", "success");
+        this.swal.callToast("Müşteri kalıcı olarak silindi", "success");
         this.getAllDeletedCustomers();
         this.selectedCustomerIds = [];
       });
@@ -80,14 +80,14 @@ export class CustomerTrashComponent {
 
   bulkDelete() {
     if (this.selectedCustomerIds.length === 0) {
-      this.swal.callToast("Lütfen silmek istediğiniz carileri seçin", "error");
+      this.swal.callToast("Lütfen silmek istediğiniz müşterileri seçin", "error");
       return;
     }
 
-    this.swal.callSwal("Kalıcı Olarak Sil?", `Seçili ${this.selectedCustomerIds.length} cariyi kalıcı olarak silmek istiyor musunuz? Bu işlem geri alınamaz!`, () => {
+    this.swal.callSwal("Kalıcı Olarak Sil?", `Seçili ${this.selectedCustomerIds.length} müşteriyi kalıcı olarak silmek istiyor musunuz? Bu işlem geri alınamaz!`, () => {
       this.http.post<string>("Customers/BulkPermanentDelete", { ids: this.selectedCustomerIds }, (res) => {
         // Improve notification for bulk delete operation
-        this.swal.callToast(`${this.selectedCustomerIds.length} cari kalıcı olarak silindi`, "success");
+        this.swal.callToast(`${this.selectedCustomerIds.length} müşteri kalıcı olarak silindi`, "success");
         this.getAllDeletedCustomers();
         this.selectedCustomerIds = [];
       });

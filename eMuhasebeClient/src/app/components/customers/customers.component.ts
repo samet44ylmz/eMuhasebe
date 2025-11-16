@@ -71,7 +71,7 @@ private routerSubscription: Subscription | undefined;
     
     // Manual validation checks
     if (!this.createModel.name || this.createModel.name.trim().length < 2) {
-      this.swal.callToast("Cari adı en az 2 karakter olmalıdır", "error");
+      this.swal.callToast("Müşteri adı en az 2 karakter olmalıdır", "error");
       return;
     }
     
@@ -87,7 +87,7 @@ private routerSubscription: Subscription | undefined;
   }
 
   deleteById(model: CustomerModel){
-    this.swal.callSwal("Cariyi Sil?",`${model.name} carisini silmek istiyor musunuz?`,()=> {
+    this.swal.callSwal("Müşteriyi Sil?",`${model.name} müşterisini silmek istiyor musunuz?`,()=> {
       this.http.post<string>("Customers/DeleteById",{id: model.id},(res)=> {
         this.getAll();
         this.swal.callToast(res,"info");
@@ -109,7 +109,7 @@ private routerSubscription: Subscription | undefined;
     
     // Manual validation checks
     if (!this.updateModel.name || this.updateModel.name.trim().length < 2) {
-      this.swal.callToast("Cari adı en az 2 karakter olmalıdır", "error");
+      this.swal.callToast("Müşteri adı en az 2 karakter olmalıdır", "error");
       return;
     }
     
