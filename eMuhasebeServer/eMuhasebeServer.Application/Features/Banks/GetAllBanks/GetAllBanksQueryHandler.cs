@@ -22,7 +22,7 @@ internal sealed class GetAllBanksQueryHandler(
         {
             banks = await bankRepository.GetAll().OrderBy(p => p.Name).ToListAsync(cancellationToken);
 
-            cacheService.Set(cacheKey, banks);
+            cacheService.Set(cacheKey, "banks");
         }
         return banks;
     }

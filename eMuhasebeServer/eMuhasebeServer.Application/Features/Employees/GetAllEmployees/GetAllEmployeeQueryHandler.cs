@@ -24,7 +24,7 @@ internal sealed class GetAllEmployeeQueryHandler(
              .OrderBy(p => p.Name)
              .ToListAsync(cancellationToken);
 
-            cacheService.Set(cacheKey, employees);
+            cacheService.Set(cacheKey, "employees");
         }
 
         return employees;

@@ -18,7 +18,7 @@ internal sealed class GetAllProductsQueryHandler(
         if (products is null)
         {
             products = await productRepository.GetAll().OrderBy(p => p.Name).ToListAsync(cancellationToken);
-            cacheService.Set(cacheKey, products);
+            cacheService.Set(cacheKey, "products");
         }
 
         return products;

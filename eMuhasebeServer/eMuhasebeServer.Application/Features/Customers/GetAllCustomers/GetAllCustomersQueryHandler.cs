@@ -19,7 +19,7 @@ internal sealed class GetAllCustomersQueryHandler(
         if (customers is null)
         {
             customers = await customerRepository.GetAll().OrderBy(p => p.Name).ToListAsync(cancellationToken);
-            cacheService.Set(cacheKey, customers);
+            cacheService.Set(cacheKey, "customers");
         }
 
         return customers;

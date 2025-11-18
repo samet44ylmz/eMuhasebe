@@ -29,7 +29,7 @@ internal sealed class GetAllUsersQueryHandler(
             .OrderBy(p => p.FirstName)
             .ToListAsync(cancellationToken);
 
-            cacheService.Set(cacheKey, users);
+            cacheService.Set(cacheKey, "users");
         }
 
         return users;

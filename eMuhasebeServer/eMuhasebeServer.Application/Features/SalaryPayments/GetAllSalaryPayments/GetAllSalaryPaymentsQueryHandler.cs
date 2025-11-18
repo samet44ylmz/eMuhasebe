@@ -22,7 +22,7 @@ internal sealed class GetAllSalaryPaymentsQueryHandler(
         {
             salaryPayments = await salaryPaymentRepository.GetAll().OrderByDescending(p => p.PaymentDate).ToListAsync(cancellationToken);
 
-            cacheService.Set(cacheKey, salaryPayments);
+            cacheService.Set(cacheKey, "salaryPayments");
         }
         return salaryPayments;
     }

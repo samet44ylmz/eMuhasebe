@@ -31,7 +31,7 @@ internal sealed class GetAllInvoicesQueryHandler(
                 .OrderBy(p => p.Date)
                 .ToListAsync(cancellationToken);
 
-            cacheService.Set(key, invoices);
+            cacheService.Set(key, "invoices");
         }
         else
         {

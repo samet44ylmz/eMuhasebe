@@ -22,7 +22,7 @@ internal sealed class GetAllGiderQueryHandler(
         {
             giderler = await giderRepository.GetAll().OrderByDescending(p => p.Date).ToListAsync(cancellationToken);
 
-            cacheService.Set(cacheKey, giderler);
+            cacheService.Set(cacheKey, "giderler");
         }
         return giderler;
     }
