@@ -33,6 +33,11 @@ export class EmployeesComponent implements OnInit, OnDestroy {
   cashRegisters: CashRegisterModel[] = [];
   selectedPayment: SalaryPaymentModel | null = null;
   
+  // Salary payments pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalSalaryPayments: number = 0;
+  
   // Multi-month print
   printMonthCount: number = 1;
   printStartMonth: string = "";
@@ -205,6 +210,13 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     this.createSalaryModel.baseSalary = model.salary; // Full salary for 30 days
     this.calculateSalary();
     
+    // Set to last page when opening salary payments
+    setTimeout(() => {
+      if (this.totalSalaryPayments > 0) {
+        this.currentPage = this.getTotalPages();
+      }
+    }, 100);
+    
     // Open modal with fallback
     setTimeout(() => {
       const modal = this.getModalInstance('salaryPaymentsModal');
@@ -214,7 +226,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
         // Fallback method
         this.salaryPaymentsModalTriggerBtn?.nativeElement.click();
       }
-    }, 100);
+    }, 150);
   }
 
   viewEmployee(model: EmployeeModel){
@@ -293,7 +305,28 @@ export class EmployeesComponent implements OnInit, OnDestroy {
   loadSalaryPaymentsForEmployee(employeeId: string): void {
     this.http.post<SalaryPaymentModel[]>("SalaryPayments/GetAll", {}, (res) => {
       this.salaryPayments = res.filter(p => p.employeeId === employeeId);
+      this.totalSalaryPayments = this.salaryPayments.length;
+      // Set to last page after loading data
+      if (this.totalSalaryPayments > 0) {
+        this.currentPage = this.getTotalPages();
+      } else {
+        this.currentPage = 1;
+      }
     });
+  }
+
+  getPaginatedSalaryPayments(): SalaryPaymentModel[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.salaryPayments.slice(startIndex, endIndex);
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+  }
+
+  getTotalPages(): number {
+    return Math.ceil(this.totalSalaryPayments / this.itemsPerPage) || 1;
   }
 
   getAllCashRegisters(): void {
@@ -355,6 +388,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
         if (this.selectedEmployee) {
           this.loadSalaryPaymentsForEmployee(this.selectedEmployee.id);
         }
+        // Stay on current page after adding new payment
       });
     }
   }
@@ -366,6 +400,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
           this.loadSalaryPaymentsForEmployee(this.selectedEmployee.id);
         }
         this.swal.callToast(res, "info");
+        // Stay on current page after deleting a payment
       });
     });
   }

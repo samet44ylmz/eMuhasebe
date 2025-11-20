@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild, OnDestroy, OnInit } from '@angular/co
 import { Router, NavigationEnd } from '@angular/router';
 import { SharedModule } from '../../modules/shared.module';
 import { InvoicePipe } from '../../pipes/invoice.pipe';
+import { ProductPipe } from '../../pipes/product.pipe';
 import { DatePipe } from '@angular/common';
 import { InvoiceModel } from '../../models/invoice.model';
 import { CustomerModel } from '../../models/customer.model';
@@ -17,7 +18,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-invoices',
   standalone: true,
-  imports: [SharedModule, InvoicePipe],
+  imports: [SharedModule, InvoicePipe, ProductPipe],
   templateUrl: './invoices.component.html',
   styleUrl: './invoices.component.css',
   providers: [DatePipe]
@@ -30,6 +31,10 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   products: ProductModel[] = [];
   cashRegisters: CashRegisterModel[] = [];
   search:string = "";
+  productSearch:string = "";
+  productSearchUpdate:string = "";
+  showProductDropdown: boolean = false;
+  showProductDropdownUpdate: boolean = false;
   p: number = 1;
   paymentAmount: number = 0;
   showOnlyUnpaid: boolean = false; // New property to toggle unpaid invoices filter
@@ -157,10 +162,41 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.createModel.productId = "";
     this.createModel.quantity = 0;
     this.createModel.price = 0;
+    this.productSearch = ""; // Clear product search after adding
   }
 
   removeDetailItem(index: number){
     this.createModel.details.splice(index,1);
+  }
+
+  // Method to handle product search input changes
+  onProductSearchChange(event: any) {
+    // This method can be used for additional logic if needed
+  }
+
+  // Method to handle product search focus
+  onProductSearchFocus() {
+    this.showProductDropdown = true;
+  }
+
+  // Method to handle product search blur
+  onProductSearchBlur() {
+    // Use a small delay to allow click events on dropdown items to register
+    setTimeout(() => {
+      this.showProductDropdown = false;
+    }, 200);
+  }
+
+  // Method to select a product from the dropdown
+  selectProduct(product: ProductModel) {
+    this.createModel.productId = product.id;
+    this.productSearch = product.productCode + " - " + product.name;
+    this.showProductDropdown = false;
+  }
+
+  // Method to handle product selection in create modal
+  onProductSelect(productId: string) {
+    this.createModel.productId = productId;
   }
 
   addDetailForUpdate(){
@@ -178,10 +214,36 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.updateModel.productId = "";
     this.updateModel.quantity = 0;
     this.updateModel.price = 0;
+    this.productSearchUpdate = ""; // Clear product search after adding
   }
 
   removeDetailItemForUpdate(index: number){
     this.updateModel.details.splice(index,1);
+  }
+
+  // Method to handle product search input changes for update modal
+  onProductSearchUpdateChange(event: any) {
+    // This method can be used for additional logic if needed
+  }
+
+  // Method to handle product search focus for update modal
+  onProductSearchUpdateFocus() {
+    this.showProductDropdownUpdate = true;
+  }
+
+  // Method to handle product search blur for update modal
+  onProductSearchUpdateBlur() {
+    // Use a small delay to allow click events on dropdown items to register
+    setTimeout(() => {
+      this.showProductDropdownUpdate = false;
+    }, 200);
+  }
+
+  // Method to select a product from the dropdown for update modal
+  selectProductForUpdate(product: ProductModel) {
+    this.updateModel.productId = product.id;
+    this.productSearchUpdate = product.productCode + " - " + product.name;
+    this.showProductDropdownUpdate = false;
   }
 
   // New method to get product codes for display

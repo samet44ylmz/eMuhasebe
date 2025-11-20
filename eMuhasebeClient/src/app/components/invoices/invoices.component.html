@@ -146,13 +146,17 @@
                         <div class="col-3">
                             <div class="form-group">
                                 <label>Ürün</label>
-                                <select class="form-control" [(ngModel)]="createModel.productId" [ngModelOptions]="{standalone:true}">
-                                    @for(product of products; track product){
-                                        <option [value]="product.id">
-                                            {{product.productCode}} - {{product.name}}
-                                        </option>
-                                    }
-                                </select>
+                                <div class="position-relative">
+                                    <input type="text" class="form-control" placeholder="Ürün ara..." [(ngModel)]="productSearch" [ngModelOptions]="{standalone:true}" (input)="onProductSearchChange($event)" (focus)="onProductSearchFocus()" (blur)="onProductSearchBlur()">
+                                    <div class="dropdown-menu w-100 mt-1" style="max-height: 200px; overflow-y: auto; position: absolute; top: 100%; z-index: 1000;" [class.show]="showProductDropdown && (productSearch || (products | product:productSearch).length > 0)">
+                                        @for(product of products | product:productSearch; track product){
+                                            <button type="button" class="dropdown-item" (click)="selectProduct(product)">
+                                                {{product.productCode}} - {{product.name}}
+                                            </button>
+                                        }
+                                    </div>
+                                    <input type="hidden" [(ngModel)]="createModel.productId" [ngModelOptions]="{standalone:true}">
+                                </div>
                                 <div class="invalid-feedback"></div>
                             </div> 
                         </div>
@@ -287,13 +291,17 @@
                         <div class="col-3">
                             <div class="form-group">
                                 <label>Ürün</label>
-                                <select class="form-control" [(ngModel)]="updateModel.productId" [ngModelOptions]="{standalone:true}">
-                                    @for(product of products; track product){
-                                        <option [value]="product.id">
-                                            {{product.productCode}} - {{product.name}}
-                                        </option>
-                                    }
-                                </select>
+                                <div class="position-relative">
+                                    <input type="text" class="form-control" placeholder="Ürün ara..." [(ngModel)]="productSearchUpdate" [ngModelOptions]="{standalone:true}" (input)="onProductSearchUpdateChange($event)" (focus)="onProductSearchUpdateFocus()" (blur)="onProductSearchUpdateBlur()">
+                                    <div class="dropdown-menu w-100 mt-1" style="max-height: 200px; overflow-y: auto; position: absolute; top: 100%; z-index: 1000;" [class.show]="showProductDropdownUpdate && (productSearchUpdate || (products | product:productSearchUpdate).length > 0)">
+                                        @for(product of products | product:productSearchUpdate; track product){
+                                            <button type="button" class="dropdown-item" (click)="selectProductForUpdate(product)">
+                                                {{product.productCode}} - {{product.name}}
+                                            </button>
+                                        }
+                                    </div>
+                                    <input type="hidden" [(ngModel)]="updateModel.productId" [ngModelOptions]="{standalone:true}">
+                                </div>
                                 <div class="invalid-feedback"></div>
                             </div> 
                         </div>
