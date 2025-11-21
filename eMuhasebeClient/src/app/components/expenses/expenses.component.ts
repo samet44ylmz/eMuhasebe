@@ -63,6 +63,9 @@ export class ExpensesComponent implements OnInit, OnDestroy {
     this.getAll();
     this.getCashRegisters();
     
+    // Initialize isCash to false by default
+    this.createModel.isCash = false;
+    
     // Subscribe to router events to refresh data when navigating back to this page
     this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -146,14 +149,25 @@ export class ExpensesComponent implements OnInit, OnDestroy {
 
   create(form: NgForm){
     if(form.valid){
-      // Removed payment-related validations to make expense creation work like invoice creation
-      // Expenses can be paid later through the payment modal
+      // Check if cash payment is selected but no cash register is chosen
+      if (this.createModel.isCash === true && (!this.createModel.cashRegisterId || this.createModel.cashRegisterId === '')) {
+        this.swal.callToast("Nakit ödeme seçildiğinde kasa seçilmelidir", "error");
+        return;
+      }
       
       this.http.post<string>("Giderler/Create", this.createModel, (res) => {
         this.swal.callToast(res);
+        
+        // Reset the form but keep the date
+        const currentDate = this.createModel.date;
         this.createModel = new CreateExpenseModel();
-        this.createModel.date = this.getToday();
+        this.createModel.date = currentDate;
+        this.createModel.isCash = false; // Reset to default value
+        
+        // Close the modal
         this.createModalCloseBtn?.nativeElement.click();
+        
+        // Refresh the expense list
         this.getAll();
       });
     }

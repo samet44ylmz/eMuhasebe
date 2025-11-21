@@ -158,6 +158,37 @@
                         <input type="text" required [(ngModel)]="createModel.price" class="form-control" name="price">
                         <div class="invalid-feedback"></div>
                     </div>
+
+                    <!-- Add cash payment option -->
+                    <div class="form-group mt-2">
+                        <label>Ödeme Şekli</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="isCash" id="isCashYes" [(ngModel)]="createModel.isCash" [value]="true">
+                            <label class="form-check-label" for="isCashYes">
+                                Nakit
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="isCash" id="isCashNo" [(ngModel)]="createModel.isCash" [value]="false">
+                            <label class="form-check-label" for="isCashNo">
+                                Diğer
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Cash register selection - only show when isCash is true -->
+                    <div class="form-group mt-2" *ngIf="createModel.isCash">
+                        <label>Kasa</label>
+                        <select class="form-control" name="cashRegisterId" [(ngModel)]="createModel.cashRegisterId" required>
+                            <option [value]="''">Seçiniz</option>
+                            @for(cashRegister of cashRegisters; track cashRegister){
+                            <option [value]="cashRegister.id">
+                                {{cashRegister.name}}
+                            </option>
+                            }
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-dark w-100">Kaydet</button>
