@@ -15,6 +15,38 @@
                     <i class="fa-solid fa-filter me-1"></i>
                     {{ showOnlyUnpaid ? 'Tüm Giderler' : 'Ödenmemiş Giderler' }}
                 </button>
+                <!-- Add print button -->
+                <button class="btn btn-info ms-2" (click)="printExpenses()">
+                    <i class="fa-solid fa-print me-1"></i>
+                    Listeyi Yazdır
+                </button>
+            </div>
+
+            <!-- Add category dropdown filter -->
+            <div class="col-3">
+                <select class="form-control" [(ngModel)]="selectedCategoryId" (change)="onCategoryFilterChange()">
+                    <option [ngValue]="null">Tüm Kategoriler</option>
+                    <option *ngFor="let category of categories" [ngValue]="category.value">
+                        {{category.name}}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row mt-2">
+            <!-- Add date filtering controls -->
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4">
+                        <input type="date" class="form-control" [(ngModel)]="startDate">
+                    </div>
+                    <div class="col-4">
+                        <input type="date" class="form-control" [(ngModel)]="endDate">
+                    </div>
+                    <div>
+                        <button class="btn btn-dark w-100" (click)="getAll()">Getir</button>
+                    </div>
+                </div>
             </div>
 
             <div class="col-3">
@@ -27,45 +59,48 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Gider Adı</th>
                         <th>Tarih</th>
+                        <th>Gider Adı</th>
                         <th>Kategori</th>
                         <th>Açıklama</th>
                         <th>Tutar</th>
                         <th>Ödenen</th>
                         <th>Kalan</th>
+                        <th>Durum</th>
                         <th>İşlemler</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @for(data of getFilteredExpenses() | expense: search; track data){
+                    @for(data of getFilteredExpenses()|expense: search ;track data){
                     <tr>
-                        <td>{{($index + 1)}}</td>
-                        <td>{{data.name}}</td>
+                        <td>{{$index + 1}}</td>
                         <td>{{data.date | date: 'dd.MM.yyyy'}}</td>
+                        <td>{{data.name}}</td>
                         <td>{{getCategoryName(data.categoryType.value)}}</td>
                         <td>{{data.description}}</td>
                         <td>{{data.price | trCurrency: '₺': true}}</td>
                         <td>{{data.paidAmount | trCurrency: '₺': true}}</td>
+                        <td>{{calculateRemainingAmount(data) | trCurrency: '₺': true}}</td>
                         <td>
-                            @if (data.price - data.paidAmount <= 0) {
-                                <span class="badge bg-success">Ödeme Yapıldı</span>
-                            } @else {
-                                {{(data.price - data.paidAmount) | trCurrency: '₺': true}}
+                            @if(calculateRemainingAmount(data) <= 0){
+                            <span class="badge bg-success">Ödendi</span>
+                            }@else{
+                            <span class="badge bg-warning">Bekliyor</span>
                             }
                         </td>
-                        <td class="d-flex">
-                            <button (click)="openPaymentModal(data)" class="btn btn-success btn-sm me-1" 
-                                    [disabled]="data.paidAmount >= data.price">
-                                <i class="fa-solid fa-money-bill-wave"></i>
-                            </button>
+                        <td>
                             <button data-toggle="modal" data-target="#updateModal" (click)="get(data)"
                                 class="btn btn-outline-primary btn-sm me-1">
                                 <i class="fa-solid fa-edit"></i>
                             </button>
-                            <button (click)="deleteById(data)" class="btn btn-outline-danger btn-sm">
+                            <button (click)="deleteById(data)" class="btn btn-outline-danger btn-sm me-1">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
+                            @if(calculateRemainingAmount(data) > 0){
+                            <button (click)="openPaymentModal(data)" class="btn btn-outline-success btn-sm">
+                                <i class="fa-solid fa-money-bill-wave"></i>
+                            </button>
+                            }
                         </td>
                     </tr>
                     }
@@ -74,80 +109,6 @@
         </div>
     </app-section>
 </app-blank>
-
-<!-- Payment Modal -->
-<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title fs-5">Ödeme Alma</h3>
-                <button type="button" #paymentModalCloseBtn class="btn btn-outline-danger" data-dismiss="modal" id="paymentModalCloseBtn">
-                    <i class="fa-solid fa-x"></i>
-                </button>
-            </div>
-            <form formValidate #paymentForm="ngForm" autocomplete="off" (ngSubmit)="payExpense(paymentForm)">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Gider Adı</label>
-                        <input type="text" class="form-control" disabled [value]="getExpenseName(paymentModel.expenseId)">
-                    </div>
-
-                    <div class="form-group mt-2">
-                        <label>Toplam Tutar</label>
-                        <input type="text" class="form-control" disabled [value]="getExpensePrice(paymentModel.expenseId) | trCurrency: '₺': true">
-                    </div>
-
-                    <div class="form-group mt-2">
-                        <label>Ödenen Tutar</label>
-                        <input type="text" class="form-control" disabled [value]="getExpensePaidAmount(paymentModel.expenseId) | trCurrency: '₺': true">
-                    </div>
-
-                    <div class="form-group mt-2">
-                        <label>Kalan Tutar</label>
-                        <input type="text" class="form-control" disabled [value]="getExpenseRemainingAmount(paymentModel.expenseId) | trCurrency: '₺': true">
-                    </div>
-
-                    <div class="form-group mt-2">
-                        <label>Ödenecek Tutar</label>
-                        <input type="number" required min="0.01" step="0.01" [(ngModel)]="paymentAmount" 
-                            class="form-control" name="paymentAmount" [max]="getExpenseRemainingAmount(paymentModel.expenseId)">
-                        <small class="form-text text-muted" *ngIf="paymentModel.expenseId">
-                            Maksimum: {{getExpenseRemainingAmount(paymentModel.expenseId) | trCurrency: '₺': true}}
-                        </small>
-                    </div>
-
-                    <div class="form-group mt-2">
-                        <label>Ödeme Tarihi</label>
-                        <input type="date" required [(ngModel)]="paymentModel.paymentDate" class="form-control" name="paymentDate">
-                    </div>
-
-                    <div class="form-group mt-2">
-                        <label>Kasa</label>
-                        <select class="form-control" [(ngModel)]="paymentModel.cashRegisterId" name="cashRegisterId">
-                            <option [value]="null">Kasa Seçiniz</option>
-                            @for(cashRegister of cashRegisters; track cashRegister.id){
-                            <option [value]="cashRegister.id">
-                                {{cashRegister.name}}
-                            </option>
-                            }
-                        </select>
-                    </div>
-
-                    <div class="form-group mt-2">
-                        <label>Açıklama</label>
-                        <textarea [(ngModel)]="paymentModel.description" class="form-control" name="description" rows="2"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success w-100">
-                        <i class="fa-solid fa-money-bill-wave me-1"></i>
-                        Ödeme Yap
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <!-- Create Modal -->
 <div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
@@ -162,21 +123,23 @@
             <form formValidate #createForm="ngForm" autocomplete="off" (ngSubmit)="create(createForm)">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Gider Adı</label>
-                        <input type="text" required minlength="3" [(ngModel)]="createModel.name" class="form-control" name="name">
-                        <div class="invalid-feedback"></div>
-                    </div>
-
-                    <div class="form-group mt-2">
                         <label>Tarih</label>
                         <input type="date" required [(ngModel)]="createModel.date" class="form-control" name="date">
                         <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="form-group mt-2">
+                        <label>Gider Adı</label>
+                        <input type="text" required minlength="3" [(ngModel)]="createModel.name" class="form-control"
+                            name="name">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
                         <label>Kategori</label>
-                        <select class="form-control" [(ngModel)]="createModel.categoryValue" name="categoryValue" required>
-                            @for (category of categories; track category) {
+                        <select class="form-control" name="categoryValue" [(ngModel)]="createModel.categoryValue" required>
+                            <option [value]="0">Seçiniz</option>
+                            @for(category of categories; track category){
                             <option [value]="category.value">
                                 {{category.name}}
                             </option>
@@ -187,40 +150,14 @@
 
                     <div class="form-group mt-2">
                         <label>Açıklama</label>
-                        <textarea [(ngModel)]="createModel.description" class="form-control" name="description" rows="2"></textarea>
-                        <div class="invalid-feedback"></div>
+                        <input type="text" [(ngModel)]="createModel.description" class="form-control" name="description">
                     </div>
 
                     <div class="form-group mt-2">
                         <label>Tutar</label>
-                        <input type="number" required min="0.01" step="0.01" [(ngModel)]="createModel.price" class="form-control" name="price">
+                        <input type="text" required [(ngModel)]="createModel.price" class="form-control" name="price">
                         <div class="invalid-feedback"></div>
                     </div>
-
-                    <div class="form-group mt-2">
-                        <label>Ödeme Şekli</label>
-                        <select class="form-control" [(ngModel)]="createModel.isCash" name="isCash">
-                            <option [ngValue]="null">Seçiniz</option>
-                            <option [ngValue]="true">Nakit</option>
-                            <option [ngValue]="false">Diğer</option>
-                        </select>
-                        <div class="invalid-feedback"></div>
-                    </div>
-
-                    <div class="form-group mt-2" *ngIf="createModel.isCash === true">
-                        <label>Kasa</label>
-                        <select class="form-control" [(ngModel)]="createModel.cashRegisterId" name="cashRegisterId" required>
-                            <option [value]="null">Kasa Seçiniz</option>
-                            @for(cashRegister of cashRegisters; track cashRegister.id){
-                            <option [value]="cashRegister.id">
-                                {{cashRegister.name}}
-                            </option>
-                            }
-                        </select>
-                        <div class="invalid-feedback"></div>
-                    </div>
-
-                    <!-- Removed payment options section to make expense creation work like invoice creation -->
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-dark w-100">Kaydet</button>
@@ -243,21 +180,24 @@
             <form formValidate #updateForm="ngForm" autocomplete="off" (ngSubmit)="update(updateForm)">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Gider Adı</label>
-                        <input type="text" required minlength="3" [(ngModel)]="updateModel.name" class="form-control" name="updateName">
-                        <div class="invalid-feedback"></div>
-                    </div>
-
-                    <div class="form-group mt-2">
                         <label>Tarih</label>
                         <input type="date" required [(ngModel)]="updateModel.date" class="form-control" name="updateDate">
                         <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="form-group mt-2">
+                        <label>Gider Adı</label>
+                        <input type="text" required minlength="3" [(ngModel)]="updateModel.name" class="form-control"
+                            name="updateName">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
                         <label>Kategori</label>
-                        <select class="form-control" [(ngModel)]="updateModel.categoryValue" name="updateCategoryValue" required>
-                            @for (category of categories; track category) {
+                        <select class="form-control" name="updateCategoryValue" [(ngModel)]="updateModel.categoryValue"
+                            required>
+                            <option [value]="0">Seçiniz</option>
+                            @for(category of categories; track category){
                             <option [value]="category.value">
                                 {{category.name}}
                             </option>
@@ -268,30 +208,82 @@
 
                     <div class="form-group mt-2">
                         <label>Açıklama</label>
-                        <textarea [(ngModel)]="updateModel.description" class="form-control" name="updateDescription" rows="2"></textarea>
-                        <div class="invalid-feedback"></div>
+                        <input type="text" [(ngModel)]="updateModel.description" class="form-control"
+                            name="updateDescription">
                     </div>
 
                     <div class="form-group mt-2">
                         <label>Tutar</label>
-                        <input type="number" required min="0.01" step="0.01" [(ngModel)]="updateModel.price" class="form-control" name="updatePrice">
+                        <input type="text" required [(ngModel)]="updateModel.price" class="form-control"
+                            name="updatePrice">
+                        <div class="invalid-feedback"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary w-100">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title fs-5">Gider Ödeme</h3>
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal" id="paymentModalCloseBtn">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+            </div>
+            <form formValidate #paymentForm="ngForm" autocomplete="off" (ngSubmit)="payExpense(paymentForm)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Gider Adı</label>
+                        <input type="text" [value]="getExpenseName(paymentModel.expenseId)" class="form-control"
+                            readonly>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Tarih</label>
+                        <input type="date" required [(ngModel)]="paymentModel.paymentDate" class="form-control"
+                            name="paymentDate">
                         <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="form-group mt-2">
-                        <label>Ödeme Şekli</label>
-                        <select class="form-control" [(ngModel)]="updateModel.isCash" name="updateIsCash" required>
-                            <option [ngValue]="true">Nakit</option>
-                            <option [ngValue]="false">Diğer</option>
-                        </select>
+                        <label>Gider Tutarı</label>
+                        <input type="text" [value]="getExpensePrice(paymentModel.expenseId) | trCurrency: '₺': true"
+                            class="form-control" readonly>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Ödenen Tutar</label>
+                        <input type="text" [value]="getExpensePaidAmount(paymentModel.expenseId) | trCurrency: '₺': true"
+                            class="form-control" readonly>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Kalan Tutar</label>
+                        <input type="text"
+                            [value]="getExpenseRemainingAmount(paymentModel.expenseId) | trCurrency: '₺': true"
+                            class="form-control" readonly>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Ödenecek Tutar</label>
+                        <input type="number" [(ngModel)]="paymentAmount" class="form-control" name="paymentAmount"
+                            required min="0.01" [max]="getExpenseRemainingAmount(paymentModel.expenseId)">
                         <div class="invalid-feedback"></div>
                     </div>
 
-                    <div class="form-group mt-2" *ngIf="updateModel.isCash">
+                    <div class="form-group mt-2">
                         <label>Kasa</label>
-                        <select class="form-control" [(ngModel)]="updateModel.cashRegisterId" name="updateCashRegisterId">
-                            <option [value]="null">Kasa Seçiniz</option>
-                            @for(cashRegister of cashRegisters; track cashRegister.id){
+                        <select class="form-control" name="paymentCashRegisterId"
+                            [(ngModel)]="paymentModel.cashRegisterId" required>
+                            <option [value]="''">Seçiniz</option>
+                            @for(cashRegister of cashRegisters; track cashRegister){
                             <option [value]="cashRegister.id">
                                 {{cashRegister.name}}
                             </option>
@@ -299,9 +291,15 @@
                         </select>
                         <div class="invalid-feedback"></div>
                     </div>
+
+                    <div class="form-group mt-2">
+                        <label>Açıklama</label>
+                        <input type="text" [(ngModel)]="paymentModel.description" class="form-control"
+                            name="paymentDescription">
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary w-100">Güncelle</button>
+                    <button type="submit" class="btn btn-success w-100">Ödemeyi Yap</button>
                 </div>
             </form>
         </div>

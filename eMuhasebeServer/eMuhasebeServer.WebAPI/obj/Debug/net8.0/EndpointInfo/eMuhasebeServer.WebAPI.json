@@ -3888,6 +3888,21 @@
       },
       "GetAllGiderlerQuery": {
         "type": "object",
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
         "additionalProperties": false
       },
       "GetAllInvoicesQuery": {
@@ -3896,6 +3911,19 @@
           "type": {
             "type": "integer",
             "format": "int32"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "customerId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
           }
         },
         "additionalProperties": false

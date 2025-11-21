@@ -33,11 +33,22 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   search:string = "";
   productSearch:string = "";
   productSearchUpdate:string = "";
+  customerSearch: string = ""; // Add customer search property
+  customerSearchUpdate: string = ""; // Add customer search property for update modal
   showProductDropdown: boolean = false;
   showProductDropdownUpdate: boolean = false;
+  showCustomerDropdown: boolean = false; // Add customer dropdown visibility
+  showCustomerDropdownUpdate: boolean = false; // Add customer dropdown visibility for update modal
   p: number = 1;
   paymentAmount: number = 0;
   showOnlyUnpaid: boolean = false; // New property to toggle unpaid invoices filter
+  
+  // Add customer filter property
+  selectedCustomerId: string = "";
+  
+  // Add date filtering properties
+  startDate: string = "";
+  endDate: string = "";
   
   @ViewChild("createModalCloseBtn") createModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
   @ViewChild("updateModalCloseBtn") updateModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
@@ -53,6 +64,9 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     private router: Router
   ){
     this.createModel.date = this.date.transform(new Date(),"yyyy-MM-dd") ?? "";
+    // Initialize date range to today
+    this.startDate = this.date.transform(new Date(), 'yyyy-MM-dd') ?? "";
+    this.endDate = this.date.transform(new Date(), 'yyyy-MM-dd') ?? "";
   }
 
   ngOnInit(): void {
@@ -81,7 +95,13 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   }
 
   getAll(){
-    this.http.post<InvoiceModel[]>("Invoices/GetAll",{},(res)=> {
+    // Pass date range parameters to the backend
+    this.http.post<InvoiceModel[]>("Invoices/GetAll", {
+      type: 0, // Get all invoices (both purchase and sales)
+      startDate: this.startDate,
+      endDate: this.endDate,
+      customerId: this.selectedCustomerId || null
+    }, (res)=> {
       this.invoices = res;
     });
   }
@@ -112,10 +132,24 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
   create(form: NgForm){
     if(form.valid){
+      // Check if customer is selected
+      if (!this.createModel.customerId) {
+        this.swal.callToast("Lütfen bir müşteri seçin", "error");
+        return;
+      }
+      
+      // Check if at least one product detail is added
+      if (this.createModel.details.length === 0) {
+        this.swal.callToast("Lütfen en az bir ürün ekleyin", "error");
+        return;
+      }
+      
       this.http.post<string>("Invoices/Create",this.createModel,(res)=> {
         this.swal.callToast(res);
         this.createModel = new InvoiceModel();
         this.createModel.date = this.date.transform(new Date(),"yyyy-MM-dd") ?? "";
+        this.customerSearch = ""; // Clear customer search
+        this.productSearch = ""; // Clear product search
         this.createModalCloseBtn?.nativeElement.click();
         this.getAll();
       });
@@ -137,6 +171,18 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
   update(form: NgForm){
     if(form.valid){
+      // Check if customer is selected
+      if (!this.updateModel.customerId) {
+        this.swal.callToast("Lütfen bir müşteri seçin", "error");
+        return;
+      }
+      
+      // Check if at least one product detail is added
+      if (this.updateModel.details.length === 0) {
+        this.swal.callToast("Lütfen en az bir ürün ekleyin", "error");
+        return;
+      }
+      
       this.http.post<string>("Invoices/DeleteById",{id: this.updateModel.id},(res)=> {
         this.http.post<string>("Invoices/Create",this.updateModel,(res)=> {
           this.swal.callToast(res, "info");          
@@ -148,13 +194,26 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   }
 
   addDetail(){
+    // Find the selected product before it gets cleared
+    let selectedProduct = this.products.find(p => p.id === this.createModel.productId) ?? new ProductModel();
+    
+    // If we couldn't find the product by ID, try to find it by the product search text
+    if (!selectedProduct.id && this.productSearch) {
+      const productText = this.productSearch.split(" - ");
+      if (productText.length >= 2) {
+        const productCode = productText[0];
+        const productName = productText.slice(1).join(" - ");
+        selectedProduct = this.products.find(p => p.productCode === productCode && p.name === productName) ?? new ProductModel();
+      }
+    }
+    
     const detail: InvoiceDetailModel = {
       price: this.createModel.price,
       quantity: this.createModel.quantity,
       productId: this.createModel.productId,
       id: "",
       invoiceId: "",
-      product: this.products.find(p=> p.id == this.createModel.productId) ?? new ProductModel()
+      product: selectedProduct
     };
 
     this.createModel.details.push(detail);
@@ -171,14 +230,17 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
   // Method to handle product search input changes
   onProductSearchChange(event: any) {
-    // This method can be used for additional logic if needed
+    // Ensure the dropdown stays visible when typing
+    this.showProductDropdown = true;
   }
-
+  
   // Method to handle product search focus
   onProductSearchFocus() {
     this.showProductDropdown = true;
+    // Clear the search term when focusing to show all products
+    this.productSearch = "";
   }
-
+  
   // Method to handle product search blur
   onProductSearchBlur() {
     // Use a small delay to allow click events on dropdown items to register
@@ -186,11 +248,28 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       this.showProductDropdown = false;
     }, 200);
   }
-
+  
   // Method to select a product from the dropdown
   selectProduct(product: ProductModel) {
     this.createModel.productId = product.id;
     this.productSearch = product.productCode + " - " + product.name;
+    this.showProductDropdown = false;
+    
+    // Make sure the input field gets focus after selection
+    setTimeout(() => {
+      const productSearchInput = document.querySelector('input[placeholder="Ürün kodu veya adı girin"]') as HTMLInputElement;
+      if (productSearchInput) {
+        productSearchInput.focus();
+      }
+    }, 10);
+    
+    // Don't call addDetail() here, let the user click "Ekle" button
+  }
+
+  // Method to select a product for create modal
+  selectProductForCreate(product: ProductModel) {
+    this.createModel.productId = product.id;
+    this.productSearch = product.name;
     this.showProductDropdown = false;
   }
 
@@ -200,13 +279,26 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   }
 
   addDetailForUpdate(){
+    // Find the selected product before it gets cleared
+    let selectedProduct = this.products.find(p => p.id === this.updateModel.productId) ?? new ProductModel();
+    
+    // If we couldn't find the product by ID, try to find it by the product search text
+    if (!selectedProduct.id && this.productSearchUpdate) {
+      const productText = this.productSearchUpdate.split(" - ");
+      if (productText.length >= 2) {
+        const productCode = productText[0];
+        const productName = productText.slice(1).join(" - ");
+        selectedProduct = this.products.find(p => p.productCode === productCode && p.name === productName) ?? new ProductModel();
+      }
+    }
+    
     const detail: InvoiceDetailModel = {
       price: this.updateModel.price,
       quantity: this.updateModel.quantity,
       productId: this.updateModel.productId,
       id: "",
       invoiceId: "",
-      product: this.products.find(p=> p.id == this.updateModel.productId) ?? new ProductModel()
+      product: selectedProduct
     };
 
     this.updateModel.details.push(detail);
@@ -223,14 +315,17 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
   // Method to handle product search input changes for update modal
   onProductSearchUpdateChange(event: any) {
-    // This method can be used for additional logic if needed
+    // Ensure the dropdown stays visible when typing
+    this.showProductDropdownUpdate = true;
   }
-
+  
   // Method to handle product search focus for update modal
   onProductSearchUpdateFocus() {
     this.showProductDropdownUpdate = true;
+    // Clear the search term when focusing to show all products
+    this.productSearchUpdate = "";
   }
-
+  
   // Method to handle product search blur for update modal
   onProductSearchUpdateBlur() {
     // Use a small delay to allow click events on dropdown items to register
@@ -238,12 +333,22 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       this.showProductDropdownUpdate = false;
     }, 200);
   }
-
+  
   // Method to select a product from the dropdown for update modal
   selectProductForUpdate(product: ProductModel) {
     this.updateModel.productId = product.id;
     this.productSearchUpdate = product.productCode + " - " + product.name;
     this.showProductDropdownUpdate = false;
+    
+    // Make sure the input field gets focus after selection
+    setTimeout(() => {
+      const productSearchInputs = document.querySelectorAll('input[placeholder="Ürün kodu veya adı girin"]') as NodeListOf<HTMLInputElement>;
+      if (productSearchInputs.length > 1) {
+        productSearchInputs[1].focus(); // Focus on the second input (update modal)
+      }
+    }, 10);
+    
+    // Don't call addDetailForUpdate() here, let the user click "Ekle" button
   }
 
   // New method to get product codes for display
@@ -252,15 +357,24 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       return "-";
     }
     
-    const productCodes = invoice.details
-      .map(detail => detail.product?.productCode || '')
-      .filter(code => code.trim() !== '');
+    const productInfo = invoice.details
+      .map(detail => {
+        if (detail.product?.productCode && detail.product?.name) {
+          return detail.product.productCode + ' - ' + detail.product.name;
+        } else if (detail.product?.productCode) {
+          return detail.product.productCode;
+        } else if (detail.product?.name) {
+          return detail.product.name;
+        }
+        return '';
+      })
+      .filter(info => info.trim() !== '');
     
-    if (productCodes.length === 0) {
+    if (productInfo.length === 0) {
       return "-";
     }
     
-    return productCodes.join(', ');
+    return productInfo.join(', ');
   }
 
   printInvoice(model: InvoiceModel){
@@ -307,6 +421,10 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
     const customer = model.customer || ({} as any);
     const invoiceDate = model.date ? new Date(model.date).toLocaleDateString('tr-TR') : '';
+    
+    // Calculate total remaining amounts for this customer
+    const customerInvoices = this.invoices.filter(invoice => invoice.customerId === model.customerId);
+    const totalRemaining = customerInvoices.reduce((sum, invoice) => sum + (invoice.amount - invoice.paidAmount), 0);
     
     const html = `<!DOCTYPE html>
 <html>
@@ -386,6 +504,10 @@ export class InvoicesComponent implements OnInit, OnDestroy {
           <span class="info-label">Kod:</span>
           <span class="info-value">${model.invoiceNumber ?? ''}</span>
         </div>
+        <div class="info-row">
+          <span class="info-label">Müşteri Borcu:</span>
+          <span class="info-value">${fmt(totalRemaining)} ₺</span>
+        </div>
       </div>
       <div class="info-right">
         <div class="info-row">
@@ -427,6 +549,201 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   </div>
   <script>
     // Ensure logo is visible when printing
+    window.onload = function() {
+      window.print();
+    };
+  </script>
+</body>
+</html>`;
+    win.document.write(html);
+    win.document.close();
+  }
+
+  // New method to print the list of invoices
+  printInvoices() {
+    const win = window.open('', '_blank');
+    if (!win) return;
+
+    // Get filtered invoices based on current filters
+    const filteredInvoices = this.getFilteredInvoices();
+    
+    // Format the date range for display
+    const startDateFormatted = this.startDate ? new Date(this.startDate).toLocaleDateString('tr-TR') : '';
+    const endDateFormatted = this.endDate ? new Date(this.endDate).toLocaleDateString('tr-TR') : '';
+    const dateRange = startDateFormatted && endDateFormatted ? 
+      `${startDateFormatted} - ${endDateFormatted}` : 
+      'Tüm Tarihler';
+
+    // Create table rows for invoices
+    const rows = filteredInvoices.map((invoice, index) => {
+      const remaining = invoice.amount - invoice.paidAmount;
+      const status = remaining <= 0 ? 'Ödendi' : 'Bekliyor';
+      const statusClass = remaining <= 0 ? 'bg-success' : 'bg-warning';
+      const productCodes = this.getProductCodes(invoice);
+      
+      return `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${invoice.date ? new Date(invoice.date).toLocaleDateString('tr-TR') : ''}</td>
+          <td>${invoice.invoiceNumber}</td>
+          <td>${productCodes}</td>
+          <td>${invoice.customer?.name || ''}</td>
+          <td style="text-align:right">${invoice.amount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
+          <td style="text-align:right">${invoice.paidAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
+          <td style="text-align:right">${remaining.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
+          <td><span class="badge ${statusClass}">${status}</span></td>
+        </tr>`;
+    }).join('');
+
+    // Calculate totals
+    const totalAmount = filteredInvoices.reduce((sum, invoice) => sum + invoice.amount, 0);
+    const totalPaid = filteredInvoices.reduce((sum, invoice) => sum + invoice.paidAmount, 0);
+    const totalRemaining = totalAmount - totalPaid;
+
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Fatura Listesi</title>
+<style>
+  @page { size: A4; margin: 15mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #000; }
+  .container { padding: 10mm; }
+  
+  .header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 15px; 
+    border-bottom: 2px solid #000; 
+    padding-bottom: 10px; 
+  }
+  
+  .title { 
+    font-size: 18pt; 
+    font-weight: bold; 
+    text-align: center;
+    flex: 1;
+  }
+  
+  .date-range {
+    font-size: 12pt;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  
+  table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 10px; 
+  }
+  
+  thead th { 
+    background: #f5f5f5; 
+    border: 1px solid #000; 
+    padding: 8px; 
+    text-align: center; 
+    font-weight: bold; 
+    font-size: 10pt; 
+  }
+  
+  tbody td { 
+    border: 1px solid #000; 
+    padding: 6px; 
+    font-size: 10pt; 
+  }
+  
+  tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .total-row { 
+    font-weight: bold; 
+    background: #e9e9e9; 
+  }
+  
+  .text-right { text-align: right; }
+  .text-center { text-align: center; }
+  
+  .badge {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+    color: #fff;
+  }
+  
+  .bg-success {
+    background-color: #28a745;
+  }
+  
+  .bg-warning {
+    background-color: #ffc107;
+    color: #000;
+  }
+  
+  .footer { 
+    margin-top: 20px; 
+    font-size: 9pt; 
+    color: #666; 
+    text-align: center;
+  }
+  
+  @media print {
+    body {
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">FATURA LİSTESİ</div>
+    </div>
+    
+    <div class="date-range">
+      Tarih Aralığı: ${dateRange}
+    </div>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Tarih</th>
+          <th>Fatura No</th>
+          <th>Ürünler</th>
+          <th>Cari</th>
+          <th>Tutar</th>
+          <th>Ödenen</th>
+          <th>Kalan</th>
+          <th>Durum</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+        <tr class="total-row">
+          <td colspan="5" class="text-right"><strong>TOPLAM:</strong></td>
+          <td class="text-right"><strong>${totalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</strong></td>
+          <td class="text-right"><strong>${totalPaid.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</strong></td>
+          <td class="text-right"><strong>${totalRemaining.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</strong></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div class="footer">
+      <p>Bu belge sistem tarafından oluşturulmuştur. - ${new Date().toLocaleDateString('tr-TR')}</p>
+    </div>
+  </div>
+  <script>
     window.onload = function() {
       window.print();
     };
@@ -508,5 +825,150 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       return this.invoices.filter(invoice => (invoice.amount - invoice.paidAmount) > 0);
     }
     return this.invoices;
+  }
+
+  // Method to handle customer search input changes
+  onCustomerSearchChange(event: any) {
+    this.showCustomerDropdown = true;
+    // If a customer is already selected and user starts typing, clear the selection
+    if (this.createModel.customerId && this.customerSearch !== event.target.value) {
+      this.createModel.customerId = "";
+    }
+  }
+  
+  // Method to handle customer search focus
+  onCustomerSearchFocus() {
+    this.showCustomerDropdown = true;
+    // Only clear the search term if no customer is selected
+    if (!this.createModel.customerId) {
+      this.customerSearch = "";
+    }
+  }
+  
+  // Method to handle customer search blur
+  onCustomerSearchBlur() {
+    setTimeout(() => {
+      this.showCustomerDropdown = false;
+    }, 200);
+  }
+  
+  // Method to handle customer search input changes for update modal
+  onCustomerSearchUpdateChange(event: any) {
+    this.showCustomerDropdownUpdate = true;
+    // If a customer is already selected and user starts typing, clear the selection
+    if (this.updateModel.customerId && this.customerSearchUpdate !== event.target.value) {
+      this.updateModel.customerId = "";
+    }
+  }
+  
+  // Method to handle customer search focus for update modal
+  onCustomerSearchUpdateFocus() {
+    this.showCustomerDropdownUpdate = true;
+    // Only clear the search term if no customer is selected
+    if (!this.updateModel.customerId) {
+      this.customerSearchUpdate = "";
+    }
+  }
+  
+  // Method to handle customer search blur for update modal
+  onCustomerSearchUpdateBlur() {
+    setTimeout(() => {
+      this.showCustomerDropdownUpdate = false;
+    }, 200);
+  }
+  
+  // Method to select a customer for create modal
+  selectCustomerForCreateModal(customer: CustomerModel) {
+    this.createModel.customerId = customer.id;
+    this.customerSearch = customer.name;
+    this.showCustomerDropdown = false;
+    
+    // Make sure the input field gets focus after selection
+    setTimeout(() => {
+      const customerSearchInput = document.querySelector('input[placeholder="Müşteri ara..."]') as HTMLInputElement;
+      if (customerSearchInput) {
+        customerSearchInput.focus();
+      }
+    }, 10);
+  }
+  
+  // Method to clear customer selection
+  clearCustomerSelection() {
+    this.createModel.customerId = "";
+    this.customerSearch = "";
+  }
+  
+  // Method to clear customer selection in update modal
+  clearCustomerUpdateSelection() {
+    this.updateModel.customerId = "";
+    this.customerSearchUpdate = "";
+  }
+  
+  // Method to select a customer from the dropdown for update modal
+  selectCustomerForUpdate(customer: CustomerModel) {
+    this.updateModel.customerId = customer.id;
+    this.customerSearchUpdate = customer.name;
+    this.showCustomerDropdownUpdate = false;
+    
+    // Make sure the input field gets focus after selection
+    setTimeout(() => {
+      const customerSearchInputs = document.querySelectorAll('input[placeholder="Müşteri ara..."]') as NodeListOf<HTMLInputElement>;
+      if (customerSearchInputs.length > 1) {
+        customerSearchInputs[1].focus(); // Focus on the second input (update modal)
+      }
+    }, 10);
+    
+    // Don't call addDetailForUpdate() here, let the user click "Ekle" button
+  }
+  
+  // Method to get filtered customers based on search term
+  getFilteredCustomers(): CustomerModel[] {
+    if (!this.customerSearch) {
+      return this.customers;
+    }
+    
+    return this.customers.filter(customer => 
+      customer.name.toLowerCase().includes(this.customerSearch.toLowerCase())
+    );
+  }
+  
+  // Method to get filtered customers for update modal based on search term
+  getFilteredCustomersForUpdate(): CustomerModel[] {
+    if (!this.customerSearchUpdate) {
+      return this.customers;
+    }
+    
+    return this.customers.filter(customer => 
+      customer.name.toLowerCase().includes(this.customerSearchUpdate.toLowerCase())
+    );
+  }
+  
+  // Method to get filtered products based on search term
+  getFilteredProducts(): ProductModel[] {
+    if (!this.productSearch) {
+      return this.products;
+    }
+    
+    return this.products.filter(product => 
+      product.name.toLowerCase().includes(this.productSearch.toLowerCase()) ||
+      (product.productCode && product.productCode.toLowerCase().includes(this.productSearch.toLowerCase()))
+    );
+  }
+  
+  // Method to get filtered products for update modal based on search term
+  getFilteredProductsForUpdate(): ProductModel[] {
+    if (!this.productSearchUpdate) {
+      return this.products;
+    }
+    
+    return this.products.filter(product => 
+      product.name.toLowerCase().includes(this.productSearchUpdate.toLowerCase()) ||
+      (product.productCode && product.productCode.toLowerCase().includes(this.productSearchUpdate.toLowerCase()))
+    );
+  }
+
+  // Add method to handle customer filter change
+  onCustomerFilterChange() {
+    this.getAll();
   }
 }

@@ -32,6 +32,13 @@ export class ExpensesComponent implements OnInit, OnDestroy {
   categories = ExpensesCategories;
   cashRegisters: CashRegisterModel[] = [];
 
+  // Add category filter property
+  selectedCategoryId: number | null = null;
+  
+  // Add date filtering properties
+  startDate: string = "";
+  endDate: string = "";
+
   @ViewChild("createModalCloseBtn") createModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
   @ViewChild("updateModalCloseBtn") updateModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
   @ViewChild("paymentModalCloseBtn") paymentModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
@@ -50,6 +57,9 @@ export class ExpensesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.createModel.date = this.getToday();
+    // Initialize date range to today
+    this.startDate = this.getToday();
+    this.endDate = this.getToday();
     this.getAll();
     this.getCashRegisters();
     
@@ -72,7 +82,12 @@ export class ExpensesComponent implements OnInit, OnDestroy {
   getAll(){
     // Add timestamp to prevent browser caching
     const timestamp = new Date().getTime();
-    this.http.post<ExpenseModel[]>("Giderler/GetAll", { _t: timestamp }, (res) => {
+    this.http.post<ExpenseModel[]>("Giderler/GetAll", { 
+      _t: timestamp,
+      startDate: this.startDate,
+      endDate: this.endDate,
+      categoryId: this.selectedCategoryId
+    }, (res) => {
       console.log('getAll response:', res);
       this.expenses = res;
     }, (err) => {
@@ -250,5 +265,205 @@ export class ExpensesComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  // New method to print the list of expenses
+  printExpenses() {
+    const win = window.open('', '_blank');
+    if (!win) return;
+
+    // Get filtered expenses based on current filters
+    const filteredExpenses = this.getFilteredExpenses();
+    
+    // Format the date range for display
+    const startDateFormatted = this.startDate ? new Date(this.startDate).toLocaleDateString('tr-TR') : '';
+    const endDateFormatted = this.endDate ? new Date(this.endDate).toLocaleDateString('tr-TR') : '';
+    const dateRange = startDateFormatted && endDateFormatted ? 
+      `${startDateFormatted} - ${endDateFormatted}` : 
+      'Tüm Tarihler';
+
+    // Create table rows for expenses
+    const rows = filteredExpenses.map((expense, index) => {
+      const remaining = this.calculateRemainingAmount(expense);
+      const status = remaining <= 0 ? 'Ödendi' : 'Bekliyor';
+      const statusClass = remaining <= 0 ? 'bg-success' : 'bg-warning';
+      const categoryName = this.getCategoryName(expense.categoryType.value);
+      
+      return `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${expense.date ? new Date(expense.date).toLocaleDateString('tr-TR') : ''}</td>
+          <td>${expense.name}</td>
+          <td>${categoryName}</td>
+          <td>${expense.description}</td>
+          <td style="text-align:right">${expense.price.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
+          <td style="text-align:right">${expense.paidAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
+          <td style="text-align:right">${remaining.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
+          <td><span class="badge ${statusClass}">${status}</span></td>
+        </tr>`;
+    }).join('');
+
+    // Calculate totals
+    const totalAmount = filteredExpenses.reduce((sum, expense) => sum + expense.price, 0);
+    const totalPaid = filteredExpenses.reduce((sum, expense) => sum + expense.paidAmount, 0);
+    const totalRemaining = totalAmount - totalPaid;
+
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Gider Listesi</title>
+<style>
+  @page { size: A4; margin: 15mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #000; }
+  .container { padding: 10mm; }
+  
+  .header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 15px; 
+    border-bottom: 2px solid #000; 
+    padding-bottom: 10px; 
+  }
+  
+  .title { 
+    font-size: 18pt; 
+    font-weight: bold; 
+    text-align: center;
+    flex: 1;
+  }
+  
+  .date-range {
+    font-size: 12pt;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  
+  table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 10px; 
+  }
+  
+  thead th { 
+    background: #f5f5f5; 
+    border: 1px solid #000; 
+    padding: 8px; 
+    text-align: center; 
+    font-weight: bold; 
+    font-size: 10pt; 
+  }
+  
+  tbody td { 
+    border: 1px solid #000; 
+    padding: 6px; 
+    font-size: 10pt; 
+  }
+  
+  tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .total-row { 
+    font-weight: bold; 
+    background: #e9e9e9; 
+  }
+  
+  .text-right { text-align: right; }
+  .text-center { text-align: center; }
+  
+  .badge {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+    color: #fff;
+  }
+  
+  .bg-success {
+    background-color: #28a745;
+  }
+  
+  .bg-warning {
+    background-color: #ffc107;
+    color: #000;
+  }
+  
+  .footer { 
+    margin-top: 20px; 
+    font-size: 9pt; 
+    color: #666; 
+    text-align: center;
+  }
+  
+  @media print {
+    body {
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">GİDER LİSTESİ</div>
+    </div>
+    
+    <div class="date-range">
+      Tarih Aralığı: ${dateRange}
+    </div>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Tarih</th>
+          <th>Gider Adı</th>
+          <th>Kategori</th>
+          <th>Açıklama</th>
+          <th>Tutar</th>
+          <th>Ödenen</th>
+          <th>Kalan</th>
+          <th>Durum</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+        <tr class="total-row">
+          <td colspan="5" class="text-right"><strong>TOPLAM:</strong></td>
+          <td class="text-right"><strong>${totalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</strong></td>
+          <td class="text-right"><strong>${totalPaid.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</strong></td>
+          <td class="text-right"><strong>${totalRemaining.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</strong></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div class="footer">
+      <p>Bu belge sistem tarafından oluşturulmuştur. - ${new Date().toLocaleDateString('tr-TR')}</p>
+    </div>
+  </div>
+  <script>
+    window.onload = function() {
+      window.print();
+    };
+  </script>
+</body>
+</html>`;
+    win.document.write(html);
+    win.document.close();
+  }
+
+  // Add method to handle category filter change
+  onCategoryFilterChange() {
+    this.getAll();
   }
 }

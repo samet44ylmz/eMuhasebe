@@ -10,11 +10,43 @@
                     <i class="fa-solid fa-trash me-1"></i>
                     Çöp Kutusu
                 </button>
-                <!-- New button to toggle unpaid invoices -->
-                <button class="btn btn-info ms-2" (click)="toggleUnpaidInvoices()">
+                <!-- Add toggle button for unpaid invoices -->
+                <button class="btn btn-warning ms-2" (click)="toggleUnpaidInvoices()">
                     <i class="fa-solid fa-filter me-1"></i>
                     {{ showOnlyUnpaid ? 'Tüm Faturalar' : 'Ödenmemiş Faturalar' }}
                 </button>
+                <!-- Add print button -->
+                <button class="btn btn-info ms-2" (click)="printInvoices()">
+                    <i class="fa-solid fa-print me-1"></i>
+                    Listeyi Yazdır
+                </button>
+            </div>
+
+            <!-- Add customer dropdown filter -->
+            <div class="col-3">
+                <select class="form-control" [(ngModel)]="selectedCustomerId" (change)="onCustomerFilterChange()">
+                    <option value="">Tüm Müşteriler</option>
+                    <option *ngFor="let customer of customers" [ngValue]="customer.id">
+                        {{customer.name}}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row mt-2">
+            <!-- Add date filtering controls -->
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4">
+                        <input type="date" class="form-control" [(ngModel)]="startDate">
+                    </div>
+                    <div class="col-4">
+                        <input type="date" class="form-control" [(ngModel)]="endDate">
+                    </div>
+                    <div>
+                        <button class="btn btn-dark w-100" (click)="getAll()">Getir</button>
+                    </div>
+                </div>
             </div>
 
             <div class="col-3">
@@ -27,58 +59,51 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Tarih</th>
                         <th>Fatura No</th>
                         <th>Ürünler</th>
-                        <th>Tarih</th>
-                        <th>Müşteri</th>
+                        <th>Cari</th>
                         <th>Tutar</th>
                         <th>Ödenen</th>
                         <th>Kalan</th>
+                        <th>Durum</th>
                         <th>İşlemler</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Updated to use getFilteredInvoices() instead of the pipe directly -->
-                    @for(data of getFilteredInvoices() | invoice: search; track data.id){
+                    @for(data of getFilteredInvoices()|invoice: search ;track data){
                     <tr>
                         <td>{{$index + 1}}</td>
-                        <td>{{data.invoiceNumber}}</td>
-                        <td>
-                            @for(detail of data.details; track detail; let first = $first; let last = $last) {
-                                <div>
-                                    {{detail.product.productCode && detail.product.productCode.trim() !== '' ? detail.product.productCode + ' - ' + detail.product.name : detail.product.name}}
-                                    @if(detail.product.description && detail.product.description.trim() !== '') {
-                                        <br><small class="text-muted">{{detail.product.description}}</small>
-                                    }
-                                </div>
-                                @if(!last) {<br>}
-                            }
-                        </td>
                         <td>{{data.date | date: 'dd.MM.yyyy'}}</td>
+                        <td>{{data.invoiceNumber}}</td>
+                        <td>{{getProductCodes(data)}}</td>
                         <td>{{data.customer.name}}</td>
                         <td>{{data.amount | trCurrency: '₺': true}}</td>
                         <td>{{data.paidAmount | trCurrency: '₺': true}}</td>
+                        <td>{{data.amount - data.paidAmount | trCurrency: '₺': true}}</td>
                         <td>
-                            @if((data.amount - data.paidAmount) === 0) {
-                                <span class="badge bg-success">Ödeme Alındı</span>
-                            } @else {
-                                {{(data.amount - data.paidAmount) | trCurrency: '₺': true}}
+                            @if(data.amount - data.paidAmount <= 0){
+                            <span class="badge bg-success">Ödendi</span>
+                            }@else{
+                            <span class="badge bg-warning">Bekliyor</span>
                             }
                         </td>
                         <td>
-                            <button (click)="printInvoice(data)" class="btn btn-outline-info btn-sm me-1" title="Yazdır">
-                                <i class="fa-solid fa-print"></i>
-                            </button>
-                            <button (click)="openPaymentModal(data)" class="btn btn-outline-success btn-sm me-1" title="Ödeme Al">
-                                <i class="fa-solid fa-money-bill-wave"></i>
-                            </button>
                             <button data-toggle="modal" data-target="#updateModal" (click)="get(data)"
                                 class="btn btn-outline-primary btn-sm me-1">
                                 <i class="fa-solid fa-edit"></i>
                             </button>
-                            <button (click)="deleteById(data)" class="btn btn-outline-danger btn-sm">
+                            <button (click)="deleteById(data)" class="btn btn-outline-danger btn-sm me-1">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
+                            <button (click)="printInvoice(data)" class="btn btn-outline-secondary btn-sm me-1">
+                                <i class="fa-solid fa-print"></i>
+                            </button>
+                            @if(data.amount - data.paidAmount > 0){
+                            <button (click)="openPaymentModal(data)" class="btn btn-outline-success btn-sm">
+                                <i class="fa-solid fa-money-bill-wave"></i>
+                            </button>
+                            }
                         </td>
                     </tr>
                     }
@@ -104,14 +129,24 @@
                         <div class="col-6">                            
                             <div class="form-group">
                                 <label>Müşteri</label>
-                                <select class="form-control" [(ngModel)]="createModel.customerId" required name="customerId">
-                                    @for(customer of customers; track customer){
-                                        <option [value]="customer.id">
-                                            {{customer.name}}
-                                        </option>
-                                    }
-                                </select>
+                                <div class="position-relative">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Müşteri ara..." [(ngModel)]="customerSearch" [ngModelOptions]="{standalone:true}" (input)="onCustomerSearchChange($event)" (focus)="onCustomerSearchFocus()" (blur)="onCustomerSearchBlur()">
+                                        <button *ngIf="createModel.customerId" type="button" class="btn btn-outline-danger" (click)="clearCustomerSelection()" title="Müşteri seçimini kaldır">
+                                            <i class="fa-solid fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <div class="dropdown-menu w-100 mt-1" style="max-height: 200px; overflow-y: auto; position: absolute; top: 100%; z-index: 1000;" [class.show]="showCustomerDropdown && (customerSearch || getFilteredCustomers().length > 0)">
+                                        @for(customer of getFilteredCustomers(); track customer){
+                                            <button type="button" class="dropdown-item" (click)="selectCustomerForCreateModal(customer)">
+                                                {{customer.name}}
+                                            </button>
+                                        }
+                                    </div>
+                                    <input type="hidden" [(ngModel)]="createModel.customerId" [ngModelOptions]="{standalone:true}">
+                                </div>
                                 <div class="invalid-feedback"></div>
+                                <small *ngIf="createModel.customerId" class="text-success">Müşteri seçildi</small>
                             </div>
                         </div>
 
@@ -249,14 +284,24 @@
                         <div class="col-6">                            
                             <div class="form-group">
                                 <label>Müşteri</label>
-                                <select class="form-control" [(ngModel)]="updateModel.customerId" required name="updateCustomerId">
-                                    @for(customer of customers; track customer){
-                                        <option [value]="customer.id">
-                                            {{customer.name}}
-                                        </option>
-                                    }
-                                </select>
+                                <div class="position-relative">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Müşteri ara..." [(ngModel)]="customerSearchUpdate" [ngModelOptions]="{standalone:true}" (input)="onCustomerSearchUpdateChange($event)" (focus)="onCustomerSearchUpdateFocus()" (blur)="onCustomerSearchUpdateBlur()">
+                                        <button *ngIf="updateModel.customerId" type="button" class="btn btn-outline-danger" (click)="clearCustomerUpdateSelection()" title="Müşteri seçimini kaldır">
+                                            <i class="fa-solid fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <div class="dropdown-menu w-100 mt-1" style="max-height: 200px; overflow-y: auto; position: absolute; top: 100%; z-index: 1000;" [class.show]="showCustomerDropdownUpdate && (customerSearchUpdate || getFilteredCustomersForUpdate().length > 0)">
+                                        @for(customer of getFilteredCustomersForUpdate(); track customer){
+                                            <button type="button" class="dropdown-item" (click)="selectCustomerForUpdate(customer)">
+                                                {{customer.name}}
+                                            </button>
+                                        }
+                                    </div>
+                                    <input type="hidden" [(ngModel)]="updateModel.customerId" [ngModelOptions]="{standalone:true}">
+                                </div>
                                 <div class="invalid-feedback"></div>
+                                <small *ngIf="updateModel.customerId" class="text-success">Müşteri seçildi</small>
                             </div>
                         </div>
 
@@ -383,7 +428,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title fs-5">Ödeme Alma</h3>
+                <h3 class="modal-title fs-5">Fatura Ödeme</h3>
                 <button type="button" class="btn btn-outline-danger" data-dismiss="modal" id="paymentModalCloseBtn">
                     <i class="fa-solid fa-x"></i>
                 </button>
@@ -392,38 +437,49 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Fatura No</label>
-                        <input type="text" class="form-control" disabled [value]="paymentModel.invoiceNumber">
+                        <input type="text" [(ngModel)]="paymentModel.invoiceNumber" class="form-control"
+                            name="paymentInvoiceNumber" readonly>
                     </div>
 
                     <div class="form-group mt-2">
-                        <label>Ödenen Tutar</label>
-                        <input type="text" class="form-control" disabled [value]="paymentModel.paidAmount | trCurrency: '₺': true">
-                    </div>
-
-                    <div class="form-group mt-2">
-                        <label>Kalan Tutar</label>
-                        <input type="text" class="form-control" disabled [value]="(paymentModel.amount - paymentModel.paidAmount - paymentAmount) | trCurrency: '₺': true">
-                    </div>
-
-                    <div class="form-group mt-2">
-                        <label>Alınacak Tutar</label>
-                        <input type="number" required min="0.01" step="0.01" [(ngModel)]="paymentAmount" 
-                            class="form-control" name="paidAmount" 
-                            [max]="paymentModel.amount - paymentModel.paidAmount">
+                        <label>Tarih</label>
+                        <input type="date" required [(ngModel)]="paymentModel.date" class="form-control"
+                            name="paymentDate">
                         <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="form-group mt-2">
-                        <label>Ödeme Tarihi</label>
-                        <input type="date" required [(ngModel)]="paymentModel.date" class="form-control" name="paymentDate">
+                        <label>Fatura Tutarı</label>
+                        <input type="text" [(ngModel)]="paymentModel.amount" class="form-control" name="invoiceAmount"
+                            readonly>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Ödenen Tutar</label>
+                        <input type="text" [(ngModel)]="paymentModel.paidAmount" class="form-control"
+                            name="paidAmountBefore" readonly>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Kalan Tutar</label>
+                        <input type="text"
+                            [value]="paymentModel.amount - paymentModel.paidAmount | trCurrency: '₺': true"
+                            class="form-control" readonly>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Ödenecek Tutar</label>
+                        <input type="number" [(ngModel)]="paymentAmount" class="form-control" name="paymentAmount"
+                            required min="0.01" [max]="paymentModel.amount - paymentModel.paidAmount">
                         <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="form-group mt-2">
                         <label>Kasa</label>
-                        <select class="form-control" [(ngModel)]="paymentModel.cashRegisterId" name="cashRegisterId">
-                            <option [value]="null">Kasa Seçiniz</option>
-                            @for(cashRegister of cashRegisters; track cashRegister.id){
+                        <select class="form-control" name="paymentCashRegisterId"
+                            [(ngModel)]="paymentModel.cashRegisterId" required>
+                            <option [value]="''">Seçiniz</option>
+                            @for(cashRegister of cashRegisters; track cashRegister){
                             <option [value]="cashRegister.id">
                                 {{cashRegister.name}}
                             </option>
@@ -434,14 +490,12 @@
 
                     <div class="form-group mt-2">
                         <label>Açıklama</label>
-                        <textarea [(ngModel)]="paymentModel.description" class="form-control" name="description" rows="2"></textarea>
+                        <input type="text" [(ngModel)]="paymentModel.description" class="form-control"
+                            name="paymentDescription">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success w-100">
-                        <i class="fa-solid fa-money-bill-wave me-1"></i>
-                        Ödeme Al
-                    </button>
+                    <button type="submit" class="btn btn-success w-100">Ödemeyi Al</button>
                 </div>
             </form>
         </div>

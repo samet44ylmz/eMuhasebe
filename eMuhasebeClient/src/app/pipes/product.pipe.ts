@@ -8,11 +8,16 @@ import { ProductModel } from '../models/product.model';
 export class ProductPipe implements PipeTransform {
 
   transform(value: ProductModel[], search:string): ProductModel[] {
-        if(!search) return value;
+    // Always return an array, even if null/undefined
+    if(!value) return [];
     
-        return value.filter(p=> 
-          p.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
-          p.productCode.toLocaleLowerCase().includes(search.toLocaleLowerCase())
-        );
-      }
+    // If no search term, return all products
+    if(!search) return value;
+    
+    // Filter products based on search term
+    return value.filter(p=> 
+      p.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
+      p.productCode.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+    );
+  }
 }

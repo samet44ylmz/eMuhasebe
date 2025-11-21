@@ -20,10 +20,36 @@ internal sealed class GetAllGiderQueryHandler(
 
         if (giderler is null)
         {
-            giderler = await giderRepository.GetAll().OrderByDescending(p => p.Date).ToListAsync(cancellationToken);
+            var query = giderRepository
+                .GetAll()
+                .Where(p => p.Date >= request.StartDate && p.Date <= request.EndDate); // Filter by date range
+
+            // Filter by category ID if provided
+            if (request.CategoryId.HasValue)
+            {
+                query = query.Where(p => (int)p.CategoryType == request.CategoryId.Value);
+            }
+
+            giderler = await query
+                .OrderByDescending(p => p.Date)
+                .ToListAsync(cancellationToken);
 
             cacheService.Set(cacheKey, "giderler");
         }
+        else
+        {
+            // Filter by date range for cached data
+            giderler = giderler
+                .Where(p => p.Date >= request.StartDate && p.Date <= request.EndDate) // Filter by date range
+                .ToList();
+                
+            // Filter by category ID if provided
+            if (request.CategoryId.HasValue)
+            {
+                giderler = giderler.Where(p => (int)p.CategoryType == request.CategoryId.Value).ToList();
+            }
+        }
+        
         return giderler;
     }
 }

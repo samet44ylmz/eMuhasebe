@@ -21,10 +21,18 @@ internal sealed class GetAllInvoicesQueryHandler(
 
         if (invoices is null)
         {
-            invoices =
-                await invoiceRepository
+            var query = invoiceRepository
                 .GetAll()
                 .Where(p => !p.IsDeleted) // Explicitly filter out deleted invoices
+                .Where(p => p.Date >= request.StartDate && p.Date <= request.EndDate); // Filter by date range
+
+            // Filter by customer ID if provided
+            if (request.CustomerId.HasValue)
+            {
+                query = query.Where(p => p.CustomerId == request.CustomerId.Value);
+            }
+
+            invoices = await query
                 .Include(p => p.Customer)
                 .Include(p => p.Details!)
                 .ThenInclude(p => p.Product)
@@ -36,7 +44,16 @@ internal sealed class GetAllInvoicesQueryHandler(
         else
         {
             // Filter out deleted invoices from cached data as well
-            invoices = invoices.Where(p => !p.IsDeleted).ToList();
+            invoices = invoices
+                .Where(p => !p.IsDeleted)
+                .Where(p => p.Date >= request.StartDate && p.Date <= request.EndDate) // Filter by date range
+                .ToList();
+                
+            // Filter by customer ID if provided
+            if (request.CustomerId.HasValue)
+            {
+                invoices = invoices.Where(p => p.CustomerId == request.CustomerId.Value).ToList();
+            }
         }
 
         return invoices;

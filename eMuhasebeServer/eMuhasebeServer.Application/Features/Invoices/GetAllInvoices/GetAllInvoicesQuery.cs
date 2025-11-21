@@ -5,5 +5,7 @@ using TS.Result;
 namespace eMuhasebeServer.Application.Features.Invoices.GetAllInvoices;
 
 public sealed record GetAllInvoicesQuery(
-    int Type) : IRequest<Result<List<Invoice>>>;
-
+    int Type,
+    DateOnly StartDate,
+    DateOnly EndDate,
+    Guid? CustomerId = null) : IRequest<Result<List<Invoice>>>;
