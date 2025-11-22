@@ -2,7 +2,7 @@
     <app-section sectionTitle="Gider Listesi">
         <div class="form-group row">
             <div class="col-9">
-                <button class="btn btn-dark" data-toggle="modal" data-target="#createModal">
+                <button class="btn btn-dark" data-toggle="modal" data-target="#createModal" (click)="resetCreateForm()">
                     <i class="fa-solid fa-plus me-1"></i>
                     Gider Ekle
                 </button>
@@ -73,7 +73,7 @@
                 <tbody>
                     @for(data of getFilteredExpenses()|expense: search | paginate: { itemsPerPage: 10, currentPage: p };track data){
                     <tr>
-                        <td>{{$index + 1}}</td>
+                        <td>{{($index + 1) + (p - 1) * 10}}</td>
                         <td>{{data.date | date: 'dd.MM.yyyy'}}</td>
                         <td>{{data.name}}</td>
                         <td>{{getCategoryName(data.categoryType)}}</td>
@@ -104,7 +104,8 @@
                         </td>
                     </tr>
                     }
-                    <!-- Toplam satırları her para birimi için -->
+                    <!-- Toplam satırları her para birimi için - only show on last page -->
+                    @if(isLastPage()) {
                     @for(entry of (getCurrencyTotals() | keyvalue); track entry.key){
                     <tr style="background-color: #f5f5f5; font-weight: bold;">
                         <td style="text-align: right; padding: 0.75rem;"></td>
@@ -119,6 +120,8 @@
                         <td style="text-align: right; padding: 0.75rem;"></td>
                     </tr>
                     }
+                    }
+
                 </tbody>
             </table>
             <div class="text-center">
@@ -170,7 +173,7 @@
                         <label>Para Birimi</label>
                         <select class="form-control" name="giderCurrencyTypeValue" [(ngModel)]="createModel.giderCurrencyTypeValue" required>
                             @for(currency of currencies; track currency){
-                            <option [value]="currency.value">
+                            <option [value]="currency.value" [selected]="currency.value === 1">
                                 {{currency.name}} ({{currency.symbol}})
                             </option>
                             }
@@ -272,7 +275,7 @@
                         <select class="form-control" name="updateGiderCurrencyTypeValue" [(ngModel)]="updateModel.giderCurrencyTypeValue"
                             required>
                             @for(currency of currencies; track currency){
-                            <option [value]="currency.value">
+                            <option [value]="currency.value" [selected]="currency.value === 1">
                                 {{currency.name}} ({{currency.symbol}})
                             </option>
                             }
@@ -328,20 +331,20 @@
 
                     <div class="form-group mt-2">
                         <label>Gider Tutarı</label>
-                        <input type="text" [value]="getExpensePrice(paymentModel.expenseId) | trCurrency: '₺': true"
+                        <input type="text" [value]="getExpensePrice(paymentModel.expenseId) | trCurrency: getExpenseCurrencySymbol(paymentModel.expenseId): true"
                             class="form-control" readonly>
                     </div>
 
                     <div class="form-group mt-2">
                         <label>Ödenen Tutar</label>
-                        <input type="text" [value]="getExpensePaidAmount(paymentModel.expenseId) | trCurrency: '₺': true"
+                        <input type="text" [value]="getExpensePaidAmount(paymentModel.expenseId) | trCurrency: getExpenseCurrencySymbol(paymentModel.expenseId): true"
                             class="form-control" readonly>
                     </div>
 
                     <div class="form-group mt-2">
                         <label>Kalan Tutar</label>
                         <input type="text"
-                            [value]="getExpenseRemainingAmount(paymentModel.expenseId) | trCurrency: '₺': true"
+                            [value]="getExpenseRemainingAmount(paymentModel.expenseId) | trCurrency: getExpenseCurrencySymbol(paymentModel.expenseId): true"
                             class="form-control" readonly>
                     </div>
 

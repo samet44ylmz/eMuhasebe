@@ -71,12 +71,16 @@ export class ExpensesComponent implements OnInit, OnDestroy {
     // Initialize currency to TL (1)
     this.createModel.giderCurrencyTypeValue = 1;
     
+    // Set default page to last page
+    this.setDefaultPageToLast();
+    
     // Subscribe to router events to refresh data when navigating back to this page
     this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         if (event.url === '/expenses') {
           this.getAll();
+          this.setDefaultPageToLast();
         }
       });
   }
@@ -98,10 +102,22 @@ export class ExpensesComponent implements OnInit, OnDestroy {
     }, (res) => {
       console.log('getAll response:', res);
       this.expenses = res;
+      // Update to last page when data changes
+      this.setDefaultPageToLast();
     }, (err) => {
       // Handle error case
       console.error('Error fetching expenses:', err);
     });
+  }
+
+  // Set default page to last page
+  setDefaultPageToLast() {
+    // Use setTimeout to ensure the data is loaded before calculating pages
+    setTimeout(() => {
+      const filteredExpenses = this.getFilteredExpenses();
+      const totalPages = Math.ceil(filteredExpenses.length / 10);
+      this.p = totalPages > 0 ? totalPages : 1;
+    }, 0);
   }
 
   // Toggle showing only unpaid expenses (remaining amount > 0)
@@ -152,6 +168,27 @@ export class ExpensesComponent implements OnInit, OnDestroy {
     return expense ? (expense.price - expense.paidAmount) : 0;
   }
 
+  // Get expense currency symbol for payment modal
+  getExpenseCurrencySymbol(expenseId: string): string {
+    const expense = this.getExpenseById(expenseId);
+    return expense ? this.getCurrencySymbol(expense.giderCurrencyTypeValue) : '₺';
+  }
+
+  // Get expense name by ID for payment modal
+  getExpenseName(expenseId: string): string {
+    if (!expenseId) return '';
+    const expense = this.expenses.find(e => e.id === expenseId);
+    return expense ? expense.name : '';
+  }
+
+  // Method to reset the create form to default values
+  resetCreateForm() {
+    this.createModel = new CreateExpenseModel();
+    this.createModel.date = this.getToday(); // Set to today's date
+    this.createModel.isCash = false; // Reset to default value
+    this.createModel.giderCurrencyTypeValue = 1; // Reset currency to TL
+  }
+
   create(form: NgForm){
     if(form.valid){
       // Validate that category is selected (not 0)
@@ -169,12 +206,8 @@ export class ExpensesComponent implements OnInit, OnDestroy {
       this.http.post<string>("Giderler/Create", this.createModel, (res) => {
         this.swal.callToast(res);
         
-        // Reset the form but keep the date
-        const currentDate = this.createModel.date;
-        this.createModel = new CreateExpenseModel();
-        this.createModel.date = currentDate;
-        this.createModel.isCash = false; // Reset to default value
-        this.createModel.giderCurrencyTypeValue = 1; // Reset currency to TL
+        // Reset the form and set date to today for next entry
+        this.resetCreateForm();
         
         form.resetForm(); // Reset the form
         this.closeCreateModal(); // Use proper modal closing
@@ -322,16 +355,20 @@ export class ExpensesComponent implements OnInit, OnDestroy {
     return totals;
   }
 
+  // Calculate total number of pages
+  getTotalPages(): number {
+    const filteredExpenses = this.getFilteredExpenses();
+    return Math.ceil(filteredExpenses.length / 10);
+  }
+
+  // Check if we're on the last page
+  isLastPage(): boolean {
+    return this.p === this.getTotalPages();
+  }
+
   openTrash() {
     // Navigate to the expense trash page
     this.router.navigate(['/expense-trash']);
-  }
-
-  // Get expense name by ID for payment modal
-  getExpenseName(expenseId: string): string {
-    if (!expenseId) return '';
-    const expense = this.expenses.find(e => e.id === expenseId);
-    return expense ? expense.name : '';
   }
 
   // Payment functionality (receiving payments for expenses)

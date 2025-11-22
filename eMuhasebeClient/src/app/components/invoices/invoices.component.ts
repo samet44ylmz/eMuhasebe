@@ -75,6 +75,9 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.getAllProducts();
     this.getAllCashRegisters();
     
+    // Set default page to last page
+    this.setDefaultPageToLast();
+    
     // Subscribe to router events to refresh data when navigating back to this page
     this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -84,6 +87,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
           this.getAllCustomers();
           this.getAllProducts();
           this.getAllCashRegisters();
+          this.setDefaultPageToLast();
         }
       });
   }
@@ -103,6 +107,8 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       customerId: this.selectedCustomerId || null
     }, (res)=> {
       this.invoices = res;
+      // Update to last page when data changes
+      this.setDefaultPageToLast();
     });
   }
 
@@ -873,6 +879,47 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     return this.invoices;
   }
 
+  // Get totals for all invoices
+  getInvoiceTotals() {
+    const filteredInvoices = this.getFilteredInvoices();
+    let totalAmount = 0;
+    let totalPaid = 0;
+    let totalRemaining = 0;
+    
+    filteredInvoices.forEach(invoice => {
+      totalAmount += invoice.amount;
+      totalPaid += invoice.paidAmount;
+      totalRemaining += (invoice.amount - invoice.paidAmount);
+    });
+    
+    return {
+      totalAmount: totalAmount,
+      totalPaid: totalPaid,
+      totalRemaining: totalRemaining
+    };
+  }
+
+  // Calculate total number of pages
+  getTotalPages(): number {
+    const filteredInvoices = this.getFilteredInvoices();
+    return Math.ceil(filteredInvoices.length / 10);
+  }
+
+  // Check if we're on the last page
+  isLastPage(): boolean {
+    return this.p === this.getTotalPages();
+  }
+
+  // Set default page to last page
+  setDefaultPageToLast() {
+    // Use setTimeout to ensure the data is loaded before calculating pages
+    setTimeout(() => {
+      const filteredInvoices = this.getFilteredInvoices();
+      const totalPages = Math.ceil(filteredInvoices.length / 10);
+      this.p = totalPages > 0 ? totalPages : 1;
+    }, 0);
+  }
+
   // Method to handle customer search input changes
   onCustomerSearchChange(event: any) {
     this.showCustomerDropdown = true;
@@ -1016,5 +1063,13 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   // Add method to handle customer filter change
   onCustomerFilterChange() {
     this.getAll();
+  }
+
+  // Method to reset the create form to default values
+  resetCreateForm() {
+    this.createModel = new InvoiceModel();
+    this.createModel.date = this.date.transform(new Date(),"yyyy-MM-dd") ?? "";
+    this.customerSearch = ""; // Clear customer search
+    this.productSearch = ""; // Clear product search
   }
 }

@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\eMuhasebe\\eMuhasebeServer\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4B774E4A-FD54-4715-8905-12B9F1B2332F}|eMuhasebeServer.Infrastructure\\eMuhasebeServer.Infrastructure.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.infrastructure\\migrations\\20251122170000_mg18_updategidercurrencytypedefaults.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4B774E4A-FD54-4715-8905-12B9F1B2332F}|eMuhasebeServer.Infrastructure\\eMuhasebeServer.Infrastructure.csproj|solutionrelative:emuhasebeserver.infrastructure\\migrations\\20251122170000_mg18_updategidercurrencytypedefaults.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.application\\mapping\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|solutionrelative:emuhasebeserver.application\\mapping\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{710707C1-DEAB-4FFB-9413-6149FBA1A699}|eMuhasebeServer.Domain\\eMuhasebeServer.Domain.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.domain\\enums\\gidercategorytypeenum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{710707C1-DEAB-4FFB-9413-6149FBA1A699}|eMuhasebeServer.Domain\\eMuhasebeServer.Domain.csproj|solutionrelative:emuhasebeserver.domain\\enums\\gidercategorytypeenum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4B774E4A-FD54-4715-8905-12B9F1B2332F}|eMuhasebeServer.Infrastructure\\eMuhasebeServer.Infrastructure.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.infrastructure\\migrations\\20251122170000_mg18_updategidercurrencytypedefaults.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4B774E4A-FD54-4715-8905-12B9F1B2332F}|eMuhasebeServer.Infrastructure\\eMuhasebeServer.Infrastructure.csproj|solutionrelative:emuhasebeserver.infrastructure\\migrations\\20251122170000_mg18_updategidercurrencytypedefaults.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{710707C1-DEAB-4FFB-9413-6149FBA1A699}|eMuhasebeServer.Domain\\eMuhasebeServer.Domain.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.domain\\enums\\gidercurrencytypeenum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -29,14 +29,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.application\\features\\cashregisters\\createcashregister\\createcashregistercommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|solutionrelative:emuhasebeserver.application\\features\\cashregisters\\createcashregister\\createcashregistercommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.application\\mapping\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|solutionrelative:emuhasebeserver.application\\mapping\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Infrastructure\\Migrations\\20251122161853_mg17.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:eMuhasebeServer.Infrastructure\\Migrations\\20251122161853_mg17.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.application\\features\\cashregisters\\restorecashregister\\restorecashregistercommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -77,6 +69,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{710707C1-DEAB-4FFB-9413-6149FBA1A699}|eMuhasebeServer.Domain\\eMuhasebeServer.Domain.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.domain\\entities\\gider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{710707C1-DEAB-4FFB-9413-6149FBA1A699}|eMuhasebeServer.Domain\\eMuhasebeServer.Domain.csproj|solutionrelative:emuhasebeserver.domain\\entities\\gider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4B774E4A-FD54-4715-8905-12B9F1B2332F}|eMuhasebeServer.Infrastructure\\eMuhasebeServer.Infrastructure.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.infrastructure\\migrations\\20251122161853_mg17.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4B774E4A-FD54-4715-8905-12B9F1B2332F}|eMuhasebeServer.Infrastructure\\eMuhasebeServer.Infrastructure.csproj|solutionrelative:emuhasebeserver.infrastructure\\migrations\\20251122161853_mg17.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -94,7 +90,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "20251122170000_mg18_UpdateGiderCurrencyTypeDefaults.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Infrastructure\\Migrations\\20251122170000_mg18_UpdateGiderCurrencyTypeDefaults.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Infrastructure\\Migrations\\20251122170000_mg18_UpdateGiderCurrencyTypeDefaults.cs",
@@ -102,18 +98,17 @@
               "RelativeToolTip": "eMuhasebeServer.Infrastructure\\Migrations\\20251122170000_mg18_UpdateGiderCurrencyTypeDefaults.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:42:06.944Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:42:06.944Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 0,
               "Title": "MappingProfile.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Mapping\\MappingProfile.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Mapping\\MappingProfile.cs",
               "ToolTip": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Mapping\\MappingProfile.cs",
               "RelativeToolTip": "eMuhasebeServer.Application\\Mapping\\MappingProfile.cs",
-              "ViewState": "AgIAAEgAAAAAAAAAAAAQwG0AAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAQwEgAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-22T16:14:18.362Z",
               "EditorCaption": ""
@@ -128,8 +123,7 @@
               "RelativeToolTip": "eMuhasebeServer.Application\\Features\\CashRegisters\\CreateCashRegister\\CreateCashRegisterCommandHandler.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:13:50.528Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:13:50.528Z"
             },
             {
               "$type": "Document",
@@ -141,8 +135,7 @@
               "RelativeToolTip": "eMuhasebeServer.Application\\Features\\Giderler\\UpdateGider\\UpdateGiderCommand.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:13:28.563Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:13:28.563Z"
             },
             {
               "$type": "Document",
@@ -154,8 +147,7 @@
               "RelativeToolTip": "eMuhasebeServer.Application\\Features\\Giderler\\CreateGider\\CreateGiderCommand.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:13:05.522Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:13:05.522Z"
             },
             {
               "$type": "Document",
@@ -167,12 +159,11 @@
               "RelativeToolTip": "eMuhasebeServer.Application\\Features\\CashRegisters\\UpdateCashRegister\\UpdateCashRegisterCommand.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:12:51.055Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:12:51.055Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 7,
               "Title": "RestoreCashRegisterCommand.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\CashRegisters\\RestoreCashRegister\\RestoreCashRegisterCommand.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\CashRegisters\\RestoreCashRegister\\RestoreCashRegisterCommand.cs",
@@ -180,12 +171,11 @@
               "RelativeToolTip": "eMuhasebeServer.Application\\Features\\CashRegisters\\RestoreCashRegister\\RestoreCashRegisterCommand.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:12:48.967Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:12:48.967Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 8,
               "Title": "PermanentDeleteCashRegisterCommand.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\CashRegisters\\PermanentDeleteCashRegister\\PermanentDeleteCashRegisterCommand.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\CashRegisters\\PermanentDeleteCashRegister\\PermanentDeleteCashRegisterCommand.cs",
@@ -193,12 +183,11 @@
               "RelativeToolTip": "eMuhasebeServer.Application\\Features\\CashRegisters\\PermanentDeleteCashRegister\\PermanentDeleteCashRegisterCommand.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:12:46.925Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:12:46.925Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 9,
               "Title": "DeleteCashRegisterByIdCommand.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\CashRegisters\\DeleteCashRegisterById\\DeleteCashRegisterByIdCommand.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\CashRegisters\\DeleteCashRegisterById\\DeleteCashRegisterByIdCommand.cs",
@@ -206,8 +195,7 @@
               "RelativeToolTip": "eMuhasebeServer.Application\\Features\\CashRegisters\\DeleteCashRegisterById\\DeleteCashRegisterByIdCommand.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:12:41.059Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:12:41.059Z"
             },
             {
               "$type": "Document",
@@ -219,12 +207,11 @@
               "RelativeToolTip": "eMuhasebeServer.Domain\\Enums\\GiderCurrencyTypeEnum.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:08:19.254Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:08:19.254Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 17,
               "Title": "20251122161853_mg17.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Infrastructure\\Migrations\\20251122161853_mg17.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Infrastructure\\Migrations\\20251122161853_mg17.cs",
@@ -232,12 +219,11 @@
               "RelativeToolTip": "eMuhasebeServer.Infrastructure\\Migrations\\20251122161853_mg17.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:18:53.744Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:18:53.744Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 10,
               "Title": "BulkRestoreCashRegistersCommand.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\CashRegisters\\BulkRestoreCashRegisters\\BulkRestoreCashRegistersCommand.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\CashRegisters\\BulkRestoreCashRegisters\\BulkRestoreCashRegistersCommand.cs",
@@ -245,12 +231,11 @@
               "RelativeToolTip": "eMuhasebeServer.Application\\Features\\CashRegisters\\BulkRestoreCashRegisters\\BulkRestoreCashRegistersCommand.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:12:37.781Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:12:37.781Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 11,
               "Title": "BulkPermanentDeleteCashRegistersCommand.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\CashRegisters\\BulkPermanentDeleteCashRegisters\\BulkPermanentDeleteCashRegistersCommand.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\CashRegisters\\BulkPermanentDeleteCashRegisters\\BulkPermanentDeleteCashRegistersCommand.cs",
@@ -258,12 +243,11 @@
               "RelativeToolTip": "eMuhasebeServer.Application\\Features\\CashRegisters\\BulkPermanentDeleteCashRegisters\\BulkPermanentDeleteCashRegistersCommand.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:12:35.137Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:12:35.137Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 12,
               "Title": "GetAllCashRegistersQuery.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\CashRegisters\\GetAllCashRegisters\\GetAllCashRegistersQuery.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\CashRegisters\\GetAllCashRegisters\\GetAllCashRegistersQuery.cs",
@@ -271,12 +255,11 @@
               "RelativeToolTip": "eMuhasebeServer.Application\\Features\\CashRegisters\\GetAllCashRegisters\\GetAllCashRegistersQuery.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:12:29.172Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:12:29.172Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 13,
               "Title": "CreateCashRegisterCommand.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\CashRegisters\\CreateCashRegister\\CreateCashRegisterCommand.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\CashRegisters\\CreateCashRegister\\CreateCashRegisterCommand.cs",
@@ -284,12 +267,11 @@
               "RelativeToolTip": "eMuhasebeServer.Application\\Features\\CashRegisters\\CreateCashRegister\\CreateCashRegisterCommand.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:12:19.053Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:12:19.053Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 14,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Infrastructure\\Context\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Infrastructure\\Context\\ApplicationDbContext.cs",
@@ -297,12 +279,11 @@
               "RelativeToolTip": "eMuhasebeServer.Infrastructure\\Context\\ApplicationDbContext.cs",
               "ViewState": "AgIAACcAAAAAAAAAAAAAAKsAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:11:09.174Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:11:09.174Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 15,
               "Title": "CurrencyTypeEnum.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Domain\\Enums\\CurrencyTypeEnum.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Domain\\Enums\\CurrencyTypeEnum.cs",
@@ -310,12 +291,11 @@
               "RelativeToolTip": "eMuhasebeServer.Domain\\Enums\\CurrencyTypeEnum.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:09:19.272Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:09:19.272Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 16,
               "Title": "Gider.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Domain\\Entities\\Gider.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Domain\\Entities\\Gider.cs",
@@ -323,42 +303,7 @@
               "RelativeToolTip": "eMuhasebeServer.Domain\\Entities\\Gider.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:07:06.913Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "Orientation": 0,
-      "VerticalTabListWidth": 256,
-      "FloatingWindowState": {
-        "Id": "84d31ca4-15d4-4590-b829-4b95a9928e1c",
-        "Display": 1,
-        "X": 312,
-        "Y": -26,
-        "Width": 2008,
-        "Height": 1029,
-        "WindowState": 2
-      },
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "GiderCategoryTypeEnum.cs",
-              "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Domain\\Enums\\GiderCategoryTypeEnum.cs",
-              "RelativeDocumentMoniker": "eMuhasebeServer.Domain\\Enums\\GiderCategoryTypeEnum.cs",
-              "ToolTip": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Domain\\Enums\\GiderCategoryTypeEnum.cs",
-              "RelativeToolTip": "eMuhasebeServer.Domain\\Enums\\GiderCategoryTypeEnum.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T16:08:23.268Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T16:07:06.913Z"
             }
           ]
         }

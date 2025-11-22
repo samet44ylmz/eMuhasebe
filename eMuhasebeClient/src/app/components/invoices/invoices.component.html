@@ -2,7 +2,7 @@
     <app-section sectionTitle="Fatura Listesi">
         <div class="form-group row">
             <div class="col-9">
-                <button class="btn btn-dark" data-toggle="modal" data-target="#createModal">
+                <button class="btn btn-dark" data-toggle="modal" data-target="#createModal" (click)="resetCreateForm()">
                     <i class="fa-solid fa-plus me-1"></i>
                     Fatura Ekle
                 </button>
@@ -73,7 +73,7 @@
                 <tbody>
                     @for(data of getFilteredInvoices()|invoice: search | paginate: { itemsPerPage: 10, currentPage: p };track data){
                     <tr>
-                        <td>{{$index + 1}}</td>
+                        <td>{{($index + 1) + (p - 1) * 10}}</td>
                         <td>{{data.date | date: 'dd.MM.yyyy'}}</td>
                         <td>{{data.invoiceNumber}}</td>
                         <td>{{getProductCodes(data)}}</td>
@@ -107,6 +107,17 @@
                         </td>
                     </tr>
                     }
+                    <!-- Toplam satırı - only show on last page -->
+                    @if(isLastPage()) {
+                    <tr style="background-color: #f5f5f5; font-weight: bold;">
+                        <td colspan="5" style="text-align: right; padding: 0.75rem;">TOPLAM:</td>
+                        <td style="text-align: right; padding: 0.75rem;">{{getInvoiceTotals().totalAmount | trCurrency: '₺': true}}</td>
+                        <td style="text-align: right; padding: 0.75rem;">{{getInvoiceTotals().totalPaid | trCurrency: '₺': true}}</td>
+                        <td style="text-align: right; padding: 0.75rem;">{{getInvoiceTotals().totalRemaining | trCurrency: '₺': true}}</td>
+                        <td colspan="2" style="text-align: right; padding: 0.75rem;"></td>
+                    </tr>
+                    }
+
                 </tbody>
             </table>
             <div class="text-center">
