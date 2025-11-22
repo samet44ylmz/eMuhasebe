@@ -36,6 +36,7 @@ internal sealed class MemoryCacheService(
     {
         List<string> keys = new()
         {
+            "users",
             "cashRegisters",
             "banks",
             "invoices",

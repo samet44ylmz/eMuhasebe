@@ -26,7 +26,7 @@ namespace eMuhasebeServer.Infrastructure.Services
                 new Claim("IsAdmin", user.IsAdmin.ToString())
             };
 
-            DateTime expires = DateTime.UtcNow.AddMonths(1);
+            DateTime expires = DateTime.UtcNow.AddHours(1);
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.SecretKey));
 
