@@ -51,7 +51,9 @@
             ],
             "styles": [
               "src/styles.css",
-              "./node_modules/flexi-toast/src/flexi-toast.css"
+              "./node_modules/flexi-toast/src/flexi-toast.css",
+              "./node_modules/ag-grid-community/styles/ag-grid.css",
+              "./node_modules/ag-grid-community/styles/ag-theme-quartz.css"
             ],
             "scripts": []
           },

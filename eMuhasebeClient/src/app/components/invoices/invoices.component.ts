@@ -3,6 +3,8 @@ import { Router, NavigationEnd } from '@angular/router';
 import { SharedModule } from '../../modules/shared.module';
 import { InvoicePipe } from '../../pipes/invoice.pipe';
 import { ProductPipe } from '../../pipes/product.pipe';
+import { AgGridWrapperComponent } from '../../shared/ag-grid/ag-grid-wrapper.component';
+import type { ColDef, CellClickedEvent } from 'ag-grid-community';
 import { DatePipe } from '@angular/common';
 import { InvoiceModel } from '../../models/invoice.model';
 import { CustomerModel } from '../../models/customer.model';
@@ -18,7 +20,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-invoices',
   standalone: true,
-  imports: [SharedModule, InvoicePipe, ProductPipe],
+  imports: [SharedModule, InvoicePipe, ProductPipe, AgGridWrapperComponent],
   templateUrl: './invoices.component.html',
   styleUrl: './invoices.component.css',
   providers: [DatePipe]
@@ -49,6 +51,79 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   // Add date filtering properties
   startDate: string = "";
   endDate: string = "";
+
+  invoiceColDefs: ColDef[] = [
+    { headerName: '#', valueGetter: 'node.rowIndex + 1', width: 70, sortable: false, filter: false, resizable: false },
+    { field: 'date', headerName: 'Tarih', minWidth: 130, valueFormatter: p => p.value ? new Date(p.value).toLocaleDateString('tr-TR') : '' },
+    { field: 'invoiceNumber', headerName: 'Fatura No', minWidth: 130 },
+    { headerName: 'Ürünler', minWidth: 220, valueGetter: p => this.getProductCodes(p.data) },
+    { headerName: 'Cari', minWidth: 160, valueGetter: p => p.data?.customer?.name ?? '' },
+    { field: 'amount', headerName: 'Tutar', minWidth: 140, valueFormatter: p => (p.value ?? 0).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ₺', cellClass: 'text-end' },
+    { field: 'paidAmount', headerName: 'Ödenen', minWidth: 140, valueFormatter: p => (p.value ?? 0).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ₺', cellClass: 'text-end' },
+    { headerName: 'Kalan', minWidth: 140, valueGetter: p => {
+        const rem = (p.data?.amount ?? 0) - (p.data?.paidAmount ?? 0);
+        return rem.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ₺';
+      }, cellClass: 'text-end'
+    },
+    { headerName: 'Durum', minWidth: 120, valueGetter: p => ((p.data?.amount ?? 0) - (p.data?.paidAmount ?? 0)) <= 0 ? 'Ödendi' : 'Bekliyor' },
+    { field: 'actions', headerName: 'İşlemler', sortable: false, filter: false, minWidth: 220, cellRenderer: () => {
+        return `
+          <div class="btn-group">
+            <button data-action="edit" class="btn btn-outline-primary btn-sm me-1" title="Düzenle">
+              <i class="fa-solid fa-edit"></i>
+            </button>
+            <button data-action="delete" class="btn btn-outline-danger btn-sm me-1" title="Sil">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+            <button data-action="print" class="btn btn-outline-secondary btn-sm me-1" title="Yazdır">
+              <i class="fa-solid fa-print"></i>
+            </button>
+            <button data-action="pay" class="btn btn-outline-success btn-sm" title="Ödeme Al">
+              <i class="fa-solid fa-money-bill-wave"></i>
+            </button>
+          </div>
+        `;
+      }
+    }
+  ];
+
+  get invoicePinnedBottomRow(): any[] {
+    const t = this.getInvoiceTotals();
+    return [{
+      date: '',
+      invoiceNumber: '',
+      // Ürünler
+      // Cari
+      amount: t.totalAmount,
+      paidAmount: t.totalPaid,
+      remaining: t.totalRemaining
+    }];
+  }
+
+  onInvoiceGridCellClicked = (event: CellClickedEvent) => {
+    if (!event || event.colDef.field !== 'actions') return;
+    const originalEvent = event.event as MouseEvent;
+    const target = originalEvent.target as HTMLElement;
+    const button = target.closest('button') as HTMLButtonElement | null;
+    if (!button) return;
+    const action = button.getAttribute('data-action');
+    switch (action) {
+      case 'edit':
+        this.get(event.data);
+        break;
+      case 'delete':
+        this.deleteById(event.data);
+        break;
+      case 'print':
+        this.printInvoice(event.data);
+        break;
+      case 'pay':
+        this.openPaymentModal(event.data);
+        break;
+      default:
+        break;
+    }
+  };
   
   @ViewChild("createModalCloseBtn") createModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
   @ViewChild("updateModalCloseBtn") updateModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;

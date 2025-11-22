@@ -18,65 +18,12 @@
         </div>
 
         <div class="form-group mt-2">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Müşteri Adı</th>
-                        <!-- <th>Tipi</th> -->
-                        <th>İl/İlçe</th>
-                        <th>Adres</th>
-                        <th>Vergi Dairesi</th>
-                        <th>Vergi Numarası</th>
-                        <!-- <th>Giriş</th> -->
-                        <!-- <th>Çıkış</th> -->
-                        <!-- <th>Bakiye</th> -->
-                        <th>İşlemler</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for(data of customers |customer: search | paginate: { itemsPerPage: 10, currentPage: p };track
-                    data){
-                    <tr>
-                        <td>{{($index + 1)}}</td>
-                        <td>{{data.name}}</td>
-                        <!-- <td>{{data.type.name}}</td> -->
-                        <td>{{data.city}} / {{data.town}}</td>
-                        <td>{{data.fullAddress}}</td>
-                        <td>{{data.taxDepartment}}</td>
-                        <td>{{data.taxNumber}}</td>
-                        <!-- <td>{{data.depositAmount | trCurrency: '₺': true}}</td> -->
-                        <!-- <td>{{data.withdrawalAmount | trCurrency: '₺': true}}</td> -->
-                        <!-- <td>
-                            <span
-                                [ngClass]="data.depositAmount > data.withdrawalAmount ? 'text-success' : 'text-danger'">
-                                {{(data.depositAmount - data.withdrawalAmount) | trCurrency: '₺': true}}
-                            </span>
-                        </td> -->
-                        <td class="d-flex">
-                               
-                            <button title="Detaylar" class="btn btn-dark btn-sm me-1" routerLink="/customers/details/{{data.id}}">
-                                <i class="fa-solid fa-file me-1"></i>
-                            
-                            </button>
-                            <button data-toggle="modal" data-target="#updateModal" (click)="get(data)"
-                                class="btn btn-outline-primary btn-sm me-1">
-                                <i class="fa-solid fa-edit"></i>
-                            </button>
-                            <button (click)="deleteById(data)" class="btn btn-outline-danger btn-sm">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    }
-                </tbody>
-            </table>
-            <div class="text-center">
-               <pagination-controls nextLabel="Sonraki" previousLabel="Önceki" (pageChange)="p = $event"></pagination-controls>
-            </div>
-
-
-
+            <app-ag-grid
+                [rowData]="customers | customer: search"
+                [columnDefs]="customerColDefs"
+                [height]="'520px'"
+                [onCellClicked]="onCustomerGridCellClicked">
+            </app-ag-grid>
         </div>
     </app-section>
 </app-blank>

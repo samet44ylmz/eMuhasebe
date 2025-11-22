@@ -4,6 +4,8 @@ import { CustomerModel } from '../../models/customer.model';
 // import { CustomerTypes } from '../../models/customer.model';
 import { SharedModule } from '../../modules/shared.module';
 import { CustomerPipe } from '../../pipes/customer.pipe';
+import { AgGridWrapperComponent } from '../../shared/ag-grid/ag-grid-wrapper.component';
+import type { ColDef, CellClickedEvent, ICellRendererParams } from 'ag-grid-community';
 import { HttpService } from '../../services/http.service';
 import { SwalService } from '../../services/swal.service';
 import { NgForm } from '@angular/forms';
@@ -14,7 +16,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-customers',
   standalone: true,
-  imports: [SharedModule, CustomerPipe, RouterLink],
+  imports: [SharedModule, CustomerPipe, RouterLink, AgGridWrapperComponent],
   templateUrl: './customers.component.html',
   styleUrl: './customers.component.css'
 })
@@ -25,6 +27,58 @@ p: number = 1;
 // customerTypes = CustomerTypes;
 
 private routerSubscription: Subscription | undefined;
+
+  customerColDefs: ColDef[] = [
+    { headerName: '#', valueGetter: 'node.rowIndex + 1', width: 70, sortable: false, filter: false, resizable: false },
+    { field: 'name', headerName: 'Müşteri Adı', minWidth: 160 },
+    { headerName: 'İl/İlçe', minWidth: 160, valueGetter: p => `${p.data?.city ?? ''} / ${p.data?.town ?? ''}` },
+    { field: 'fullAddress', headerName: 'Adres', minWidth: 220 },
+    { field: 'taxDepartment', headerName: 'Vergi Dairesi', minWidth: 160 },
+    { field: 'taxNumber', headerName: 'Vergi Numarası', minWidth: 160 },
+    { field: 'actions', headerName: 'İşlemler', sortable: false, filter: false, minWidth: 200, cellRenderer: (params: ICellRendererParams) => {
+        const id = params.data?.id || '';
+        return `
+          <div class="d-flex">
+            <a data-action="details" data-id="${id}" class="btn btn-dark btn-sm me-1" title="Detaylar">
+              <i class="fa-solid fa-file me-1"></i>
+            </a>
+            <button data-action="edit" class="btn btn-outline-primary btn-sm me-1" title="Düzenle">
+              <i class="fa-solid fa-edit"></i>
+            </button>
+            <button data-action="delete" class="btn btn-outline-danger btn-sm" title="Sil">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        `;
+      }
+    }
+  ];
+
+  onCustomerGridCellClicked = (event: CellClickedEvent) => {
+    if (!event || event.colDef.field !== 'actions') return;
+    const originalEvent = event.event as MouseEvent;
+    const target = originalEvent.target as HTMLElement;
+    const buttonOrLink = target.closest('button, a') as HTMLElement | null;
+    if (!buttonOrLink) return;
+    const action = buttonOrLink.getAttribute('data-action');
+    switch (action) {
+      case 'details': {
+        const id = buttonOrLink.getAttribute('data-id');
+        if (id) {
+          this.router.navigate(['/customers/details', id]);
+        }
+        break;
+      }
+      case 'edit':
+        this.get(event.data);
+        break;
+      case 'delete':
+        this.deleteById(event.data);
+        break;
+      default:
+        break;
+    }
+  };
 
   @ViewChild("createModalCloseBtn") createModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
   @ViewChild("updateModalCloseBtn") updateModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;

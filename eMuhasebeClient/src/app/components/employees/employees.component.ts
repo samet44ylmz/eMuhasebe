@@ -1,6 +1,8 @@
 import { Component, ElementRef, ViewChild, OnDestroy, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { SharedModule } from '../../modules/shared.module';
+import { AgGridWrapperComponent } from '../../shared/ag-grid/ag-grid-wrapper.component';
+import type { ColDef, CellClickedEvent } from 'ag-grid-community';
 import { EmployeePipe } from '../../pipes/employee.pipe';
 import { EmployeeModel } from '../../models/employee.model';
 import { HttpService } from '../../services/http.service';
@@ -17,7 +19,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-employees',
   standalone: true,
-  imports: [SharedModule, EmployeePipe],
+  imports: [SharedModule, EmployeePipe, AgGridWrapperComponent],
   templateUrl: './employees.component.html',
   styleUrl: './employees.component.css'
 })
@@ -25,6 +27,52 @@ export class EmployeesComponent implements OnInit, OnDestroy {
   employees: EmployeeModel[] = [];
   search:string = "";
   p: number = 1; // Add pagination property
+
+  employeeColDefs: ColDef[] = [
+    { headerName: '#', valueGetter: 'node.rowIndex + 1', width: 80, sortable: false, filter: false, resizable: false },
+    { field: 'name', headerName: 'Ad Soyad' },
+    { field: 'department', headerName: 'Departman' },
+    { field: 'position', headerName: 'Pozisyon' },
+    { field: 'phone', headerName: 'Telefon', minWidth: 140 },
+    { field: 'salary', headerName: 'Maaş', valueFormatter: params => (params.value ?? 0).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' }), minWidth: 140 },
+    { field: 'startDate', headerName: 'Başlama Tarihi', valueFormatter: params => {
+        if (!params.value) return '';
+        try { return new Date(params.value).toLocaleDateString('tr-TR'); } catch { return params.value; }
+      }, minWidth: 160
+    },
+    { field: 'actions', headerName: 'İşlemler', sortable: false, filter: false, minWidth: 160, cellRenderer: () => {
+        return `
+          <div class="btn-group">
+            <button data-action="edit" class="btn btn-outline-primary btn-sm me-1" title="Düzenle">
+              <i class="fa-solid fa-edit"></i>
+            </button>
+            <button data-action="delete" class="btn btn-outline-danger btn-sm" title="Sil">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        `;
+      }
+    }
+  ];
+
+  onEmployeeGridCellClicked = (event: CellClickedEvent) => {
+    if (!event || event.colDef.field !== 'actions') return;
+    const originalEvent = event.event as MouseEvent;
+    const target = originalEvent.target as HTMLElement;
+    const button = target.closest('button') as HTMLButtonElement | null;
+    if (!button) return;
+    const action = button.getAttribute('data-action');
+    switch (action) {
+      case 'edit':
+        this.get(event.data);
+        break;
+      case 'delete':
+        this.deleteById(event.data);
+        break;
+      default:
+        break;
+    }
+  };
   
   private routerSubscription: Subscription | undefined;
   

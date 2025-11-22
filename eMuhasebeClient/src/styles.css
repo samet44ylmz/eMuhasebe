@@ -9,3 +9,16 @@ a{
 .me-2{
     margin-right: 7px;
 }
+
+/* Scrollable dropdown utility: show max 5 items with scrollbar */
+.dropdown-scroll-5{
+    max-height: 160px; /* 5 * 32px item height */
+    overflow-y: auto;
+}
+
+/* When native select is rendered as listbox (size/multiple), make it scrollable */
+select.form-control[size], 
+select.form-control[multiple]{
+    max-height: 200px;
+    overflow-y: auto;
+}
