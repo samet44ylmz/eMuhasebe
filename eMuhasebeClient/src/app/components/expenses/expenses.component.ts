@@ -208,11 +208,8 @@ export class ExpensesComponent implements OnInit, OnDestroy {
         
         // Reset the form and set date to today for next entry
         this.resetCreateForm();
-        
         form.resetForm(); // Reset the form
         this.closeCreateModal(); // Use proper modal closing
-        
-        // Refresh the expense list
         this.getAll();
       });
     }

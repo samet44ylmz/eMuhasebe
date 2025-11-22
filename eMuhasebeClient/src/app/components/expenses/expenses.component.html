@@ -188,7 +188,7 @@
 
                     <div class="form-group mt-2">
                         <label>Tutar</label>
-                        <input type="text" required [(ngModel)]="createModel.price" class="form-control" name="price">
+                        <input type="text" required [(ngModel)]="createModel.price" class="form-control" name="price" appNoLeadingZero>
                         <div class="invalid-feedback"></div>
                     </div>
 
@@ -292,7 +292,7 @@
                     <div class="form-group mt-2">
                         <label>Tutar</label>
                         <input type="text" required [(ngModel)]="updateModel.price" class="form-control"
-                            name="updatePrice">
+                            name="updatePrice" appNoLeadingZero>
                         <div class="invalid-feedback"></div>
                     </div>
                 </div>
@@ -351,7 +351,7 @@
                     <div class="form-group mt-2">
                         <label>Ödenecek Tutar</label>
                         <input type="number" [(ngModel)]="paymentAmount" class="form-control" name="paymentAmount"
-                            required min="0.01" [max]="getExpenseRemainingAmount(paymentModel.expenseId)">
+                            required min="0.01" [max]="getExpenseRemainingAmount(paymentModel.expenseId)" appNoLeadingZero>
                         <div class="invalid-feedback"></div>
                     </div>
 

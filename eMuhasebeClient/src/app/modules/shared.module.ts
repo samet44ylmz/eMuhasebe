@@ -9,21 +9,21 @@ import { FlexiSelectModule } from 'flexi-select';
 import { UserPipe } from '../pipes/user.pipe';
 import { FormValidateDirective } from 'form-validate-angular';
 import { NgxPaginationModule } from 'ngx-pagination';
-
-
+import { NoLeadingZeroDirective } from '../directives/no-leading-zero.directive';
 
 @NgModule({
-  declarations: [    
+  declarations: [
+    // NoLeadingZeroDirective - removed because it's standalone
   ],
   imports: [
- 
     CommonModule,
     BlankComponent, 
     SectionComponent,
     FormsModule,
     TrCurrencyPipe,
     FormValidateDirective,
-    NgxPaginationModule
+    NgxPaginationModule,
+    NoLeadingZeroDirective // Added here because it's standalone
   ],
   exports: [
     CommonModule,
@@ -33,6 +33,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     TrCurrencyPipe,
     FormValidateDirective,
     NgxPaginationModule,
+    NoLeadingZeroDirective // Export the standalone directive
   ]
 })
 export class SharedModule { }

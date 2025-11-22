@@ -152,10 +152,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       
       this.http.post<string>("Invoices/Create",this.createModel,(res)=> {
         this.swal.callToast(res);
-        this.createModel = new InvoiceModel();
-        this.createModel.date = this.date.transform(new Date(),"yyyy-MM-dd") ?? "";
-        this.customerSearch = ""; // Clear customer search
-        this.productSearch = ""; // Clear product search
+        this.resetCreateForm(); // Reset the form to default values
         form.resetForm(); // Reset the form
         this.closeCreateModal(); // Use proper modal closing
         this.getAll();

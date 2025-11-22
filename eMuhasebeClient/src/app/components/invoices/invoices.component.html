@@ -212,14 +212,14 @@
                         <div class="col-2">
                             <div class="form-group">
                                 <label>Adet</label>
-                                <input type="text" [(ngModel)]="createModel.quantity" class="form-control" [ngModelOptions]="{standalone:true}">
+                                <input type="text" [(ngModel)]="createModel.quantity" class="form-control" [ngModelOptions]="{standalone:true}" appNoLeadingZero>
                                 <div class="invalid-feedback"></div>
                             </div> 
                         </div>
                         <div class="col-2">
                             <div class="form-group">
                                 <label>Birim Fiyatı</label>
-                                <input type="text" [(ngModel)]="createModel.price" class="form-control" [ngModelOptions]="{standalone:true}">
+                                <input type="text" [(ngModel)]="createModel.price" class="form-control" [ngModelOptions]="{standalone:true}" appNoLeadingZero>
                                 <div class="invalid-feedback"></div>
                             </div> 
                         </div>
@@ -367,14 +367,14 @@
                         <div class="col-2">
                             <div class="form-group">
                                 <label>Adet</label>
-                                <input type="text" [(ngModel)]="updateModel.quantity" class="form-control" [ngModelOptions]="{standalone:true}">
+                                <input type="text" [(ngModel)]="updateModel.quantity" class="form-control" [ngModelOptions]="{standalone:true}" appNoLeadingZero>
                                 <div class="invalid-feedback"></div>
                             </div> 
                         </div>
                         <div class="col-2">
                             <div class="form-group">
                                 <label>Birim Fiyatı</label>
-                                <input type="text" [(ngModel)]="updateModel.price" class="form-control" [ngModelOptions]="{standalone:true}">
+                                <input type="text" [(ngModel)]="updateModel.price" class="form-control" [ngModelOptions]="{standalone:true}" appNoLeadingZero>
                                 <div class="invalid-feedback"></div>
                             </div> 
                         </div>
@@ -484,7 +484,7 @@
                     <div class="form-group mt-2">
                         <label>Ödenecek Tutar</label>
                         <input type="number" [(ngModel)]="paymentAmount" class="form-control" name="paymentAmount"
-                            required min="0.01" [max]="paymentModel.amount - paymentModel.paidAmount">
+                            required min="0.01" [max]="paymentModel.amount - paymentModel.paidAmount" appNoLeadingZero>
                         <div class="invalid-feedback"></div>
                     </div>
 

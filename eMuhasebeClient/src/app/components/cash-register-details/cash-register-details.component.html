@@ -121,7 +121,7 @@
 
                     <div class="form-group mt-2">
                         <label>Tutar</label>
-                        <input type="text" required [(ngModel)]="createModel.amount" class="form-control" name="amount">
+                        <input type="text" required [(ngModel)]="createModel.amount" class="form-control" name="amount" appNoLeadingZero>
                         <div class="invalid-feedback"></div>
                     </div>
 
@@ -158,7 +158,7 @@
                     <div class="form-group mt-2">
                         <label>Karşı Tutar</label>
                         <input type="text" required [(ngModel)]="createModel.oppositeAmount" class="form-control"
-                            name="oppositeAmount">
+                            name="oppositeAmount" appNoLeadingZero>
                         <div class="invalid-feedback"></div>
                     </div>
                     }
@@ -185,7 +185,7 @@
                     <div class="form-group mt-2">
                         <label>Karşı Tutar</label>
                         <input type="text" required [(ngModel)]="createModel.oppositeAmount" class="form-control"
-                            name="oppositeAmount">
+                            name="oppositeAmount" appNoLeadingZero>
                         <div class="invalid-feedback"></div>
                     </div>
                     }
@@ -212,7 +212,7 @@
                     <div class="form-group mt-2">
                         <label>Karşı Tutar</label>
                         <input type="text" required [(ngModel)]="createModel.oppositeAmount" class="form-control"
-                            name="oppositeAmount">
+                            name="oppositeAmount" appNoLeadingZero>
                         <div class="invalid-feedback"></div>
                     </div>
                     }
@@ -261,7 +261,7 @@
                     <div class="form-group mt-2">
                         <label>Tutar</label>
                         <input type="text" required [(ngModel)]="updateModel.amount" class="form-control"
-                            name="updateAmount">
+                            name="updateAmount" appNoLeadingZero>
                         <div class="invalid-feedback"></div>
                     </div>
 

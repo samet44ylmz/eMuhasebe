@@ -27,7 +27,7 @@ import { ProductTrashComponent } from './components/product-trash/product-trash.
 import { EmployeeTrashComponent } from './components/employee-trash/employee-trash.component';
 import { ExpenseTrashComponent } from './components/expense-trash/expense-trash.component';
 import { InvoiceTrashComponent } from './components/invoice-trash/invoice-trash.component';
-
+import { TestLeadingZeroComponent } from './components/test-leading-zero/test-leading-zero.component';
 
 export const routes: Routes = [
     {
@@ -160,8 +160,7 @@ export const routes: Routes = [
             {
                 path: "expenses",
                 component: ExpensesComponent
-            },
-                
+            },                
             
             {
                 path: "reports",
@@ -171,6 +170,11 @@ export const routes: Routes = [
                         component: ProductProfitabilityReportsComponent
                     }
                 ]
+            },
+            
+            {
+                path: "test-leading-zero",
+                component: TestLeadingZeroComponent
             }
 
 

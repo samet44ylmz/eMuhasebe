@@ -119,7 +119,7 @@
 
                     <div class="form-group mt-2">
                         <label>Maaş <span class="text-danger">*</span></label>
-                        <input type="number" required min="0" [(ngModel)]="createModel.salary" class="form-control" name="salary">
+                        <input type="number" required min="0" [(ngModel)]="createModel.salary" class="form-control" name="salary" appNoLeadingZero>
                         <div class="invalid-feedback"></div>
                     </div>
 
@@ -187,7 +187,7 @@
 
                     <div class="form-group mt-2">
                         <label>Maaş <span class="text-danger">*</span></label>
-                        <input type="number" required min="0" [(ngModel)]="updateModel.salary" class="form-control" name="updateSalary">
+                        <input type="number" required min="0" [(ngModel)]="updateModel.salary" class="form-control" name="updateSalary" appNoLeadingZero>
                         <div class="invalid-feedback"></div>
                     </div>
 
@@ -492,7 +492,7 @@
                                 <input type="number" required min="0.01" step="0.01" 
                                     [(ngModel)]="createSalaryModel.baseSalary" 
                                     (input)="calculateSalary()"
-                                    class="form-control" name="baseSalary" readonly>
+                                    class="form-control" name="baseSalary" readonly appNoLeadingZero>
                                 <div class="invalid-feedback"></div>
                                 <small class="text-muted">Temel maaş çalışanın sabit maaşıdır ve çalışılan gün sayısına göre otomatik hesaplanır</small>
                             </div>
@@ -504,7 +504,7 @@
                                 <input type="number" min="0" step="0.01" 
                                     [(ngModel)]="createSalaryModel.overtime" 
                                     (input)="calculateSalary()"
-                                    class="form-control" name="overtime">
+                                    class="form-control" name="overtime" appNoLeadingZero>
                             </div>
                         </div>
                     </div>
@@ -516,7 +516,7 @@
                                 <input type="number" min="0" step="0.01" 
                                     [(ngModel)]="createSalaryModel.bonus" 
                                     (input)="calculateSalary()"
-                                    class="form-control" name="bonus">
+                                    class="form-control" name="bonus" appNoLeadingZero>
                             </div>
                         </div>
 
@@ -526,7 +526,7 @@
                                 <input type="number" min="0" step="0.01" 
                                     [(ngModel)]="createSalaryModel.allowances" 
                                     (input)="calculateSalary()"
-                                    class="form-control" name="allowances">
+                                    class="form-control" name="allowances" appNoLeadingZero>
                             </div>
                         </div>
                     </div>
@@ -541,7 +541,7 @@
                                 <input type="number" min="0" step="0.01" 
                                     [(ngModel)]="createSalaryModel.taxDeduction" 
                                     (input)="calculateSalary()"
-                                    class="form-control" name="taxDeduction">
+                                    class="form-control" name="taxDeduction" appNoLeadingZero>
                             </div>
                         </div>
 
@@ -551,7 +551,7 @@
                                 <input type="number" min="0" step="0.01" 
                                     [(ngModel)]="createSalaryModel.socialSecurityDeduction" 
                                     (input)="calculateSalary()"
-                                    class="form-control" name="socialSecurityDeduction">
+                                    class="form-control" name="socialSecurityDeduction" appNoLeadingZero>
                             </div>
                         </div>
                     </div>
@@ -563,7 +563,7 @@
                                 <input type="number" min="0" step="0.01" 
                                     [(ngModel)]="createSalaryModel.healthInsuranceDeduction" 
                                     (input)="calculateSalary()"
-                                    class="form-control" name="healthInsuranceDeduction">
+                                    class="form-control" name="healthInsuranceDeduction" appNoLeadingZero>
                             </div>
                         </div>
 
@@ -573,7 +573,7 @@
                                 <input type="number" min="0" step="0.01" 
                                     [(ngModel)]="createSalaryModel.otherDeductions" 
                                     (input)="calculateSalary()"
-                                    class="form-control" name="otherDeductions">
+                                    class="form-control" name="otherDeductions" appNoLeadingZero>
                             </div>
                         </div>
                     </div>
@@ -611,7 +611,7 @@
                                 <input type="number" min="1" max="31" 
                                     [(ngModel)]="createSalaryModel.workDays" 
                                     (input)="calculateSalary()"
-                                    class="form-control" name="workDays">
+                                    class="form-control" name="workDays" appNoLeadingZero>
                             </div>
                         </div>
 
@@ -620,7 +620,7 @@
                                 <label>Mesai Saatleri</label>
                                 <input type="number" min="0" step="0.5" 
                                     [(ngModel)]="createSalaryModel.overtimeHours" 
-                                    class="form-control" name="overtimeHours">
+                                    class="form-control" name="overtimeHours" appNoLeadingZero>
                             </div>
                         </div>
                     </div>
@@ -719,7 +719,7 @@
                                 <input type="number" required min="0.01" step="0.01" 
                                     [(ngModel)]="updateSalaryModel.baseSalary" 
                                     (input)="calculateSalaryUpdate()"
-                                    class="form-control" name="updateBaseSalary" readonly>
+                                    class="form-control" name="updateBaseSalary" readonly appNoLeadingZero>
                                 <div class="invalid-feedback"></div>
                                 <small class="text-muted">Temel maaş çalışanın sabit maaşıdır ve çalışılan gün sayısına göre otomatik hesaplanır</small>
                             </div>
@@ -731,7 +731,7 @@
                                 <input type="number" min="0" step="0.01" 
                                     [(ngModel)]="updateSalaryModel.overtime" 
                                     (input)="calculateSalaryUpdate()"
-                                    class="form-control" name="updateOvertime">
+                                    class="form-control" name="updateOvertime" appNoLeadingZero>
                             </div>
                         </div>
                     </div>
@@ -743,7 +743,7 @@
                                 <input type="number" min="0" step="0.01" 
                                     [(ngModel)]="updateSalaryModel.bonus" 
                                     (input)="calculateSalaryUpdate()"
-                                    class="form-control" name="updateBonus">
+                                    class="form-control" name="updateBonus" appNoLeadingZero>
                             </div>
                         </div>
 
@@ -753,7 +753,7 @@
                                 <input type="number" min="0" step="0.01" 
                                     [(ngModel)]="updateSalaryModel.allowances" 
                                     (input)="calculateSalaryUpdate()"
-                                    class="form-control" name="updateAllowances">
+                                    class="form-control" name="updateAllowances" appNoLeadingZero>
                             </div>
                         </div>
                     </div>
@@ -768,7 +768,7 @@
                                 <input type="number" min="0" step="0.01" 
                                     [(ngModel)]="updateSalaryModel.taxDeduction" 
                                     (input)="calculateSalaryUpdate()"
-                                    class="form-control" name="updateTaxDeduction">
+                                    class="form-control" name="updateTaxDeduction" appNoLeadingZero>
                             </div>
                         </div>
 
@@ -778,7 +778,7 @@
                                 <input type="number" min="0" step="0.01" 
                                     [(ngModel)]="updateSalaryModel.socialSecurityDeduction" 
                                     (input)="calculateSalaryUpdate()"
-                                    class="form-control" name="updateSocialSecurityDeduction">
+                                    class="form-control" name="updateSocialSecurityDeduction" appNoLeadingZero>
                             </div>
                         </div>
                     </div>
@@ -790,7 +790,7 @@
                                 <input type="number" min="0" step="0.01" 
                                     [(ngModel)]="updateSalaryModel.healthInsuranceDeduction" 
                                     (input)="calculateSalaryUpdate()"
-                                    class="form-control" name="updateHealthInsuranceDeduction">
+                                    class="form-control" name="updateHealthInsuranceDeduction" appNoLeadingZero>
                             </div>
                         </div>
 
@@ -800,7 +800,7 @@
                                 <input type="number" min="0" step="0.01" 
                                     [(ngModel)]="updateSalaryModel.otherDeductions" 
                                     (input)="calculateSalaryUpdate()"
-                                    class="form-control" name="updateOtherDeductions">
+                                    class="form-control" name="updateOtherDeductions" appNoLeadingZero>
                             </div>
                         </div>
                     </div>
@@ -838,7 +838,7 @@
                                 <input type="number" min="1" max="31" 
                                     [(ngModel)]="updateSalaryModel.workDays" 
                                     (input)="calculateSalaryUpdate()"
-                                    class="form-control" name="updateWorkDays">
+                                    class="form-control" name="updateWorkDays" appNoLeadingZero>
                             </div>
                         </div>
 
@@ -847,7 +847,7 @@
                                 <label>Mesai Saatleri</label>
                                 <input type="number" min="0" step="0.5" 
                                     [(ngModel)]="updateSalaryModel.overtimeHours" 
-                                    class="form-control" name="updateOvertimeHours">
+                                    class="form-control" name="updateOvertimeHours" appNoLeadingZero>
                             </div>
                         </div>
                     </div>
