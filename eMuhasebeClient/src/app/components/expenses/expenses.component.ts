@@ -41,6 +41,10 @@ export class ExpensesComponent implements OnInit, OnDestroy {
   // Add date filtering properties
   startDate: string = "";
   endDate: string = "";
+  
+  // Add category search properties (similar to customer search in invoices)
+  categorySearch: string = "";
+  showCategoryDropdown: boolean = false;
 
   @ViewChild("createModalCloseBtn") createModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
   @ViewChild("updateModalCloseBtn") updateModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
@@ -307,12 +311,8 @@ export class ExpensesComponent implements OnInit, OnDestroy {
   }
 
   getCategoryName(value: number): string {
-    // Handle invalid or zero values by defaulting to Malzeme (5)
-    if (!value || value === 0) {
-      value = 5;
-    }
     const category = this.categories.find(c => c.value === value);
-    return category ? category.name : 'Bilinmiyor';
+    return category ? category.name : '';
   }
 
   getCurrencySymbol(currencyValue: number): string {
@@ -640,5 +640,69 @@ export class ExpensesComponent implements OnInit, OnDestroy {
   // Add method to handle category filter change
   onCategoryFilterChange() {
     this.getAll();
+  }
+  
+  // Method to get filtered categories based on search term (similar to getFilteredCustomers in invoices)
+  getFilteredCategories(): any[] {
+    if (!this.categorySearch) {
+      return this.categories;
+    }
+    
+    return this.categories.filter(category => 
+      category.name.toLowerCase().includes(this.categorySearch.toLowerCase())
+    );
+  }
+  
+  // Method to handle category search input changes (similar to onCustomerSearchChange in invoices)
+  onCategorySearchChange(event: any) {
+    this.showCategoryDropdown = true;
+    // If a category is already selected and user starts typing, clear the selection
+    if (this.selectedCategoryId && this.categorySearch !== event.target.value) {
+      this.selectedCategoryId = null;
+    }
+  }
+  
+  // Method to handle category search focus (similar to onCustomerSearchFocus in invoices)
+  onCategorySearchFocus() {
+    this.showCategoryDropdown = true;
+    // Only clear the search term if no category is selected
+    if (!this.selectedCategoryId) {
+      this.categorySearch = "";
+    }
+  }
+  
+  // Method to handle category search blur (similar to onCustomerSearchBlur in invoices)
+  onCategorySearchBlur() {
+    // Don't hide the dropdown immediately to allow clicking on items
+    setTimeout(() => {
+      this.showCategoryDropdown = false;
+      // If no category is selected after blur, clear the search term
+      if (!this.selectedCategoryId) {
+        this.categorySearch = "";
+      }
+    }, 200);
+  }
+  
+  // Method to select a category for filtering (similar to selectCustomerForFilter in invoices)
+  selectCategoryForFilter(category: any) {
+    this.selectedCategoryId = category.value;
+    this.categorySearch = category.name;
+    this.showCategoryDropdown = false;
+    this.onCategoryFilterChange(); // Apply the filter immediately
+    
+    // Make sure the input field gets focus after selection
+    setTimeout(() => {
+      const categorySearchInput = document.querySelector('input[placeholder="Kategori ara..."]') as HTMLInputElement;
+      if (categorySearchInput) {
+        categorySearchInput.focus();
+      }
+    }, 10);
+  }
+  
+  // Method to clear category filter (similar to clearCustomerFilter in invoices)
+  clearCategoryFilter() {
+    this.selectedCategoryId = null;
+    this.categorySearch = "";
+    this.onCategoryFilterChange(); // Apply the filter immediately
   }
 }
