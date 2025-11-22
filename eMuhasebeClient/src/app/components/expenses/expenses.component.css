@@ -66,3 +66,21 @@
     font-size: 0.875rem;
   }
 }
+
+/* Totals row alignment */
+.table .total-row td {
+  vertical-align: middle;
+  text-align: right;
+  font-weight: 700;
+}
+.table .total-row td:first-child {
+  text-align: right;
+}
+
+/* Align total amounts with header columns */
+.table .total-row td:nth-child(6),
+.table .total-row td:nth-child(7),
+.table .total-row td:nth-child(8) {
+  padding-right: 0.75rem;
+  padding-left: 0.75rem;
+}

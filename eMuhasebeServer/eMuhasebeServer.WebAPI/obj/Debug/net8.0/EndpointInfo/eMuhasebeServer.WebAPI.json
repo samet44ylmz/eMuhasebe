@@ -3474,6 +3474,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "giderCurrencyTypeValue": {
+            "type": "integer",
+            "format": "int32"
+          },
           "description": {
             "type": "string",
             "nullable": true
@@ -4393,6 +4397,10 @@
             "format": "date"
           },
           "categoryValue": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "giderCurrencyTypeValue": {
             "type": "integer",
             "format": "int32"
           },

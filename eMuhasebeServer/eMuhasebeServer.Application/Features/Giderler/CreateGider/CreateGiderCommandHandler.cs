@@ -29,6 +29,7 @@ internal sealed class CreateGiderCommandHandler(
             Name = request.Name,
             Date = request.Date,
             CategoryType = GiderCategoryTypeEnum.FromValue(request.CategoryValue),
+            GiderCurrencyType = GiderCurrencyTypeEnum.FromValue(request.GiderCurrencyTypeValue),
             Description = request.Description,
             Price = request.Price,
             CashRegisterDetailId = null,

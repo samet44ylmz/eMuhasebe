@@ -19,6 +19,8 @@ using eMuhasebeServer.Application.Features.Users.UpdateUser;
 using eMuhasebeServer.Domain.Entities;
 using eMuhasebeServer.Domain.Enums;
 using Microsoft.Extensions.Options;
+using eMuhasebeServer.Application.Features.Giderler.CreateGider;
+using eMuhasebeServer.Application.Features.Giderler.UpdateGider;
 
 namespace eMuhasebeServer.Application.Mapping;
 
@@ -91,6 +93,18 @@ public sealed class MappingProfile : Profile
             });
         CreateMap<UpdateEmployeeCommand, EmployeeDetails>();
 
-       
+        CreateMap<CreateGiderCommand, Gider>()
+           .ForMember(member => member.GiderCurrencyType, options =>
+           {
+               options.MapFrom(map => GiderCurrencyTypeEnum.FromValue(map.GiderCurrencyTypeValue));
+           });
+
+        CreateMap<UpdateGiderCommand, Gider>()
+          .ForMember(member => member.GiderCurrencyType, options =>
+          {
+              options.MapFrom(map => GiderCurrencyTypeEnum.FromValue(map.GiderCurrencyTypeValue));
+          });
+
+
     }
 }

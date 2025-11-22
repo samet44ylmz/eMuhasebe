@@ -13,6 +13,7 @@ public sealed record CreateGiderCommand(
     string Name,
     DateOnly Date,
     int CategoryValue,
+    int GiderCurrencyTypeValue,
     string Description,
     decimal Price,
     bool? IsCash,

@@ -4,6 +4,7 @@ import { SharedModule } from '../../modules/shared.module';
 import { ExpensePipe } from '../../pipes/expense.pipe';
 import { ExpenseModel, CreateExpenseModel, UpdateExpenseModel, PayExpenseModel } from '../../models/expense.model';
 import { ExpensesCategories } from '../../models/expenses-category.model';
+import { CurrencyTypes } from '../../models/currency.model';
 import { HttpService } from '../../services/http.service';
 import { SwalService } from '../../services/swal.service';
 import { NgForm } from '@angular/forms';
@@ -23,6 +24,7 @@ import { DatePipe } from '@angular/common';
 export class ExpensesComponent implements OnInit, OnDestroy {
   expenses: ExpenseModel[] = [];
   search: string = "";
+  p: number = 1; // Add pagination property
   
   // Add property to toggle unpaid expenses filter
   showOnlyUnpaid: boolean = false;
@@ -30,6 +32,7 @@ export class ExpensesComponent implements OnInit, OnDestroy {
   private routerSubscription: Subscription | undefined;
   
   categories = ExpensesCategories;
+  currencies = CurrencyTypes;
   cashRegisters: CashRegisterModel[] = [];
 
   // Add category filter property
@@ -65,6 +68,8 @@ export class ExpensesComponent implements OnInit, OnDestroy {
     
     // Initialize isCash to false by default
     this.createModel.isCash = false;
+    // Initialize currency to TL (1)
+    this.createModel.giderCurrencyTypeValue = 1;
     
     // Subscribe to router events to refresh data when navigating back to this page
     this.routerSubscription = this.router.events
@@ -149,6 +154,12 @@ export class ExpensesComponent implements OnInit, OnDestroy {
 
   create(form: NgForm){
     if(form.valid){
+      // Validate that category is selected (not 0)
+      if (this.createModel.categoryValue === 0) {
+        this.swal.callToast("Kategori seçilmelidir", "error");
+        return;
+      }
+      
       // Check if cash payment is selected but no cash register is chosen
       if (this.createModel.isCash === true && (!this.createModel.cashRegisterId || this.createModel.cashRegisterId === '')) {
         this.swal.callToast("Nakit ödeme seçildiğinde kasa seçilmelidir", "error");
@@ -163,9 +174,10 @@ export class ExpensesComponent implements OnInit, OnDestroy {
         this.createModel = new CreateExpenseModel();
         this.createModel.date = currentDate;
         this.createModel.isCash = false; // Reset to default value
+        this.createModel.giderCurrencyTypeValue = 1; // Reset currency to TL
         
-        // Close the modal
-        this.createModalCloseBtn?.nativeElement.click();
+        form.resetForm(); // Reset the form
+        this.closeCreateModal(); // Use proper modal closing
         
         // Refresh the expense list
         this.getAll();
@@ -188,21 +200,73 @@ export class ExpensesComponent implements OnInit, OnDestroy {
       id: model.id,
       name: model.name,
       date: model.date,
-      categoryValue: model.categoryType.value,
+      categoryValue: model.categoryType,
       description: model.description,
       price: model.price,
       isCash: model.cashRegisterDetailId !== null,
-      cashRegisterId: null
+      cashRegisterId: null,
+      giderCurrencyTypeValue: model.giderCurrencyTypeValue
     };
   }
 
   update(form: NgForm){
     if(form.valid){
+      // Validate that category is selected (not 0)
+      if (this.updateModel.categoryValue === 0) {
+        this.swal.callToast("Kategori seçilmelidir", "error");
+        return;
+      }
+      
       this.http.post<string>("Giderler/Update", this.updateModel, (res) => {
         this.swal.callToast(res, "info");
-        this.updateModalCloseBtn?.nativeElement.click();
+        form.resetForm(); // Reset the form
+        this.closeUpdateModal(); // Use proper modal closing
         this.getAll();
       });
+    }
+  }
+  
+  // Proper modal closing methods
+  private getModalInstance(modalId: string): any {
+    const modalElement = document.getElementById(modalId);
+    if (!modalElement) {
+      console.error(`${modalId} ID'li modal elementi bulunamadı.`);
+      return null;
+    }
+
+    const bootstrap = (window as any).bootstrap;
+    if (bootstrap && bootstrap.Modal) {
+      try {
+        // Modalı al veya (yoksa) oluştur
+        return bootstrap.Modal.getOrCreateInstance(modalElement);
+      } catch (e) {
+        console.error("Bootstrap Modal hatası:", e);
+        return null;
+      }
+    }
+    console.error("Bootstrap 5 JavaScript (Modal) kütüphanesi bulunamadı.");
+    return null;
+  }
+  
+  closeCreateModal() {
+    // TEMİZ KAPATMA KODU
+    const modal = this.getModalInstance('createModal');
+    if(modal) {
+      modal.hide();
+    } else {
+      // Yedek yöntem
+      this.createModalCloseBtn?.nativeElement.click();
+    }
+  }
+  
+  closeUpdateModal() {
+    // TEMİZ KAPATMA KODU
+    const modal = this.getModalInstance('updateModal');
+    if(modal) {
+      modal.hide();
+    } else {
+      // Yedek yöntem
+      this.updateModalCloseBtn?.nativeElement.click();
     }
   }
 
@@ -213,8 +277,49 @@ export class ExpensesComponent implements OnInit, OnDestroy {
   }
 
   getCategoryName(value: number): string {
+    // Handle invalid or zero values by defaulting to Malzeme (5)
+    if (!value || value === 0) {
+      value = 5;
+    }
     const category = this.categories.find(c => c.value === value);
     return category ? category.name : 'Bilinmiyor';
+  }
+
+  getCurrencySymbol(currencyValue: number): string {
+    const currency = this.currencies.find(c => c.value === currencyValue);
+    return currency ? currency.symbol : '₺';
+  }
+
+  formatCurrency(value: number, currencyValue: any): string {
+    const cv = typeof currencyValue === 'string' ? parseInt(currencyValue) : currencyValue;
+    const symbol = this.getCurrencySymbol(cv);
+    try {
+      return `${symbol}${value.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    } catch (e) {
+      return `${symbol}${value.toFixed(2)}`;
+    }
+  }
+
+  // Get totals grouped by currency
+  getCurrencyTotals(): { [key: number]: { amount: number; paid: number; remaining: number; symbol: string; name: string } } {
+    const totals: { [key: number]: { amount: number; paid: number; remaining: number; symbol: string; name: string } } = {};
+    
+    this.getFilteredExpenses().forEach(expense => {
+      const currency = expense.giderCurrencyTypeValue;
+      const currencyData = this.currencies.find(c => c.value === currency);
+      const symbol = currencyData ? currencyData.symbol : '₺';
+      const name = currencyData ? currencyData.name : 'Bilinmeyen';
+      
+      if (!totals[currency]) {
+        totals[currency] = { amount: 0, paid: 0, remaining: 0, symbol: symbol, name: name };
+      }
+      
+      totals[currency].amount += expense.price;
+      totals[currency].paid += expense.paidAmount;
+      totals[currency].remaining += this.calculateRemainingAmount(expense);
+    });
+    
+    return totals;
   }
 
   openTrash() {
@@ -301,7 +406,8 @@ export class ExpensesComponent implements OnInit, OnDestroy {
       const remaining = this.calculateRemainingAmount(expense);
       const status = remaining <= 0 ? 'Ödendi' : 'Bekliyor';
       const statusClass = remaining <= 0 ? 'bg-success' : 'bg-warning';
-      const categoryName = this.getCategoryName(expense.categoryType.value);
+      const categoryName = this.getCategoryName(expense.categoryType);
+      const currencySymbol = this.getCurrencySymbol(expense.giderCurrencyTypeValue);
       
       return `
         <tr>
@@ -310,17 +416,41 @@ export class ExpensesComponent implements OnInit, OnDestroy {
           <td>${expense.name}</td>
           <td>${categoryName}</td>
           <td>${expense.description}</td>
-          <td style="text-align:right">${expense.price.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
-          <td style="text-align:right">${expense.paidAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
-          <td style="text-align:right">${remaining.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
+          <td style="text-align:right">${expense.price.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currencySymbol}</td>
+          <td style="text-align:right">${expense.paidAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currencySymbol}</td>
+          <td style="text-align:right">${remaining.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currencySymbol}</td>
           <td><span class="badge ${statusClass}">${status}</span></td>
         </tr>`;
     }).join('');
 
-    // Calculate totals
-    const totalAmount = filteredExpenses.reduce((sum, expense) => sum + expense.price, 0);
-    const totalPaid = filteredExpenses.reduce((sum, expense) => sum + expense.paidAmount, 0);
-    const totalRemaining = totalAmount - totalPaid;
+    // Calculate totals by currency
+    const totalsByurrency: { [key: number]: { amount: number; paid: number; remaining: number; symbol: string } } = {};
+    
+    filteredExpenses.forEach(expense => {
+      const currency = expense.giderCurrencyTypeValue;
+      const symbol = this.getCurrencySymbol(currency);
+      
+      if (!totalsByurrency[currency]) {
+        totalsByurrency[currency] = { amount: 0, paid: 0, remaining: 0, symbol: symbol };
+      }
+      
+      totalsByurrency[currency].amount += expense.price;
+      totalsByurrency[currency].paid += expense.paidAmount;
+      totalsByurrency[currency].remaining += this.calculateRemainingAmount(expense);
+    });
+
+    // Create total rows for each currency
+    const totalRows = Object.keys(totalsByurrency).map((currencyKey: string) => {
+      const totals = totalsByurrency[parseInt(currencyKey)];
+      return `
+        <tr class="total-row">
+          <td colspan="5" class="text-right"><strong>TOPLAM (${totals.symbol}):</strong></td>
+          <td class="text-right"><strong>${totals.amount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${totals.symbol}</strong></td>
+          <td class="text-right"><strong>${totals.paid.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${totals.symbol}</strong></td>
+          <td class="text-right"><strong>${totals.remaining.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${totals.symbol}</strong></td>
+          <td></td>
+        </tr>`;
+    }).join('');
 
     const html = `<!DOCTYPE html>
 <html>
@@ -451,15 +581,12 @@ export class ExpensesComponent implements OnInit, OnDestroy {
       </thead>
       <tbody>
         ${rows}
-        <tr class="total-row">
-          <td colspan="5" class="text-right"><strong>TOPLAM:</strong></td>
-          <td class="text-right"><strong>${totalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</strong></td>
-          <td class="text-right"><strong>${totalPaid.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</strong></td>
-          <td class="text-right"><strong>${totalRemaining.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</strong></td>
-          <td></td>
-        </tr>
+        ${totalRows}
       </tbody>
     </table>
+    <div style="margin-top: 10px; font-size: 9pt; color: #666;">
+      <p><strong>Not:</strong> Farklı para birimlerine sahip giderler listelenmiştir. Her satırın yanında para birimi sembolü gösterilmektedir. Toplamlar para birimlerine göre ayrı ayrı hesaplanmıştır.</p>
+    </div>
     
     <div class="footer">
       <p>Bu belge sistem tarafından oluşturulmuştur. - ${new Date().toLocaleDateString('tr-TR')}</p>

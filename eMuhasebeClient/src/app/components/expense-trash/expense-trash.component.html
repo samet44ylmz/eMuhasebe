@@ -44,9 +44,9 @@
                         <td>{{($index + 1)}}</td>
                         <td>{{data.name}}</td>
                         <td>{{data.date | date: 'dd.MM.yyyy'}}</td>
-                        <td>{{data.categoryType.name}}</td>
+                            <td>{{getCategoryName(data.categoryType)}}</td>
                         <td>{{data.description}}</td>
-                        <td>{{data.price | trCurrency: '₺': true}}</td>
+                        <td>{{formatCurrency(data.price, data.giderCurrencyTypeValue)}}</td>
                         <td class="d-flex">
                             <button (click)="restoreExpense(data)" class="btn btn-success btn-sm me-1" title="Geri Yükle">
                                 <i class="fa-solid fa-rotate-left"></i>

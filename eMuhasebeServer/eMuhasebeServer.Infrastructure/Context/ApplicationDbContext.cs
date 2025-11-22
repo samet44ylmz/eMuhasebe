@@ -136,7 +136,18 @@ namespace eMuhasebeServer.Infrastructure.Context
             #region Gider
             builder.Entity<Gider>()
                     .Property(p => p.CategoryType)
-                    .HasConversion(type => type.Value, value => GiderCategoryTypeEnum.FromValue(value));
+                    .HasConversion(
+                        type => type.Value, 
+                        value => value == 0 ? GiderCategoryTypeEnum.Malzeme : GiderCategoryTypeEnum.FromValue(value))
+                    .HasDefaultValue(GiderCategoryTypeEnum.Malzeme);
+
+            builder.Entity<Gider>()
+                .Property(p => p.GiderCurrencyType)
+                .HasConversion(
+                    type => type.Value, 
+                    value => value == 0 ? GiderCurrencyTypeEnum.TL : GiderCurrencyTypeEnum.FromValue(value))
+                .HasDefaultValue(GiderCurrencyTypeEnum.TL);
+            
             builder.Entity<Gider>().Property(p => p.Price).HasColumnType("money");
             // Add PaidAmount configuration to prevent silent truncation
             builder.Entity<Gider>().Property(p => p.PaidAmount).HasColumnType("money");

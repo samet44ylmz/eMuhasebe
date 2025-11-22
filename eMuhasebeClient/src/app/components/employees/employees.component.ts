@@ -24,6 +24,7 @@ import { Subscription } from 'rxjs';
 export class EmployeesComponent implements OnInit, OnDestroy {
   employees: EmployeeModel[] = [];
   search:string = "";
+  p: number = 1; // Add pagination property
   
   private routerSubscription: Subscription | undefined;
   

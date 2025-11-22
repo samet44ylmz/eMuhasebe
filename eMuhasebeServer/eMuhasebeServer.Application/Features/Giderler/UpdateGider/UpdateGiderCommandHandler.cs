@@ -114,6 +114,7 @@ internal sealed class UpdateGiderCommandHandler(
         gider.Name = request.Name;
         gider.Date = request.Date;
         gider.CategoryType = GiderCategoryTypeEnum.FromValue(request.CategoryValue);
+        gider.GiderCurrencyType = GiderCurrencyTypeEnum.FromValue(request.GiderCurrencyTypeValue);
         gider.Description = request.Description;
         gider.Price = request.Price;
 

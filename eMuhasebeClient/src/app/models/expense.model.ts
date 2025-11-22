@@ -2,12 +2,14 @@ export class ExpenseModel {
   id: string = "";
   name: string = "";
   date: string = ""; // yyyy-MM-dd
-  categoryType: ExpenseCategoryType = new ExpenseCategoryType();
+  categoryType: number = 1; // Changed from object to number to match backend DTO
   description: string = "";
   price: number = 0;
   cashRegisterDetailId: string | null = null;
   // Add paid amount tracking
   paidAmount: number = 0;
+  // Add currency type tracking
+  giderCurrencyTypeValue: number = 1;
 }
 
 export class ExpenseCategoryType {
@@ -24,6 +26,7 @@ export class CreateExpenseModel {
   isCash: boolean | null = null;
   cashRegisterId: string | null = null;
   // Added isCash and cashRegisterId back to support cash register selection
+  giderCurrencyTypeValue: number = 1;
 }
 
 export class UpdateExpenseModel {
@@ -35,6 +38,7 @@ export class UpdateExpenseModel {
   price: number = 0;
   isCash: boolean = true;
   cashRegisterId: string | null = null;
+  giderCurrencyTypeValue: number = 1;
 }
 
 export class DeleteExpenseModel {

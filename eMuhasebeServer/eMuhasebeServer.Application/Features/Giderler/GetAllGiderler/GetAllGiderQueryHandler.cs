@@ -1,4 +1,5 @@
 ﻿using eMuhasebeServer.Application.Services;
+using eMuhasebeServer.Domain.Dtos;
 using eMuhasebeServer.Domain.Entities;
 using eMuhasebeServer.Domain.Repositories;
 using MediatR;
@@ -9,9 +10,9 @@ namespace eMuhasebeServer.Application.Features.Giderler.GetAllGiderler;
 
 internal sealed class GetAllGiderQueryHandler(
     IGiderRepository giderRepository,
-    ICacheService cacheService) : IRequestHandler<GetAllGiderlerQuery, Result<List<Gider>>>
+    ICacheService cacheService) : IRequestHandler<GetAllGiderlerQuery, Result<List<GiderDto>>>
 {
-    public async Task<Result<List<Gider>>> Handle(GetAllGiderlerQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<GiderDto>>> Handle(GetAllGiderlerQuery request, CancellationToken cancellationToken)
     {
         List<Gider>? giderler;
 
@@ -50,6 +51,19 @@ internal sealed class GetAllGiderQueryHandler(
             }
         }
         
-        return giderler;
+        // Convert to DTO
+        var giderDtos = giderler.Select(g => new GiderDto(
+            g.Id,
+            g.Name,
+            g.Date,
+            g.CategoryType?.Value ?? 5,
+            g.Description,
+            g.Price,
+            g.CashRegisterDetailId,
+            g.PaidAmount,
+            g.GiderCurrencyType?.Value ?? 1
+        )).ToList();
+        
+        return giderDtos;
     }
 }

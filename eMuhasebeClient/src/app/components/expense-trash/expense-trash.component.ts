@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedModule } from '../../modules/shared.module';
 import { ExpenseModel } from '../../models/expense.model';
+import { ExpensesCategories } from '../../models/expenses-category.model';
+import { CurrencyTypes } from '../../models/currency.model';
 import { HttpService } from '../../services/http.service';
 import { SwalService } from '../../services/swal.service';
 
@@ -17,6 +19,8 @@ export class ExpenseTrashComponent {
   selectedExpenseIds: string[] = [];
   search: string = "";
   p: number = 1;
+  categories = ExpensesCategories;
+  currencies = CurrencyTypes;
 
   constructor(
     private http: HttpService,
@@ -106,4 +110,28 @@ export class ExpenseTrashComponent {
     // Navigate back to the expenses page
     this.router.navigate(['/expenses']);
   }
+
+    getCategoryName(value: number): string {
+      // Handle invalid or zero values by defaulting to Malzeme (5)
+      if (!value || value === 0) {
+        value = 5;
+      }
+      const category = this.categories.find(c => c.value === value);
+      return category ? category.name : 'Bilinmiyor';
+    }
+
+    getCurrencySymbol(value: number): string {
+      const currency = this.currencies.find(c => c.value === value);
+      return currency ? currency.symbol : '₺';
+    }
+
+    formatCurrency(value: number, currencyValue: number): string {
+      const symbol = this.getCurrencySymbol(currencyValue);
+      try {
+        return `${symbol}${value.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      } catch (e) {
+        // Fallback if toLocaleString not available
+        return `${symbol}${value.toFixed(2)}`;
+      }
+    }
 }

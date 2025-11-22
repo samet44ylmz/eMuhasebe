@@ -150,7 +150,8 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         this.createModel.date = this.date.transform(new Date(),"yyyy-MM-dd") ?? "";
         this.customerSearch = ""; // Clear customer search
         this.productSearch = ""; // Clear product search
-        this.createModalCloseBtn?.nativeElement.click();
+        form.resetForm(); // Reset the form
+        this.closeCreateModal(); // Use proper modal closing
         this.getAll();
       });
     }
@@ -185,11 +186,56 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       
       this.http.post<string>("Invoices/DeleteById",{id: this.updateModel.id},(res)=> {
         this.http.post<string>("Invoices/Create",this.updateModel,(res)=> {
-          this.swal.callToast(res, "info");          
-          this.updateModalCloseBtn?.nativeElement.click();
+          this.swal.callToast(res, "info");
+          form.resetForm(); // Reset the form
+          this.closeUpdateModal(); // Use proper modal closing
           this.getAll();
         });
       });
+    }
+  }
+  
+  // Proper modal closing methods
+  private getModalInstance(modalId: string): any {
+    const modalElement = document.getElementById(modalId);
+    if (!modalElement) {
+      console.error(`${modalId} ID'li modal elementi bulunamadı.`);
+      return null;
+    }
+
+    const bootstrap = (window as any).bootstrap;
+    if (bootstrap && bootstrap.Modal) {
+      try {
+        // Modalı al veya (yoksa) oluştur
+        return bootstrap.Modal.getOrCreateInstance(modalElement);
+      } catch (e) {
+        console.error("Bootstrap Modal hatası:", e);
+        return null;
+      }
+    }
+    console.error("Bootstrap 5 JavaScript (Modal) kütüphanesi bulunamadı.");
+    return null;
+  }
+  
+  closeCreateModal() {
+    // TEMİZ KAPATMA KODU
+    const modal = this.getModalInstance('createModal');
+    if(modal) {
+      modal.hide();
+    } else {
+      // Yedek yöntem
+      this.createModalCloseBtn?.nativeElement.click();
+    }
+  }
+  
+  closeUpdateModal() {
+    // TEMİZ KAPATMA KODU
+    const modal = this.getModalInstance('updateModal');
+    if(modal) {
+      modal.hide();
+    } else {
+      // Yedek yöntem
+      this.updateModalCloseBtn?.nativeElement.click();
     }
   }
 
