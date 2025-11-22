@@ -62,6 +62,11 @@ private routerSubscription: Subscription | undefined;
     });
   }
 
+  // Method to reset the create form to default values
+  resetCreateForm() {
+    this.createModel = new ProductModel();
+  }
+
   create(form: NgForm){
     // Mark all fields as touched to show validation errors
     Object.keys(form.controls).forEach(key => {
@@ -74,10 +79,9 @@ private routerSubscription: Subscription | undefined;
       return;
     }
     
-    
     this.http.post<string>("Products/Create",this.createModel,(res)=> {
       this.swal.callToast(res);
-      this.createModel = new ProductModel();
+      this.resetCreateForm(); // Reset the model to default values
       form.resetForm(); // Reset the form
       this.closeCreateModal(); // Use proper modal closing
       this.getAll();

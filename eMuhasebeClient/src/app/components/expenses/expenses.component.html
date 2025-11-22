@@ -24,7 +24,7 @@
 
             <!-- Add category dropdown filter -->
             <div class="col-3">
-                <select class="form-control" [(ngModel)]="selectedCategoryId" (change)="onCategoryFilterChange()">
+                <select class="form-control" [(ngModel)]="selectedCategoryId" (change)="onCategoryFilterChange()" size="5" style="height: 160px; overflow-y: auto;">
                     <option [ngValue]="null">Tüm Kategoriler</option>
                     <option *ngFor="let category of categories" [ngValue]="category.value">
                         {{category.name}}

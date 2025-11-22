@@ -921,8 +921,8 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   onCustomerSearchChange(event: any) {
     this.showCustomerDropdown = true;
     // If a customer is already selected and user starts typing, clear the selection
-    if (this.createModel.customerId && this.customerSearch !== event.target.value) {
-      this.createModel.customerId = "";
+    if (this.selectedCustomerId && this.customerSearch !== event.target.value) {
+      this.selectedCustomerId = "";
     }
   }
   
@@ -930,15 +930,20 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   onCustomerSearchFocus() {
     this.showCustomerDropdown = true;
     // Only clear the search term if no customer is selected
-    if (!this.createModel.customerId) {
+    if (!this.selectedCustomerId) {
       this.customerSearch = "";
     }
   }
   
   // Method to handle customer search blur
   onCustomerSearchBlur() {
+    // Don't hide the dropdown immediately to allow clicking on items
     setTimeout(() => {
       this.showCustomerDropdown = false;
+      // If no customer is selected after blur, clear the search term
+      if (!this.selectedCustomerId) {
+        this.customerSearch = "";
+      }
     }, 200);
   }
   
@@ -1069,4 +1074,28 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.customerSearch = ""; // Clear customer search
     this.productSearch = ""; // Clear product search
   }
+
+  // Method to select a customer for filtering
+  selectCustomerForFilter(customer: CustomerModel) {
+    this.selectedCustomerId = customer.id;
+    this.customerSearch = customer.name;
+    this.showCustomerDropdown = false;
+    this.onCustomerFilterChange(); // Apply the filter immediately
+    
+    // Make sure the input field gets focus after selection
+    setTimeout(() => {
+      const customerSearchInput = document.querySelector('input[placeholder="Müşteri ara..."]') as HTMLInputElement;
+      if (customerSearchInput) {
+        customerSearchInput.focus();
+      }
+    }, 10);
+  }
+  
+  // Method to clear customer filter
+  clearCustomerFilter() {
+    this.selectedCustomerId = "";
+    this.customerSearch = "";
+    this.onCustomerFilterChange(); // Apply the filter immediately
+  }
+
 }

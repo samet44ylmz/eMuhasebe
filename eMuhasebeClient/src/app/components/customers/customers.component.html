@@ -1,19 +1,19 @@
-<app-blank pageName="Müşteriler" [routes]="['Kayıtlar','Müşteriler']">
-    <app-section sectionTitle="Müşteri Listesi">
-        <div class="form-group row">
-            <div class="col-9">
-                <button class="btn btn-dark" data-toggle="modal" data-target="#createModal">
+<app-blank>
+    <app-section headerIcon="fa-solid fa-users" headerTitle="Müşteriler">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <button class="btn btn-dark" data-toggle="modal" data-target="#createModal" (click)="resetCreateForm()">
                     <i class="fa-solid fa-plus me-1"></i>
                     Müşteri Ekle
                 </button>
-                <button class="btn btn-danger ms-2" (click)="openTrash()">
-                    <i class="fa-solid fa-trash me-1"></i>
-                    Çöp Kutusu
-                </button>
             </div>
-
-            <div class="col-3">
-                <input [(ngModel)]="search" type="search" class="form-control" placeholder="Aranacak değer girin...">
+            <div class="col-md-6 text-end">
+                <div class="input-group">
+                    <input type="search" [(ngModel)]="search" class="form-control" placeholder="Müşteri Ara...">
+                    <button class="btn btn-outline-danger" (click)="search = ''">
+                        <i class="fa-solid fa-x"></i>
+                    </button>
+                </div>
             </div>
         </div>
 

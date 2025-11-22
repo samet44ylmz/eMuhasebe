@@ -120,11 +120,16 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Method to reset the create form to default values
+  resetCreateForm() {
+    this.createModel = new EmployeeModel();
+  }
+
   create(form: NgForm){
     if(form.valid){
       this.http.post<string>("Employees/Create",this.createModel,(res)=> {
         this.swal.callToast(res);
-        this.createModel = new EmployeeModel();
+        this.resetCreateForm(); // Reset the model to default values
         form.resetForm();
 
         // TEMİZ KAPATMA KODU

@@ -63,11 +63,16 @@ currencyTypes = CurrencyTypes;
     });
   }
 
+  // Method to reset the create form to default values
+  resetCreateForm() {
+    this.createModel = new CashRegisterModel();
+  }
+
   create(form: NgForm){
     if(form.valid){
       this.http.post<string>("CashRegisters/Create",this.createModel,(res)=> {
         this.swal.callToast(res);
-        this.createModel = new CashRegisterModel();
+        this.resetCreateForm(); // Reset the model to default values
         form.resetForm(); // Reset the form
         this.closeCreateModal(); // Use proper modal closing
         this.getAll();
