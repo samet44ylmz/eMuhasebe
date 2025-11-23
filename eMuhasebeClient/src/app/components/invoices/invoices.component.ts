@@ -921,8 +921,8 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   onCustomerSearchChange(event: any) {
     this.showCustomerDropdown = true;
     // If a customer is already selected and user starts typing, clear the selection
-    if (this.selectedCustomerId && this.customerSearch !== event.target.value) {
-      this.selectedCustomerId = "";
+    if (this.createModel.customerId && this.customerSearch !== event.target.value) {
+      this.createModel.customerId = "";
     }
   }
   
@@ -930,7 +930,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   onCustomerSearchFocus() {
     this.showCustomerDropdown = true;
     // Only clear the search term if no customer is selected
-    if (!this.selectedCustomerId) {
+    if (!this.createModel.customerId) {
       this.customerSearch = "";
     }
   }
@@ -941,7 +941,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.showCustomerDropdown = false;
       // If no customer is selected after blur, clear the search term
-      if (!this.selectedCustomerId) {
+      if (!this.createModel.customerId) {
         this.customerSearch = "";
       }
     }, 200);
@@ -969,13 +969,17 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   onCustomerSearchUpdateBlur() {
     setTimeout(() => {
       this.showCustomerDropdownUpdate = false;
+      // If no customer is selected after blur, clear the search term
+      if (!this.updateModel.customerId) {
+        this.customerSearchUpdate = "";
+      }
     }, 200);
   }
   
   // Method to select a customer for create modal
   selectCustomerForCreateModal(customer: CustomerModel) {
     this.createModel.customerId = customer.id;
-    this.customerSearch = customer.name;
+    this.customerSearch = customer.name; // Keep just the name for simplicity
     this.showCustomerDropdown = false;
     
     // Make sure the input field gets focus after selection
@@ -1002,7 +1006,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   // Method to select a customer from the dropdown for update modal
   selectCustomerForUpdate(customer: CustomerModel) {
     this.updateModel.customerId = customer.id;
-    this.customerSearchUpdate = customer.name;
+    this.customerSearchUpdate = customer.name; // Keep just the name for simplicity
     this.showCustomerDropdownUpdate = false;
     
     // Make sure the input field gets focus after selection
@@ -1012,8 +1016,6 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         customerSearchInputs[1].focus(); // Focus on the second input (update modal)
       }
     }, 10);
-    
-    // Don't call addDetailForUpdate() here, let the user click "Ekle" button
   }
   
   // Method to get filtered customers based on search term
