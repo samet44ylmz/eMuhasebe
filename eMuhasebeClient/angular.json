@@ -51,7 +51,7 @@
             ],
             "styles": [
               "src/styles.css",
-              "./node_modules/flexi-toast/src/flexi-toast.css"
+              "src/assets/css/flexi-toast.css"
             ],
             "scripts": []
           },
@@ -69,7 +69,15 @@
                   "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": false
+              }
             },
             "development": {
               "optimization": false,
@@ -84,8 +92,6 @@
           "configurations": {
             "production": {
               "buildTarget": "ERPClient:build:production"
-           
-
             },
             "development": {
               "buildTarget": "ERPClient:build:development"
