@@ -26,7 +26,7 @@ import { Subscription } from 'rxjs';
 export class InvoicesComponent implements OnInit, OnDestroy {
   invoices: InvoiceModel[] = [];
   customers: CustomerModel[] = [];
-  
+
   private routerSubscription: Subscription | undefined;
   products: ProductModel[] = [];
   cashRegisters: CashRegisterModel[] = [];
@@ -42,14 +42,14 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   p: number = 1;
   paymentAmount: number = 0;
   showOnlyUnpaid: boolean = false; // New property to toggle unpaid invoices filter
-  
+
   // Add customer filter property
   selectedCustomerId: string = "";
-  
+
   // Add date filtering properties
   startDate: string = "";
   endDate: string = "";
-  
+
   @ViewChild("createModalCloseBtn") createModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
   @ViewChild("updateModalCloseBtn") updateModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
 
@@ -64,9 +64,11 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     private router: Router
   ){
     this.createModel.date = this.date.transform(new Date(),"yyyy-MM-dd") ?? "";
-    // Initialize date range to today
-    this.startDate = this.date.transform(new Date(), 'yyyy-MM-dd') ?? "";
-    this.endDate = this.date.transform(new Date(), 'yyyy-MM-dd') ?? "";
+    // Initialize date range to 7 days (1 week): from 7 days ago to today
+    const today = new Date();
+    const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    this.startDate = this.date.transform(sevenDaysAgo, 'yyyy-MM-dd') ?? "";
+    this.endDate = this.date.transform(today, 'yyyy-MM-dd') ?? "";
   }
 
   ngOnInit(): void {
@@ -74,10 +76,10 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.getAllCustomers();
     this.getAllProducts();
     this.getAllCashRegisters();
-    
+
     // Set default page to last page
     this.setDefaultPageToLast();
-    
+
     // Subscribe to router events to refresh data when navigating back to this page
     this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -143,13 +145,13 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         this.swal.callToast("Lütfen bir müşteri seçin", "error");
         return;
       }
-      
+
       // Check if at least one product detail is added
       if (this.createModel.details.length === 0) {
         this.swal.callToast("Lütfen en az bir ürün ekleyin", "error");
         return;
       }
-      
+
       this.http.post<string>("Invoices/Create",this.createModel,(res)=> {
         this.swal.callToast(res);
         this.resetCreateForm(); // Reset the form to default values
@@ -180,13 +182,13 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         this.swal.callToast("Lütfen bir müşteri seçin", "error");
         return;
       }
-      
+
       // Check if at least one product detail is added
       if (this.updateModel.details.length === 0) {
         this.swal.callToast("Lütfen en az bir ürün ekleyin", "error");
         return;
       }
-      
+
       this.http.post<string>("Invoices/DeleteById",{id: this.updateModel.id},(res)=> {
         this.http.post<string>("Invoices/Create",this.updateModel,(res)=> {
           this.swal.callToast(res, "info");
@@ -197,7 +199,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       });
     }
   }
-  
+
   // Proper modal closing methods
   private getModalInstance(modalId: string): any {
     const modalElement = document.getElementById(modalId);
@@ -219,7 +221,68 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     console.error("Bootstrap 5 JavaScript (Modal) kütüphanesi bulunamadı.");
     return null;
   }
-  
+
+  // Force-remove any modal overlays/backdrops and hide bootstrap modals.
+  // Call this before opening the print window or use the button to fix frozen UI.
+  // Public so it can be called from the template's emergency "Fix UI" button.
+  removeModalOverlays() {
+    try {
+      const bootstrap = (window as any).bootstrap;
+
+      // Common overlay selectors (Bootstrap, Summernote, SweetAlert, etc.)
+      const overlaySelectors = [
+        '.modal.show',
+        '.modal-backdrop',
+        '.note-modal-backdrop',
+        '.swal2-container',
+        '.swal2-backdrop',
+        '.bootbox',
+        '.fancybox-overlay',
+        '.iziModal-overlay'
+      ];
+
+      overlaySelectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach((el: any) => {
+          try {
+            // If it's an actual Bootstrap modal element, try to hide it gracefully
+            if (el.classList && el.classList.contains('modal') && bootstrap && bootstrap.Modal) {
+              const inst = bootstrap.Modal.getOrCreateInstance(el);
+              if (inst && typeof inst.hide === 'function') inst.hide();
+            } else {
+              el.remove();
+            }
+          } catch (e) {}
+        });
+      });
+
+      // Heuristic: remove any child element that covers most of the viewport
+      Array.from(document.body.children).forEach((el: any) => {
+        try {
+          const r = el.getBoundingClientRect();
+          const vw = window.innerWidth || document.documentElement.clientWidth;
+          const vh = window.innerHeight || document.documentElement.clientHeight;
+          const coversViewport = r.top <= 1 && r.left <= 1 && r.width >= vw * 0.9 && r.height >= vh * 0.9;
+          const z = parseInt(window.getComputedStyle(el).zIndex || '0', 10) || 0;
+          const pe = window.getComputedStyle(el).pointerEvents;
+          if ((coversViewport && z >= 300 && pe !== 'none') || el.classList.contains('modal-backdrop') || el.classList.contains('note-modal-backdrop')) {
+            el.remove();
+          }
+        } catch (e) {}
+      });
+
+      // Remove modal-open class and restore scrolling and pointer-events
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.pointerEvents = '';
+
+      // Restore focus to first available control
+      const first = document.querySelector('input:not([disabled]), textarea:not([disabled]), select:not([disabled]), button:not([disabled])') as HTMLElement | null;
+      if (first) first.focus();
+    } catch (e) {
+      // ignore
+    }
+  }
+
   closeCreateModal() {
     // TEMİZ KAPATMA KODU
     const modal = this.getModalInstance('createModal');
@@ -230,7 +293,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       this.createModalCloseBtn?.nativeElement.click();
     }
   }
-  
+
   closeUpdateModal() {
     // TEMİZ KAPATMA KODU
     const modal = this.getModalInstance('updateModal');
@@ -245,7 +308,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   addDetail(){
     // Find the selected product before it gets cleared
     let selectedProduct = this.products.find(p => p.id === this.createModel.productId) ?? new ProductModel();
-    
+
     // If we couldn't find the product by ID, try to find it by the product search text
     if (!selectedProduct.id && this.productSearch) {
       const productText = this.productSearch.split(" - ");
@@ -255,7 +318,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         selectedProduct = this.products.find(p => p.productCode === productCode && p.name === productName) ?? new ProductModel();
       }
     }
-    
+
     const detail: InvoiceDetailModel = {
       price: this.createModel.price,
       quantity: this.createModel.quantity,
@@ -282,14 +345,14 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     // Ensure the dropdown stays visible when typing
     this.showProductDropdown = true;
   }
-  
+
   // Method to handle product search focus
   onProductSearchFocus() {
     this.showProductDropdown = true;
     // Clear the search term when focusing to show all products
     this.productSearch = "";
   }
-  
+
   // Method to handle product search blur
   onProductSearchBlur() {
     // Use a small delay to allow click events on dropdown items to register
@@ -297,13 +360,13 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       this.showProductDropdown = false;
     }, 200);
   }
-  
+
   // Method to select a product from the dropdown
   selectProduct(product: ProductModel) {
     this.createModel.productId = product.id;
     this.productSearch = product.productCode + " - " + product.name;
     this.showProductDropdown = false;
-    
+
     // Make sure the input field gets focus after selection
     setTimeout(() => {
       const productSearchInput = document.querySelector('input[placeholder="Ürün kodu veya adı girin"]') as HTMLInputElement;
@@ -311,7 +374,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         productSearchInput.focus();
       }
     }, 10);
-    
+
     // Don't call addDetail() here, let the user click "Ekle" button
   }
 
@@ -330,7 +393,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   addDetailForUpdate(){
     // Find the selected product before it gets cleared
     let selectedProduct = this.products.find(p => p.id === this.updateModel.productId) ?? new ProductModel();
-    
+
     // If we couldn't find the product by ID, try to find it by the product search text
     if (!selectedProduct.id && this.productSearchUpdate) {
       const productText = this.productSearchUpdate.split(" - ");
@@ -340,7 +403,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         selectedProduct = this.products.find(p => p.productCode === productCode && p.name === productName) ?? new ProductModel();
       }
     }
-    
+
     const detail: InvoiceDetailModel = {
       price: this.updateModel.price,
       quantity: this.updateModel.quantity,
@@ -367,14 +430,14 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     // Ensure the dropdown stays visible when typing
     this.showProductDropdownUpdate = true;
   }
-  
+
   // Method to handle product search focus for update modal
   onProductSearchUpdateFocus() {
     this.showProductDropdownUpdate = true;
     // Clear the search term when focusing to show all products
     this.productSearchUpdate = "";
   }
-  
+
   // Method to handle product search blur for update modal
   onProductSearchUpdateBlur() {
     // Use a small delay to allow click events on dropdown items to register
@@ -382,13 +445,13 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       this.showProductDropdownUpdate = false;
     }, 200);
   }
-  
+
   // Method to select a product from the dropdown for update modal
   selectProductForUpdate(product: ProductModel) {
     this.updateModel.productId = product.id;
     this.productSearchUpdate = product.productCode + " - " + product.name;
     this.showProductDropdownUpdate = false;
-    
+
     // Make sure the input field gets focus after selection
     setTimeout(() => {
       const productSearchInputs = document.querySelectorAll('input[placeholder="Ürün kodu veya adı girin"]') as NodeListOf<HTMLInputElement>;
@@ -396,7 +459,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         productSearchInputs[1].focus(); // Focus on the second input (update modal)
       }
     }, 10);
-    
+
     // Don't call addDetailForUpdate() here, let the user click "Ekle" button
   }
 
@@ -405,7 +468,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     if (!invoice.details || invoice.details.length === 0) {
       return "-";
     }
-    
+
     const productInfo = invoice.details
       .map(detail => {
         if (detail.product?.productCode && detail.product?.name) {
@@ -418,17 +481,19 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         return '';
       })
       .filter(info => info.trim() !== '');
-    
+
     if (productInfo.length === 0) {
       return "-";
     }
-    
+
     return productInfo.join(', ');
   }
 
   printInvoice(model: InvoiceModel){
-    const win = window.open('', '_blank');
-    if(!win) return;
+    // Use iframe-based printing to avoid print dialog blocking the UI
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
 
     const fmt = (n: number) => n.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const details = model.details || [];
@@ -470,11 +535,21 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
     const customer = model.customer || ({} as any);
     const invoiceDate = model.date ? new Date(model.date).toLocaleDateString('tr-TR') : '';
-    
-    // Calculate total remaining amounts for this customer
+
+    // Calculate total remaining amounts for this customer (sum of remaining on all invoices)
     const customerInvoices = this.invoices.filter(invoice => invoice.customerId === model.customerId);
     const totalRemaining = customerInvoices.reduce((sum, invoice) => sum + (invoice.amount - invoice.paidAmount), 0);
-    
+
+    // Calculate the current invoice remaining amount
+    const currentInvoiceRemaining = model.amount - model.paidAmount;
+
+    // Calculate outstanding balance outside of this invoice (others' remaining)
+    const outstandingBalance = totalRemaining - currentInvoiceRemaining;
+
+    // New total should be the total remaining across all invoices (this excludes already paid amounts)
+    // This ensures we don't add the full invoice amount again (which would double-count payments)
+    const newTotal = totalRemaining;
+
     const html = `<!DOCTYPE html>
 <html>
 <head>
@@ -485,32 +560,32 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #000; }
   .container { padding: 10mm; }
-  
+
   .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 10px; }
   .logo-section { flex: 1; }
   .logo { max-width: 280px; height: auto; display: block; }
   .company-info { font-size: 9pt; margin-top: 5px; line-height: 1.4; }
-  
+
   .title-section { flex: 1; text-align: right; }
   .title { font-size: 18pt; font-weight: bold; letter-spacing: 2px; margin-bottom: 10px; }
-  
+
   .info-section { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 10pt; }
   .info-left, .info-right { flex: 1; }
   .info-row { display: flex; margin-bottom: 5px; }
   .info-label { font-weight: bold; min-width: 100px; }
   .info-value { flex: 1; border-bottom: 1px dotted #999; }
-  
+
   table { width: 100%; border-collapse: collapse; margin-top: 10px; }
   thead th { background: #f5f5f5; border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold; font-size: 10pt; }
   tbody td { border: 1px solid #000; padding: 6px; font-size: 10pt; }
   tbody tr { height: 30px; }
-  
+
   .total-row { font-weight: bold; background: #f9f9f9; }
   .text-right { text-align: right; }
   .text-center { text-align: center; }
-  
+
   .footer { margin-top: 20px; font-size: 9pt; color: #666; }
-  
+
   /* Print-specific styles to ensure visibility */
   @media print {
     .logo {
@@ -521,7 +596,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       display: block !important;
     }
   }
-  
+
   /* Additional styles to ensure logo visibility */
   @media screen {
     .logo {
@@ -542,7 +617,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         <div class="title">TEKLİF FORMU</div>
       </div>
     </div>
-    
+
     <div class="info-section">
       <div class="info-left">
         <div class="info-row">
@@ -553,10 +628,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
           <span class="info-label">Kod:</span>
           <span class="info-value">${model.invoiceNumber ?? ''}</span>
         </div>
-        <div class="info-row">
-          <span class="info-label">Müşteri Borcu:</span>
-          <span class="info-value">${fmt(totalRemaining)} ₺</span>
-        </div>
+        <!-- Müşteri Borcu removed as requested -->
       </div>
       <div class="info-right">
         <div class="info-row">
@@ -569,7 +641,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         </div>
       </div>
     </div>
-    
+
     <table>
       <thead>
         <tr>
@@ -582,16 +654,25 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       </thead>
       <tbody>
         ${rows}
-        ${Array(Math.max(0, 15 - details.length)).fill(0).map(() => 
+        ${Array(Math.max(0, 15 - details.length)).fill(0).map(() =>
           '<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>'
         ).join('')}
         <tr class="total-row">
           <td colspan="4" class="text-right" style="padding-right: 10px;">TOPLAM:</td>
           <td class="text-right">${fmt(grandTotal)} ₺</td>
         </tr>
+        <!-- Added financial calculations as requested -->
+        <tr>
+          <td colspan="4" class="text-right" style="padding-right: 10px; border-top: 2px solid #000;">Eski Kalan Bakiye:</td>
+          <td class="text-right" style="border-top: 2px solid #000;">${fmt(outstandingBalance)} ₺</td>
+        </tr>
+        <tr class="total-row">
+          <td colspan="4" class="text-right" style="padding-right: 10px;">Yeni Toplam:</td>
+          <td class="text-right">${fmt(newTotal)} ₺</td>
+        </tr>
       </tbody>
     </table>
-    
+
     <div class="footer">
       <p>Bu belge sistem tarafından oluşturulmuştur. - ${new Date().toLocaleDateString('tr-TR')}</p>
     </div>
@@ -604,23 +685,41 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   </script>
 </body>
 </html>`;
-    win.document.write(html);
-    win.document.close();
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (iframeDoc) {
+      iframeDoc.write(html);
+      iframeDoc.close();
+
+      // Print when iframe loads
+      iframe.onload = () => {
+        try {
+          iframe.contentWindow?.print();
+        } catch(e) {}
+        // Remove iframe after a short delay
+        setTimeout(() => {
+          try {
+            document.body.removeChild(iframe);
+          } catch(e) {}
+        }, 1000);
+      };
+    }
   }
 
   // New method to print the list of invoices
   printInvoices() {
-    const win = window.open('', '_blank');
-    if (!win) return;
+    // Use iframe-based printing instead of window.open
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
 
     // Get filtered invoices based on current filters
     const filteredInvoices = this.getFilteredInvoices();
-    
+
     // Format the date range for display
     const startDateFormatted = this.startDate ? new Date(this.startDate).toLocaleDateString('tr-TR') : '';
     const endDateFormatted = this.endDate ? new Date(this.endDate).toLocaleDateString('tr-TR') : '';
-    const dateRange = startDateFormatted && endDateFormatted ? 
-      `${startDateFormatted} - ${endDateFormatted}` : 
+    const dateRange = startDateFormatted && endDateFormatted ?
+      `${startDateFormatted} - ${endDateFormatted}` :
       'Tüm Tarihler';
 
     // Create table rows for invoices
@@ -629,7 +728,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       const status = remaining <= 0 ? 'Ödendi' : 'Bekliyor';
       const statusClass = remaining <= 0 ? 'bg-success' : 'bg-warning';
       const productCodes = this.getProductCodes(invoice);
-      
+
       return `
         <tr>
           <td>${index + 1}</td>
@@ -659,62 +758,62 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #000; }
   .container { padding: 10mm; }
-  
-  .header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    margin-bottom: 15px; 
-    border-bottom: 2px solid #000; 
-    padding-bottom: 10px; 
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
   }
-  
-  .title { 
-    font-size: 18pt; 
-    font-weight: bold; 
+
+  .title {
+    font-size: 18pt;
+    font-weight: bold;
     text-align: center;
     flex: 1;
   }
-  
+
   .date-range {
     font-size: 12pt;
     text-align: center;
     margin-bottom: 15px;
   }
-  
-  table { 
-    width: 100%; 
-    border-collapse: collapse; 
-    margin-top: 10px; 
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
   }
-  
-  thead th { 
-    background: #f5f5f5; 
-    border: 1px solid #000; 
-    padding: 8px; 
-    text-align: center; 
-    font-weight: bold; 
-    font-size: 10pt; 
+
+  thead th {
+    background: #f5f5f5;
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 10pt;
   }
-  
-  tbody td { 
-    border: 1px solid #000; 
-    padding: 6px; 
-    font-size: 10pt; 
+
+  tbody td {
+    border: 1px solid #000;
+    padding: 6px;
+    font-size: 10pt;
   }
-  
+
   tbody tr:nth-child(even) {
     background-color: #f9f9f9;
   }
-  
-  .total-row { 
-    font-weight: bold; 
-    background: #e9e9e9; 
+
+  .total-row {
+    font-weight: bold;
+    background: #e9e9e9;
   }
-  
+
   .text-right { text-align: right; }
   .text-center { text-align: center; }
-  
+
   .badge {
     display: inline-block;
     padding: 0.25em 0.4em;
@@ -727,23 +826,23 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     border-radius: 0.25rem;
     color: #fff;
   }
-  
+
   .bg-success {
     background-color: #28a745;
   }
-  
+
   .bg-warning {
     background-color: #ffc107;
     color: #000;
   }
-  
-  .footer { 
-    margin-top: 20px; 
-    font-size: 9pt; 
-    color: #666; 
+
+  .footer {
+    margin-top: 20px;
+    font-size: 9pt;
+    color: #666;
     text-align: center;
   }
-  
+
   @media print {
     body {
       -webkit-print-color-adjust: exact;
@@ -757,11 +856,11 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     <div class="header">
       <div class="title">FATURA LİSTESİ</div>
     </div>
-    
+
     <div class="date-range">
       Tarih Aralığı: ${dateRange}
     </div>
-    
+
     <table>
       <thead>
         <tr>
@@ -787,7 +886,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         </tr>
       </tbody>
     </table>
-    
+
     <div class="footer">
       <p>Bu belge sistem tarafından oluşturulmuştur. - ${new Date().toLocaleDateString('tr-TR')}</p>
     </div>
@@ -799,8 +898,24 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   </script>
 </body>
 </html>`;
-    win.document.write(html);
-    win.document.close();
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (iframeDoc) {
+      iframeDoc.write(html);
+      iframeDoc.close();
+
+      // Print when iframe loads
+      iframe.onload = () => {
+        try {
+          iframe.contentWindow?.print();
+        } catch(e) {}
+        // Remove iframe after a short delay
+        setTimeout(() => {
+          try {
+            document.body.removeChild(iframe);
+          } catch(e) {}
+        }, 1000);
+      };
+    }
   }
 
   openTrash() {
@@ -814,7 +929,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.paymentAmount = 0; // Reset payment amount for new payment
     // Set the payment date to today
     this.paymentModel.date = this.date.transform(new Date(), "yyyy-MM-dd") ?? "";
-    
+
     // Use setTimeout to ensure the DOM is updated before showing the modal
     setTimeout(() => {
       // Show the payment modal using Bootstrap
@@ -882,13 +997,13 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     let totalAmount = 0;
     let totalPaid = 0;
     let totalRemaining = 0;
-    
+
     filteredInvoices.forEach(invoice => {
       totalAmount += invoice.amount;
       totalPaid += invoice.paidAmount;
       totalRemaining += (invoice.amount - invoice.paidAmount);
     });
-    
+
     return {
       totalAmount: totalAmount,
       totalPaid: totalPaid,
@@ -925,7 +1040,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       this.createModel.customerId = "";
     }
   }
-  
+
   // Method to handle customer search focus
   onCustomerSearchFocus() {
     this.showCustomerDropdown = true;
@@ -934,7 +1049,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       this.customerSearch = "";
     }
   }
-  
+
   // Method to handle customer search blur
   onCustomerSearchBlur() {
     // Don't hide the dropdown immediately to allow clicking on items
@@ -946,7 +1061,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       }
     }, 200);
   }
-  
+
   // Method to handle customer search input changes for update modal
   onCustomerSearchUpdateChange(event: any) {
     this.showCustomerDropdownUpdate = true;
@@ -955,7 +1070,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       this.updateModel.customerId = "";
     }
   }
-  
+
   // Method to handle customer search focus for update modal
   onCustomerSearchUpdateFocus() {
     this.showCustomerDropdownUpdate = true;
@@ -964,7 +1079,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       this.customerSearchUpdate = "";
     }
   }
-  
+
   // Method to handle customer search blur for update modal
   onCustomerSearchUpdateBlur() {
     setTimeout(() => {
@@ -975,13 +1090,13 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       }
     }, 200);
   }
-  
+
   // Method to select a customer for create modal
   selectCustomerForCreateModal(customer: CustomerModel) {
     this.createModel.customerId = customer.id;
     this.customerSearch = customer.name; // Keep just the name for simplicity
     this.showCustomerDropdown = false;
-    
+
     // Make sure the input field gets focus after selection
     setTimeout(() => {
       const customerSearchInput = document.querySelector('input[placeholder="Müşteri ara..."]') as HTMLInputElement;
@@ -990,25 +1105,25 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       }
     }, 10);
   }
-  
+
   // Method to clear customer selection
   clearCustomerSelection() {
     this.createModel.customerId = "";
     this.customerSearch = "";
   }
-  
+
   // Method to clear customer selection in update modal
   clearCustomerUpdateSelection() {
     this.updateModel.customerId = "";
     this.customerSearchUpdate = "";
   }
-  
+
   // Method to select a customer from the dropdown for update modal
   selectCustomerForUpdate(customer: CustomerModel) {
     this.updateModel.customerId = customer.id;
     this.customerSearchUpdate = customer.name; // Keep just the name for simplicity
     this.showCustomerDropdownUpdate = false;
-    
+
     // Make sure the input field gets focus after selection
     setTimeout(() => {
       const customerSearchInputs = document.querySelectorAll('input[placeholder="Müşteri ara..."]') as NodeListOf<HTMLInputElement>;
@@ -1017,48 +1132,48 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       }
     }, 10);
   }
-  
+
   // Method to get filtered customers based on search term
   getFilteredCustomers(): CustomerModel[] {
     if (!this.customerSearch) {
       return this.customers;
     }
-    
-    return this.customers.filter(customer => 
+
+    return this.customers.filter(customer =>
       customer.name.toLowerCase().includes(this.customerSearch.toLowerCase())
     );
   }
-  
+
   // Method to get filtered customers for update modal based on search term
   getFilteredCustomersForUpdate(): CustomerModel[] {
     if (!this.customerSearchUpdate) {
       return this.customers;
     }
-    
-    return this.customers.filter(customer => 
+
+    return this.customers.filter(customer =>
       customer.name.toLowerCase().includes(this.customerSearchUpdate.toLowerCase())
     );
   }
-  
+
   // Method to get filtered products based on search term
   getFilteredProducts(): ProductModel[] {
     if (!this.productSearch) {
       return this.products;
     }
-    
-    return this.products.filter(product => 
+
+    return this.products.filter(product =>
       product.name.toLowerCase().includes(this.productSearch.toLowerCase()) ||
       (product.productCode && product.productCode.toLowerCase().includes(this.productSearch.toLowerCase()))
     );
   }
-  
+
   // Method to get filtered products for update modal based on search term
   getFilteredProductsForUpdate(): ProductModel[] {
     if (!this.productSearchUpdate) {
       return this.products;
     }
-    
-    return this.products.filter(product => 
+
+    return this.products.filter(product =>
       product.name.toLowerCase().includes(this.productSearchUpdate.toLowerCase()) ||
       (product.productCode && product.productCode.toLowerCase().includes(this.productSearchUpdate.toLowerCase()))
     );
@@ -1083,7 +1198,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.customerSearch = customer.name;
     this.showCustomerDropdown = false;
     this.onCustomerFilterChange(); // Apply the filter immediately
-    
+
     // Make sure the input field gets focus after selection
     setTimeout(() => {
       const customerSearchInput = document.querySelector('input[placeholder="Müşteri ara..."]') as HTMLInputElement;
@@ -1092,7 +1207,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       }
     }, 10);
   }
-  
+
   // Method to clear customer filter
   clearCustomerFilter() {
     this.selectedCustomerId = "";

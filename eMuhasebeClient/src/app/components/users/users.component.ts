@@ -6,6 +6,7 @@ import { HttpService } from '../../services/http.service';
 import { SwalService } from '../../services/swal.service';
 import { NgForm } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-users',
@@ -15,8 +16,8 @@ import { RouterLink } from '@angular/router';
   styleUrl: './users.component.css'
 })
 export class UsersComponent {
-users: UserModel[] = [];
-search:string = "";
+  users: UserModel[] = [];
+  search:string = "";
 
   @ViewChild("createModalCloseBtn") createModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
   @ViewChild("updateModalCloseBtn") updateModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
@@ -34,10 +35,14 @@ search:string = "";
   }
 
   getAll(){
+    console.log('Attempting to fetch users...');
     this.http.post<UserModel[]>("Users/GetAll",{},(res)=> {
-      console.log('Backend\'den gelen veri:', res);
+      console.log('Successfully received user data:', res);
       this.users = res;
       console.log('Users list updated:', this.users);
+    }, (error: HttpErrorResponse) => {
+      console.error('Error fetching users:', error);
+      this.swal.callToast("Kullanıcılar yüklenirken bir hata oluştu: " + error.message, "error");
     });
   }
 
@@ -85,6 +90,9 @@ search:string = "";
       
       // Refresh the user list immediately after create
       this.getAll();
+    }, (error: HttpErrorResponse) => {
+      console.error('Error creating user:', error);
+      this.swal.callToast("Kullanıcı oluşturulurken bir hata oluştu: " + error.message, "error");
     });
   }
 
@@ -93,6 +101,9 @@ search:string = "";
       this.http.post<string>("Users/DeleteById",{id: model.id},(res)=> {
         this.getAll();
         this.swal.callToast(res,"info");
+      }, (error: HttpErrorResponse) => {
+        console.error('Error deleting user:', error);
+        this.swal.callToast("Kullanıcı silinirken bir hata oluştu: " + error.message, "error");
       });
     })
   }
@@ -129,6 +140,9 @@ search:string = "";
         
         // Refresh the user list immediately after update
         this.getAll();
+      }, (error: HttpErrorResponse) => {
+        console.error('Error updating user:', error);
+        this.swal.callToast("Kullanıcı güncellenirken bir hata oluştu: " + error.message, "error");
       });
     }
   }

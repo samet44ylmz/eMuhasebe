@@ -25,23 +25,23 @@ export class ExpensesComponent implements OnInit, OnDestroy {
   expenses: ExpenseModel[] = [];
   search: string = "";
   p: number = 1; // Add pagination property
-  
+
   // Add property to toggle unpaid expenses filter
   showOnlyUnpaid: boolean = false;
-  
+
   private routerSubscription: Subscription | undefined;
-  
+
   categories = ExpensesCategories;
   currencies = CurrencyTypes;
   cashRegisters: CashRegisterModel[] = [];
 
   // Add category filter property
   selectedCategoryId: number | null = null;
-  
+
   // Add date filtering properties
   startDate: string = "";
   endDate: string = "";
-  
+
   // Add category search properties (similar to customer search in invoices)
   categorySearch: string = "";
   showCategoryDropdown: boolean = false;
@@ -64,20 +64,23 @@ export class ExpensesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.createModel.date = this.getToday();
-    // Initialize date range to today
-    this.startDate = this.getToday();
+    // Initialize date range to 7 days (1 week): from 7 days ago to today
+    const today = new Date();
+    const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    this.startDate = `${sevenDaysAgo.getFullYear()}-${pad(sevenDaysAgo.getMonth()+1)}-${pad(sevenDaysAgo.getDate())}`;
     this.endDate = this.getToday();
     this.getAll();
     this.getCashRegisters();
-    
+
     // Initialize isCash to false by default
     this.createModel.isCash = false;
     // Initialize currency to TL (1)
     this.createModel.giderCurrencyTypeValue = 1;
-    
+
     // Set default page to last page
     this.setDefaultPageToLast();
-    
+
     // Subscribe to router events to refresh data when navigating back to this page
     this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -98,7 +101,7 @@ export class ExpensesComponent implements OnInit, OnDestroy {
   getAll(){
     // Add timestamp to prevent browser caching
     const timestamp = new Date().getTime();
-    this.http.post<ExpenseModel[]>("Giderler/GetAll", { 
+    this.http.post<ExpenseModel[]>("Giderler/GetAll", {
       _t: timestamp,
       startDate: this.startDate,
       endDate: this.endDate,
@@ -200,16 +203,16 @@ export class ExpensesComponent implements OnInit, OnDestroy {
         this.swal.callToast("Kategori seçilmelidir", "error");
         return;
       }
-      
+
       // Check if cash payment is selected but no cash register is chosen
       if (this.createModel.isCash === true && (!this.createModel.cashRegisterId || this.createModel.cashRegisterId === '')) {
         this.swal.callToast("Nakit ödeme seçildiğinde kasa seçilmelidir", "error");
         return;
       }
-      
+
       this.http.post<string>("Giderler/Create", this.createModel, (res) => {
         this.swal.callToast(res);
-        
+
         // Reset the form and set date to today for next entry
         this.resetCreateForm();
         form.resetForm(); // Reset the form
@@ -250,7 +253,7 @@ export class ExpensesComponent implements OnInit, OnDestroy {
         this.swal.callToast("Kategori seçilmelidir", "error");
         return;
       }
-      
+
       this.http.post<string>("Giderler/Update", this.updateModel, (res) => {
         this.swal.callToast(res, "info");
         form.resetForm(); // Reset the form
@@ -259,7 +262,7 @@ export class ExpensesComponent implements OnInit, OnDestroy {
       });
     }
   }
-  
+
   // Proper modal closing methods
   private getModalInstance(modalId: string): any {
     const modalElement = document.getElementById(modalId);
@@ -281,7 +284,7 @@ export class ExpensesComponent implements OnInit, OnDestroy {
     console.error("Bootstrap 5 JavaScript (Modal) kütüphanesi bulunamadı.");
     return null;
   }
-  
+
   closeCreateModal() {
     // TEMİZ KAPATMA KODU
     const modal = this.getModalInstance('createModal');
@@ -292,7 +295,7 @@ export class ExpensesComponent implements OnInit, OnDestroy {
       this.createModalCloseBtn?.nativeElement.click();
     }
   }
-  
+
   closeUpdateModal() {
     // TEMİZ KAPATMA KODU
     const modal = this.getModalInstance('updateModal');
@@ -333,22 +336,22 @@ export class ExpensesComponent implements OnInit, OnDestroy {
   // Get totals grouped by currency
   getCurrencyTotals(): { [key: number]: { amount: number; paid: number; remaining: number; symbol: string; name: string } } {
     const totals: { [key: number]: { amount: number; paid: number; remaining: number; symbol: string; name: string } } = {};
-    
+
     this.getFilteredExpenses().forEach(expense => {
       const currency = expense.giderCurrencyTypeValue;
       const currencyData = this.currencies.find(c => c.value === currency);
       const symbol = currencyData ? currencyData.symbol : '₺';
       const name = currencyData ? currencyData.name : 'Bilinmeyen';
-      
+
       if (!totals[currency]) {
         totals[currency] = { amount: 0, paid: 0, remaining: 0, symbol: symbol, name: name };
       }
-      
+
       totals[currency].amount += expense.price;
       totals[currency].paid += expense.paidAmount;
       totals[currency].remaining += this.calculateRemainingAmount(expense);
     });
-    
+
     return totals;
   }
 
@@ -378,7 +381,7 @@ export class ExpensesComponent implements OnInit, OnDestroy {
       cashRegisterId: null
     };
     this.paymentAmount = this.calculateRemainingAmount(expense);
-    
+
     // Use setTimeout to ensure the DOM is updated before showing the modal
     setTimeout(() => {
       // Show the payment modal using Bootstrap
@@ -427,12 +430,12 @@ export class ExpensesComponent implements OnInit, OnDestroy {
 
     // Get filtered expenses based on current filters
     const filteredExpenses = this.getFilteredExpenses();
-    
+
     // Format the date range for display
     const startDateFormatted = this.startDate ? new Date(this.startDate).toLocaleDateString('tr-TR') : '';
     const endDateFormatted = this.endDate ? new Date(this.endDate).toLocaleDateString('tr-TR') : '';
-    const dateRange = startDateFormatted && endDateFormatted ? 
-      `${startDateFormatted} - ${endDateFormatted}` : 
+    const dateRange = startDateFormatted && endDateFormatted ?
+      `${startDateFormatted} - ${endDateFormatted}` :
       'Tüm Tarihler';
 
     // Create table rows for expenses
@@ -442,7 +445,7 @@ export class ExpensesComponent implements OnInit, OnDestroy {
       const statusClass = remaining <= 0 ? 'bg-success' : 'bg-warning';
       const categoryName = this.getCategoryName(expense.categoryType);
       const currencySymbol = this.getCurrencySymbol(expense.giderCurrencyTypeValue);
-      
+
       return `
         <tr>
           <td>${index + 1}</td>
@@ -459,15 +462,15 @@ export class ExpensesComponent implements OnInit, OnDestroy {
 
     // Calculate totals by currency
     const totalsByurrency: { [key: number]: { amount: number; paid: number; remaining: number; symbol: string } } = {};
-    
+
     filteredExpenses.forEach(expense => {
       const currency = expense.giderCurrencyTypeValue;
       const symbol = this.getCurrencySymbol(currency);
-      
+
       if (!totalsByurrency[currency]) {
         totalsByurrency[currency] = { amount: 0, paid: 0, remaining: 0, symbol: symbol };
       }
-      
+
       totalsByurrency[currency].amount += expense.price;
       totalsByurrency[currency].paid += expense.paidAmount;
       totalsByurrency[currency].remaining += this.calculateRemainingAmount(expense);
@@ -496,62 +499,62 @@ export class ExpensesComponent implements OnInit, OnDestroy {
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #000; }
   .container { padding: 10mm; }
-  
-  .header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    margin-bottom: 15px; 
-    border-bottom: 2px solid #000; 
-    padding-bottom: 10px; 
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
   }
-  
-  .title { 
-    font-size: 18pt; 
-    font-weight: bold; 
+
+  .title {
+    font-size: 18pt;
+    font-weight: bold;
     text-align: center;
     flex: 1;
   }
-  
+
   .date-range {
     font-size: 12pt;
     text-align: center;
     margin-bottom: 15px;
   }
-  
-  table { 
-    width: 100%; 
-    border-collapse: collapse; 
-    margin-top: 10px; 
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
   }
-  
-  thead th { 
-    background: #f5f5f5; 
-    border: 1px solid #000; 
-    padding: 8px; 
-    text-align: center; 
-    font-weight: bold; 
-    font-size: 10pt; 
+
+  thead th {
+    background: #f5f5f5;
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 10pt;
   }
-  
-  tbody td { 
-    border: 1px solid #000; 
-    padding: 6px; 
-    font-size: 10pt; 
+
+  tbody td {
+    border: 1px solid #000;
+    padding: 6px;
+    font-size: 10pt;
   }
-  
+
   tbody tr:nth-child(even) {
     background-color: #f9f9f9;
   }
-  
-  .total-row { 
-    font-weight: bold; 
-    background: #e9e9e9; 
+
+  .total-row {
+    font-weight: bold;
+    background: #e9e9e9;
   }
-  
+
   .text-right { text-align: right; }
   .text-center { text-align: center; }
-  
+
   .badge {
     display: inline-block;
     padding: 0.25em 0.4em;
@@ -564,23 +567,23 @@ export class ExpensesComponent implements OnInit, OnDestroy {
     border-radius: 0.25rem;
     color: #fff;
   }
-  
+
   .bg-success {
     background-color: #28a745;
   }
-  
+
   .bg-warning {
     background-color: #ffc107;
     color: #000;
   }
-  
-  .footer { 
-    margin-top: 20px; 
-    font-size: 9pt; 
-    color: #666; 
+
+  .footer {
+    margin-top: 20px;
+    font-size: 9pt;
+    color: #666;
     text-align: center;
   }
-  
+
   @media print {
     body {
       -webkit-print-color-adjust: exact;
@@ -594,11 +597,11 @@ export class ExpensesComponent implements OnInit, OnDestroy {
     <div class="header">
       <div class="title">GİDER LİSTESİ</div>
     </div>
-    
+
     <div class="date-range">
       Tarih Aralığı: ${dateRange}
     </div>
-    
+
     <table>
       <thead>
         <tr>
@@ -621,7 +624,7 @@ export class ExpensesComponent implements OnInit, OnDestroy {
     <div style="margin-top: 10px; font-size: 9pt; color: #666;">
       <p><strong>Not:</strong> Farklı para birimlerine sahip giderler listelenmiştir. Her satırın yanında para birimi sembolü gösterilmektedir. Toplamlar para birimlerine göre ayrı ayrı hesaplanmıştır.</p>
     </div>
-    
+
     <div class="footer">
       <p>Bu belge sistem tarafından oluşturulmuştur. - ${new Date().toLocaleDateString('tr-TR')}</p>
     </div>
@@ -641,18 +644,18 @@ export class ExpensesComponent implements OnInit, OnDestroy {
   onCategoryFilterChange() {
     this.getAll();
   }
-  
+
   // Method to get filtered categories based on search term (similar to getFilteredCustomers in invoices)
   getFilteredCategories(): any[] {
     if (!this.categorySearch) {
       return this.categories;
     }
-    
-    return this.categories.filter(category => 
+
+    return this.categories.filter(category =>
       category.name.toLowerCase().includes(this.categorySearch.toLowerCase())
     );
   }
-  
+
   // Method to handle category search input changes (similar to onCustomerSearchChange in invoices)
   onCategorySearchChange(event: any) {
     this.showCategoryDropdown = true;
@@ -661,7 +664,7 @@ export class ExpensesComponent implements OnInit, OnDestroy {
       this.selectedCategoryId = null;
     }
   }
-  
+
   // Method to handle category search focus (similar to onCustomerSearchFocus in invoices)
   onCategorySearchFocus() {
     this.showCategoryDropdown = true;
@@ -670,7 +673,7 @@ export class ExpensesComponent implements OnInit, OnDestroy {
       this.categorySearch = "";
     }
   }
-  
+
   // Method to handle category search blur (similar to onCustomerSearchBlur in invoices)
   onCategorySearchBlur() {
     // Don't hide the dropdown immediately to allow clicking on items
@@ -682,14 +685,14 @@ export class ExpensesComponent implements OnInit, OnDestroy {
       }
     }, 200);
   }
-  
+
   // Method to select a category for filtering (similar to selectCustomerForFilter in invoices)
   selectCategoryForFilter(category: any) {
     this.selectedCategoryId = category.value;
     this.categorySearch = category.name;
     this.showCategoryDropdown = false;
     this.onCategoryFilterChange(); // Apply the filter immediately
-    
+
     // Make sure the input field gets focus after selection
     setTimeout(() => {
       const categorySearchInput = document.querySelector('input[placeholder="Kategori ara..."]') as HTMLInputElement;
@@ -698,7 +701,7 @@ export class ExpensesComponent implements OnInit, OnDestroy {
       }
     }, 10);
   }
-  
+
   // Method to clear category filter (similar to clearCustomerFilter in invoices)
   clearCategoryFilter() {
     this.selectedCategoryId = null;

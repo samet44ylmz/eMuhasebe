@@ -47,8 +47,11 @@ currencyTypes = CurrencyTypes;
   ){
     this.activated.params.subscribe(res=> {
       this.cashRegisterId = res["id"];
-      this.startDate = this.date.transform(new Date(), 'yyyy-MM-dd') ?? "";
-      this.endDate = this.date.transform(new Date(), 'yyyy-MM-dd') ?? "";
+      // Initialize date range to 7 days (1 week): from 7 days ago to today
+      const today = new Date();
+      const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+      this.startDate = this.date.transform(sevenDaysAgo, 'yyyy-MM-dd') ?? "";
+      this.endDate = this.date.transform(today, 'yyyy-MM-dd') ?? "";
       this.createModel.date = this.date.transform(new Date(), 'yyyy-MM-dd') ?? "";
       this.createModel.cashRegisterId = this.cashRegisterId;
 
@@ -59,7 +62,7 @@ currencyTypes = CurrencyTypes;
     })
   }
 
-  
+
 
  getAll() {
   this.http.post<CashRegisterModel>("CashRegisterDetails/GetAll",
@@ -94,34 +97,34 @@ create(form: NgForm) {
        this.createModel.amount = +this.createModel.amount;
        this.createModel.oppositeAmount = +this.createModel.oppositeAmount;
 
-      
+
 
 
 
         if (this.createModel.recordType == 0) {
-           this.createModel.oppositeBankId = null;    
+           this.createModel.oppositeBankId = null;
            this.createModel.oppositeCashRegisterId = null;
            this.createModel.oppositeCustomerId = null;
-           
+
        }else if (this.createModel.recordType == 1) {
         this.createModel.oppositeBankId = null;
          this.createModel.oppositeCustomerId = null;
        }else if (this.createModel.recordType == 2) {
-          this.createModel.oppositeCashRegisterId = null;   
+          this.createModel.oppositeCashRegisterId = null;
            this.createModel.oppositeCustomerId = null;
        }else if (this.createModel.recordType == 3) {
          this.createModel.oppositeCashRegisterId = null;
-         this.createModel.oppositeBankId = null;    
+         this.createModel.oppositeBankId = null;
        }
 
 
 
         if (this.createModel.oppositeAmount === 0) this.createModel.oppositeAmount = this.createModel.amount;
-        
-       
 
 
-  
+
+
+
 
       this.http.post<string>("CashRegisterDetails/Create", this.createModel, (res) => {
       this.swal.callToast(res);
@@ -129,7 +132,7 @@ create(form: NgForm) {
       this.createModel.date = this.date.transform(new Date(), 'yyyy-MM-dd') ?? "";
       this.createModel.cashRegisterId = this.cashRegisterId;
       this.createModalCloseBtn?.nativeElement.click();
-      
+
       this.getAll();
     }
     );
@@ -160,7 +163,7 @@ create(form: NgForm) {
       });
     }
   }
-  
+
 changeCurrencyNameToSymbol(name: string) {
   if (name === "TL") return "₺";
   else if (name === "USD") return "$";
@@ -169,7 +172,7 @@ changeCurrencyNameToSymbol(name: string) {
 }
 setOppositeCashRegister(){
     const cash = this.cashRegisters.find(p=> p.id === this.createModel.oppositeCashRegisterId);
-   
+
 
     if(cash){
         this.createModel.oppositeCashRegister = cash;
@@ -178,7 +181,7 @@ setOppositeCashRegister(){
 
 setOppositeBank(){
     const bank = this.banks.find(p=> p.id === this.createModel.oppositeBankId);
-   
+
 
     if(bank){
         this.createModel.oppositeBank = bank;
