@@ -354,3 +354,4 @@ C:\GitHub\eMuhasebe\eMuhasebeServer\eMuhasebeServer.WebAPI\obj\Debug\net8.0\eMuh
 C:\GitHub\eMuhasebe\eMuhasebeServer\eMuhasebeServer.WebAPI\obj\Debug\net8.0\ref\eMuhasebeServer.WebAPI.dll
 C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.WebAPI\obj\Debug\net8.0\eMuhasebeServer.WebAPI.sourcelink.json
 C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.WebAPI\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\eMuhasebe\eMuhasebeServer\eMuhasebeServer.WebAPI\obj\Debug\net8.0\swae.build.ex.cache

@@ -1095,7 +1095,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\samet\\.nuget\\packages\\": {},
+    "C:\\Users\\HUAWEI\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
@@ -1104,7 +1104,7 @@
       "projectUniqueName": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Domain\\eMuhasebeServer.Domain.csproj",
       "projectName": "eMuhasebeServer.Domain",
       "projectPath": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Domain\\eMuhasebeServer.Domain.csproj",
-      "packagesPath": "C:\\Users\\samet\\.nuget\\packages\\",
+      "packagesPath": "C:\\Users\\HUAWEI\\.nuget\\packages\\",
       "outputPath": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Domain\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
@@ -1112,7 +1112,7 @@
       ],
       "configFilePaths": [
         "C:\\eMuhasebe\\eMuhasebeServer\\NuGet.Config",
-        "C:\\Users\\samet\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\HUAWEI\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -1120,6 +1120,7 @@
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -1139,7 +1140,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.300"
+      "SdkAnalysisLevel": "10.0.100"
     },
     "frameworks": {
       "net8.0": {
@@ -1177,26 +1178,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.21, 8.0.21]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.21, 8.0.21]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[8.0.21, 8.0.21]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

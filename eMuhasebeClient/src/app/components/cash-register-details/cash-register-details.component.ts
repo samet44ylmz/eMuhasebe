@@ -26,9 +26,25 @@ cashRegisters: CashRegisterModel[] = [];
 banks: BankModel[] = [];
 customers: CustomerModel[] = [];
 cashRegisterId: string ="";
-search:string = "";
+private _search:string = "";
 startDate: string = "";
 endDate: string = "";
+
+// Filter properties
+p: number = 1; // Current page
+revenueFilter: boolean = false; // Show only revenue (income) entries
+expenseFilter: boolean = false; // Show only expense entries
+
+// Search property with setter to reset pagination
+get search(): string {
+  return this._search;
+}
+
+set search(value: string) {
+  this._search = value;
+  // Reset to first page when search changes
+  this.p = 1;
+}
 
 
 currencyTypes = CurrencyTypes;
@@ -68,6 +84,11 @@ currencyTypes = CurrencyTypes;
   this.http.post<CashRegisterModel>("CashRegisterDetails/GetAll",
     {cashRegisterId: this.cashRegisterId, startDate: this.startDate, endDate: this.endDate}, (res) => {
       this.cashRegister = res;
+      // Reset to first page when data is loaded
+      this.p = 1;
+      // Also reset filters
+      this.revenueFilter = false;
+      this.expenseFilter = false;
     }
   );
 }
@@ -164,12 +185,63 @@ create(form: NgForm) {
     }
   }
 
+  printReport() {
+    // Print directly without confirmation
+    window.print();
+  }
+
+  // Filter methods
+  showRevenueOnly() {
+    this.revenueFilter = true;
+    this.expenseFilter = false;
+    this.p = 1; // Reset to first page
+  }
+
+  showExpensesOnly() {
+    this.expenseFilter = true;
+    this.revenueFilter = false;
+    this.p = 1; // Reset to first page
+  }
+
+  showAll() {
+    this.revenueFilter = false;
+    this.expenseFilter = false;
+    this.p = 1; // Reset to first page
+  }
+
+  // Helper method to filter cash register details
+  getFilteredDetails() {
+    if (!this.cashRegister.details) return [];
+    
+    let filtered = this.cashRegister.details;
+    
+    // Apply search filter
+    if (this.search) {
+      filtered = filtered.filter(detail => 
+        detail.description.toLowerCase().includes(this.search.toLowerCase())
+      );
+    }
+    
+    // Apply revenue filter (show only entries with depositAmount > 0)
+    if (this.revenueFilter) {
+      filtered = filtered.filter(detail => detail.depositAmount > 0);
+    }
+    
+    // Apply expense filter (show only entries with withdrawalAmount > 0)
+    if (this.expenseFilter) {
+      filtered = filtered.filter(detail => detail.withdrawalAmount > 0);
+    }
+    
+    return filtered;
+  }
+
 changeCurrencyNameToSymbol(name: string) {
   if (name === "TL") return "₺";
   else if (name === "USD") return "$";
   else if (name === "EURO") return "€";
   else return "";
 }
+
 setOppositeCashRegister(){
     const cash = this.cashRegisters.find(p=> p.id === this.createModel.oppositeCashRegisterId);
 

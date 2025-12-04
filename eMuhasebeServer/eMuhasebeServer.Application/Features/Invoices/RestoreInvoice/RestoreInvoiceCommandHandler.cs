@@ -14,6 +14,8 @@ internal sealed class RestoreInvoiceCommandHandler(
     ICustomerDetailRepository customerDetailRepository,
     IProductRepository productRepository,
     IProductDetailRepository productDetailRepository,
+    ICashRegisterRepository cashRegisterRepository,
+    ICashRegisterDetailRepository cashRegisterDetailRepository,
     IUnitOfWork unitOfWork,
     ICacheService cacheService) : IRequestHandler<RestoreInvoiceCommand, Result<string>>
 {
@@ -81,6 +83,56 @@ internal sealed class RestoreInvoiceCommandHandler(
             productDetailRepository.Update(detail);
         }
 
+        // Restore cash register details associated with invoice payments
+        List<CashRegisterDetail> paymentCashDetails = await cashRegisterDetailRepository
+            .GetAll()
+            .IgnoreQueryFilters()
+            .Where(p => p.Description.Contains($"{invoice.InvoiceNumber} Numaralı Fatura Ödemesi") && p.IsDeleted)
+            .ToListAsync(cancellationToken);
+
+        foreach (var paymentCashDetail in paymentCashDetails)
+        {
+            // Restore the cash register balance change
+            CashRegister? paymentCashRegister = await cashRegisterRepository.GetByExpressionWithTrackingAsync(p => p.Id == paymentCashDetail.CashRegisterId, cancellationToken);
+
+            if (paymentCashRegister is not null)
+            {
+                paymentCashRegister.DepositAmount += paymentCashDetail.DepositAmount;
+                paymentCashRegister.WithdrawalAmount += paymentCashDetail.WithdrawalAmount;
+                cashRegisterRepository.Update(paymentCashRegister);
+            }
+
+            // Mark the cash register detail as not deleted
+            paymentCashDetail.IsDeleted = false;
+            cashRegisterDetailRepository.Update(paymentCashDetail);
+        }
+
+        // Restore cash register operations for the original invoice
+        if (invoice.Type.Value == 1) // Purchase invoice
+        {
+            // Find and restore the cash register detail created for this invoice
+            CashRegisterDetail? cashRegisterDetail = await cashRegisterDetailRepository
+                .GetAll()
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(p => p.Description == $"{invoice.InvoiceNumber} Numaralı Fatura" && p.IsDeleted, cancellationToken);
+
+            if (cashRegisterDetail is not null)
+            {
+                // Restore the cash register balance change
+                CashRegister? cashRegister = await cashRegisterRepository.GetByExpressionWithTrackingAsync(p => p.Id == cashRegisterDetail.CashRegisterId, cancellationToken);
+
+                if (cashRegister is not null)
+                {
+                    cashRegister.DepositAmount += invoice.Amount;
+                    cashRegisterRepository.Update(cashRegister);
+                }
+
+                // Mark the cash register detail as not deleted
+                cashRegisterDetail.IsDeleted = false;
+                cashRegisterDetailRepository.Update(cashRegisterDetail);
+            }
+        }
+
         invoice.IsDeleted = false;
         invoiceRepository.Update(invoice);
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -88,6 +140,7 @@ internal sealed class RestoreInvoiceCommandHandler(
         cacheService.Remove(cacheService.GetCompanyCacheKey("invoices"));
         cacheService.Remove(cacheService.GetCompanyCacheKey("customers"));
         cacheService.Remove(cacheService.GetCompanyCacheKey("products"));
+        cacheService.Remove(cacheService.GetCompanyCacheKey("cashRegisters"));
 
         return "Fatura kaydı başarıyla geri yüklendi";
     }

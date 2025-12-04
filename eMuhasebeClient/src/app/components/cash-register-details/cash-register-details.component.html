@@ -13,15 +13,37 @@
       </div>
     </section>
     <app-section sectionTitle="{{cashRegister.name}} Kasa Hareketleri ">
+        <!-- Print Header (visible only when printing) -->
+        <div class="print-header d-none">
+            <h3>{{cashRegister.name}} Kasa Hareketleri</h3>
+            <p>Tarih Aralığı: {{startDate | date:'dd.MM.yyyy'}} - {{endDate | date:'dd.MM.yyyy'}}</p>
+        </div>
+        
         <div class="form-group row">
             <div class="col-9">
                 <button class="btn btn-dark" data-toggle="modal" data-target="#createModal">
                     <i class="fa-solid fa-plus me-1"></i>
                     İşlem Ekle
                 </button>
+                <button class="btn btn-success ms-2" (click)="showRevenueOnly()" [class.active]="revenueFilter">
+                    <i class="fa-solid fa-arrow-down me-1"></i>
+                    Girişler
+                </button>
+                <button class="btn btn-danger ms-2" (click)="showExpensesOnly()" [class.active]="expenseFilter">
+                    <i class="fa-solid fa-arrow-up me-1"></i>
+                    Çıkışlar
+                </button>
+                <button class="btn btn-secondary ms-2" (click)="showAll()" [class.active]="!revenueFilter && !expenseFilter">
+                    <i class="fa-solid fa-list me-1"></i>
+                    Tümü
+                </button>
+                <button class="btn btn-secondary ms-2" (click)="printReport()">
+                    <i class="fa-solid fa-print me-1"></i>
+                    Yazdır
+                </button>
             </div>
 
-            <div class="col-6">
+            <div class="col-6 date-filters">
                 <div class="row">
                     <div class="col-4">
                         <input type="date" class="form-control" [(ngModel)]="startDate">
@@ -53,9 +75,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for(data of cashRegister.details|cashRegisterDetail: search ;track data){
+                    @for(data of getFilteredDetails() | paginate: { itemsPerPage: 10, currentPage: p }; track data){
                     <tr>
-                        <td>{{$index + 1}}</td>
+                        <td>{{($index + 1) + (p - 1) * 10}}</td>
                         <td>{{data.date | date: 'dd.MM.yyyy'}}</td>
                         <td>
                             <span class="me-1">{{data.description}}</span>
@@ -86,6 +108,10 @@
                 </tbody>
             </table>
         </div>
+        
+                  <div class="text-center">
+               <pagination-controls nextLabel="Sonraki" previousLabel="Önceki" (pageChange)="p = $event"></pagination-controls>
+            </div>
     </app-section>
 </app-blank>
 
