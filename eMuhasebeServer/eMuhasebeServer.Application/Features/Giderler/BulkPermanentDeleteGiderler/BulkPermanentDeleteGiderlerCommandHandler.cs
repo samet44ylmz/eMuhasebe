@@ -10,7 +10,6 @@ namespace eMuhasebeServer.Application.Features.Giderler.BulkPermanentDeleteGider
 
 internal sealed class BulkPermanentDeleteGiderlerCommandHandler(
     IGiderRepository giderRepository,
-    ICashRegisterRepository cashRegisterRepository,
     ICashRegisterDetailRepository cashRegisterDetailRepository,
     IUnitOfWork unitOfWork,
     ICacheService cacheService) : IRequestHandler<BulkPermanentDeleteGiderlerCommand, Result<string>>
@@ -33,27 +32,16 @@ internal sealed class BulkPermanentDeleteGiderlerCommandHandler(
         foreach (var gider in giderler)
         {
             // Find all cash register details related to payments for this expense
+            // Updated to match the correct description pattern used in PayExpenseCommandHandler
             List<CashRegisterDetail> paymentDetails = await cashRegisterDetailRepository
                 .GetAll()
                 .IgnoreQueryFilters()
-                .Where(p => p.Description.Contains($"{gider.Name} Gideri Ödemesi") && p.IsDeleted == false)
+                .Where(p => p.Description.StartsWith($"{gider.Name} Gideri Ödemesi") && p.IsDeleted)
                 .ToListAsync(cancellationToken);
 
-            // Reverse all payments made for this expense
+            // Permanently delete all payments made for this expense
             foreach (var paymentDetail in paymentDetails)
             {
-                CashRegister? paymentCashRegister = await cashRegisterRepository
-                    .GetAll()
-                    .IgnoreQueryFilters()
-                    .FirstOrDefaultAsync(p => p.Id == paymentDetail.CashRegisterId, cancellationToken);
-                    
-                if (paymentCashRegister is not null)
-                {
-                    // Reverse the payment by adding back the withdrawal amount
-                    paymentCashRegister.WithdrawalAmount -= paymentDetail.WithdrawalAmount;
-                    cashRegisterRepository.Update(paymentCashRegister);
-                }
-
                 // Permanently delete the payment detail
                 cashRegisterDetailRepository.Delete(paymentDetail);
             }

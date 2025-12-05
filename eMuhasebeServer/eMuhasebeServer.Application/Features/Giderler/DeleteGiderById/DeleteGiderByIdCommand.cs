@@ -27,9 +27,10 @@ internal sealed class DeleteGiderByIdCommandHandler(
         }
 
         // Find all cash register details related to payments for this expense
+        // Updated to match the correct description pattern used in PayExpenseCommandHandler
         List<CashRegisterDetail> paymentDetails = await cashRegisterDetailRepository
             .GetAll()
-            .Where(p => p.Description.Contains($"{gider.Name} Gideri Ödemesi"))
+            .Where(p => p.Description.StartsWith($"{gider.Name} Gideri Ödemesi"))
             .ToListAsync(cancellationToken);
 
         // Reverse all payments made for this expense
@@ -66,7 +67,11 @@ internal sealed class DeleteGiderByIdCommandHandler(
             }
 
             cash.WithdrawalAmount -= detail.WithdrawalAmount;
-            cashRegisterDetailRepository.Delete(detail);
+            cashRegisterRepository.Update(cash);
+
+            // Mark the cash register detail as deleted (soft delete)
+            detail.IsDeleted = true;
+            cashRegisterDetailRepository.Update(detail);
         }
 
         gider.IsDeleted = true;

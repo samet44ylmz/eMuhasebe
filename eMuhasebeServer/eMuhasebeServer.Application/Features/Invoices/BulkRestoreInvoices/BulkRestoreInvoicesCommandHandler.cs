@@ -82,10 +82,11 @@ internal sealed class BulkRestoreInvoicesCommandHandler(
             }
 
             // Restore cash register details associated with invoice payments
+            // Updated to match the correct description pattern used in PayInvoiceCommandHandler
             List<CashRegisterDetail> paymentCashDetails = await cashRegisterDetailRepository
                 .GetAll()
                 .IgnoreQueryFilters()
-                .Where(p => p.Description.Contains($"{invoice.InvoiceNumber} Numaralı Fatura Ödemesi") && p.IsDeleted)
+                .Where(p => p.Description.StartsWith($"{invoice.InvoiceNumber} Numaralı Fatura Ödemesi") && p.IsDeleted)
                 .ToListAsync(cancellationToken);
 
             foreach (var paymentCashDetail in paymentCashDetails)

@@ -52,7 +52,7 @@ internal sealed class CreateGiderCommandHandler(
             CashRegisterDetail detail = new()
             {
                 Date = request.Date,
-                Description = request.Description,
+                Description = $"{request.Name} Gideri Ödemesi - {request.Description}",
                 DepositAmount = 0,
                 WithdrawalAmount = request.Price,
                 CashRegisterId = request.CashRegisterId.Value,

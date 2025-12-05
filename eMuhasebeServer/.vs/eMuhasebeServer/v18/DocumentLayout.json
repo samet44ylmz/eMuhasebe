@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\eMuhasebe\\eMuhasebeServer\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.application\\features\\giderler\\bulkpermanentdeletegiderler\\bulkpermanentdeletegiderlercommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{57A3369C-C346-417E-AFD5-481B6121B28A}|eMuhasebeServer.Application\\eMuhasebeServer.Application.csproj|solutionrelative:emuhasebeserver.application\\features\\giderler\\bulkpermanentdeletegiderler\\bulkpermanentdeletegiderlercommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{5AFA4DB2-49F6-4604-A694-1E5E7B91FAA2}|eMuhasebeServer.WebAPI\\eMuhasebeServer.WebAPI.csproj|c:\\emuhasebe\\emuhasebeserver\\emuhasebeserver.webapi\\middlewares\\extensionsmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5AFA4DB2-49F6-4604-A694-1E5E7B91FAA2}|eMuhasebeServer.WebAPI\\eMuhasebeServer.WebAPI.csproj|solutionrelative:emuhasebeserver.webapi\\middlewares\\extensionsmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -34,7 +38,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -42,7 +46,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
+              "Title": "BulkPermanentDeleteGiderlerCommandHandler.cs",
+              "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Giderler\\BulkPermanentDeleteGiderler\\BulkPermanentDeleteGiderlerCommandHandler.cs",
+              "RelativeDocumentMoniker": "eMuhasebeServer.Application\\Features\\Giderler\\BulkPermanentDeleteGiderler\\BulkPermanentDeleteGiderlerCommandHandler.cs",
+              "ToolTip": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Application\\Features\\Giderler\\BulkPermanentDeleteGiderler\\BulkPermanentDeleteGiderlerCommandHandler.cs",
+              "RelativeToolTip": "eMuhasebeServer.Application\\Features\\Giderler\\BulkPermanentDeleteGiderler\\BulkPermanentDeleteGiderlerCommandHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-05T21:53:18.801Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.WebAPI\\appsettings.json",
               "RelativeDocumentMoniker": "eMuhasebeServer.WebAPI\\appsettings.json",
@@ -54,7 +71,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "ExtensionsMiddleware.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.WebAPI\\Middlewares\\ExtensionsMiddleware.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.WebAPI\\Middlewares\\ExtensionsMiddleware.cs",
@@ -67,7 +84,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Infrastructure\\Context\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Infrastructure\\Context\\ApplicationDbContext.cs",
@@ -79,7 +96,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "IBankDetailRepository.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Domain\\Repositories\\IBankDetailRepository.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Domain\\Repositories\\IBankDetailRepository.cs",
@@ -91,7 +108,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "CashRegister.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Domain\\Entities\\CashRegister.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Domain\\Entities\\CashRegister.cs",
@@ -103,7 +120,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Bank.cs",
               "DocumentMoniker": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.Domain\\Entities\\Bank.cs",
               "RelativeDocumentMoniker": "eMuhasebeServer.Domain\\Entities\\Bank.cs",

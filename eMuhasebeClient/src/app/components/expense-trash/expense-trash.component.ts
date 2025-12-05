@@ -41,6 +41,7 @@ export class ExpenseTrashComponent {
     }, (err) => {
       // Handle error case - maybe show an error message
       console.error('Error fetching deleted expenses:', err);
+      this.swal.callToast("Silinen giderler alınırken bir hata oluştu", "error");
     });
   }
 
@@ -71,8 +72,15 @@ export class ExpenseTrashComponent {
         console.log('restoreExpense response:', res);
         // Improve notification for restore operation
         this.swal.callToast("Gider başarıyla geri yüklendi", "success");
-        this.getAllDeletedExpenses();
-        this.selectedExpenseIds = [];
+        // Navigate back to expenses page to ensure proper refresh of all data including balances
+        // Add a longer delay to ensure the restore operation completes before navigation
+        setTimeout(() => {
+          this.router.navigate(['/expenses']);
+        }, 1500);
+      }, (error) => {
+        // Handle error case
+        console.error('Error restoring expense:', error);
+        this.swal.callToast("Gider geri yüklenirken bir hata oluştu", "error");
       });
     }, "Geri Yükle", "İptal");
   }
@@ -85,6 +93,10 @@ export class ExpenseTrashComponent {
         this.swal.callToast("Gider kalıcı olarak silindi", "success");
         this.getAllDeletedExpenses();
         this.selectedExpenseIds = [];
+      }, (error) => {
+        // Handle error case
+        console.error('Error permanently deleting expense:', error);
+        this.swal.callToast("Gider kalıcı olarak silinirken bir hata oluştu", "error");
       });
     });
   }
@@ -102,6 +114,10 @@ export class ExpenseTrashComponent {
         this.swal.callToast(`${this.selectedExpenseIds.length} gider kalıcı olarak silindi`, "success");
         this.getAllDeletedExpenses();
         this.selectedExpenseIds = [];
+      }, (error) => {
+        // Handle error case
+        console.error('Error bulk deleting expenses:', error);
+        this.swal.callToast("Giderler kalıcı olarak silinirken bir hata oluştu", "error");
       });
     });
   }

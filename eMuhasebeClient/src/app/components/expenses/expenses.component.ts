@@ -87,8 +87,12 @@ export class ExpensesComponent implements OnInit, OnDestroy {
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         if (event.url === '/expenses') {
-          this.getAll();
-          this.setDefaultPageToLast();
+          // Add a longer delay to ensure the navigation is complete before refreshing data
+          setTimeout(() => {
+            this.getAll();
+            // getCashRegisters is now called within getAll to ensure proper sequencing
+            this.setDefaultPageToLast();
+          }, 500);
         }
       });
   }
@@ -113,9 +117,12 @@ export class ExpensesComponent implements OnInit, OnDestroy {
       this.expenses = res;
       // Update to last page when data changes
       this.setDefaultPageToLast();
+      // Refresh cash registers after expenses are loaded to ensure balance consistency
+      this.getCashRegisters();
     }, (err) => {
       // Handle error case
       console.error('Error fetching expenses:', err);
+      this.swal.callToast("Giderler alınırken bir hata oluştu", "error");
     });
   }
 
@@ -244,6 +251,10 @@ export class ExpensesComponent implements OnInit, OnDestroy {
         console.log('deleteById response:', res);
         this.getAll();
         this.swal.callToast(res, "info");
+      }, (error) => {
+        // Handle error case
+        console.error('Error deleting expense:', error);
+        this.swal.callToast("Gider silinirken bir hata oluştu", "error");
       });
     })
   }

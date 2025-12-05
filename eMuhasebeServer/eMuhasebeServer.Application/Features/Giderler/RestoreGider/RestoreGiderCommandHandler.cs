@@ -34,10 +34,11 @@ internal sealed class RestoreGiderCommandHandler(
         }
 
         // Restore all cash register details related to payments for this expense
+        // Updated to match the correct description pattern used in PayExpenseCommandHandler
         List<CashRegisterDetail> paymentDetails = await cashRegisterDetailRepository
             .GetAll()
             .IgnoreQueryFilters()
-            .Where(p => p.Description.Contains($"{gider.Name} Gideri Ödemesi") && p.IsDeleted)
+            .Where(p => p.Description.StartsWith($"{gider.Name} Gideri Ödemesi") && p.IsDeleted)
             .ToListAsync(cancellationToken);
 
         // Restore all payments made for this expense
@@ -48,7 +49,7 @@ internal sealed class RestoreGiderCommandHandler(
                 
             if (paymentCashRegister is not null)
             {
-                // Restore the payment by subtracting the withdrawal amount (reverse of deletion)
+                // Restore the payment by adding back the withdrawal amount (reverse of deletion)
                 paymentCashRegister.WithdrawalAmount += paymentDetail.WithdrawalAmount;
                 cashRegisterRepository.Update(paymentCashRegister);
             }
