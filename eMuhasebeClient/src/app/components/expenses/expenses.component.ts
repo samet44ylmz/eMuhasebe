@@ -64,11 +64,12 @@ export class ExpensesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.createModel.date = this.getToday();
-    // Initialize date range to 6 months: from 6 months ago to today
+    // Initialize date range to 1 month: from 1 month ago to today
     const today = new Date();
-    const sixMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 6, today.getDate());
+    const monthAgo = new Date(today);
+    monthAgo.setMonth(today.getMonth() - 1);
     const pad = (n: number) => n.toString().padStart(2, '0');
-    this.startDate = `${sixMonthsAgo.getFullYear()}-${pad(sixMonthsAgo.getMonth()+1)}-${pad(sixMonthsAgo.getDate())}`;
+    this.startDate = `${monthAgo.getFullYear()}-${pad(monthAgo.getMonth()+1)}-${pad(monthAgo.getDate())}`;
     this.endDate = this.getToday();
     this.getAll();
     this.getCashRegisters();
@@ -101,11 +102,12 @@ export class ExpensesComponent implements OnInit, OnDestroy {
   getAll(){
     // Add timestamp to prevent browser caching
     const timestamp = new Date().getTime();
+    const catId = this.getSelectedCategoryId();
     this.http.post<ExpenseModel[]>("Giderler/GetAll", {
       _t: timestamp,
       startDate: this.startDate,
       endDate: this.endDate,
-      categoryId: this.selectedCategoryId
+      categoryId: catId
     }, (res) => {
       console.log('getAll response:', res);
       this.expenses = res;
@@ -134,10 +136,24 @@ export class ExpensesComponent implements OnInit, OnDestroy {
 
   // Get filtered expenses based on showOnlyUnpaid flag
   getFilteredExpenses() {
-    if (this.showOnlyUnpaid) {
-      return this.expenses.filter(expense => (expense.price - expense.paidAmount) > 0);
+    let list = this.expenses;
+    const catId = this.getSelectedCategoryId();
+    if (catId != null) {
+      list = list.filter(expense => Number(expense.categoryType) === Number(catId));
     }
-    return this.expenses;
+    if (this.showOnlyUnpaid) {
+      list = list.filter(expense => (expense.price - expense.paidAmount) > 0);
+    }
+    return list;
+  }
+
+  private getSelectedCategoryId(): number | null {
+    if (this.selectedCategoryId != null) return this.selectedCategoryId;
+    if (this.categorySearch) {
+      const found = this.categories.find(c => c.name.toLowerCase() === this.categorySearch.toLowerCase());
+      if (found) return found.value;
+    }
+    return null;
   }
 
   getCashRegisters(){
@@ -642,6 +658,7 @@ export class ExpensesComponent implements OnInit, OnDestroy {
 
   // Add method to handle category filter change
   onCategoryFilterChange() {
+    this.p = 1;
     this.getAll();
   }
 

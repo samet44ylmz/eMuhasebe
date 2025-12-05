@@ -16,7 +16,7 @@
                     {{ showOnlyUnpaid ? 'Tüm Faturalar' : 'Ödenmemiş Faturalar' }}
                 </button>
                 <!-- Add print button -->
-                <button class="btn btn-info ms-2" (click)="printInvoices()">
+                <button class="btn btn-info ms-2" (click)="openPrintOptions()">
                     <i class="fa-solid fa-print me-1"></i>
                     Listeyi Yazdır
                 </button>
@@ -26,20 +26,22 @@
             <div class="col-3">
                 <label>Müşteri</label>
                 <div class="position-relative">
-                    <input type="text" class="form-control" placeholder="Müşteri ara..." [(ngModel)]="customerSearch" [ngModelOptions]="{standalone:true}" (input)="onCustomerSearchChange($event)" (focus)="onCustomerSearchFocus()" (blur)="onCustomerSearchBlur()">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Müşteri ara..." [(ngModel)]="customerSearch" [ngModelOptions]="{standalone:true}" (input)="onCustomerSearchChange($event)" (focus)="onCustomerSearchFocus()" (blur)="onCustomerSearchBlur()">
+                        <button *ngIf="selectedCustomerId" type="button" class="btn btn-outline-danger" (click)="clearCustomerFilter()" title="Filtreyi kaldır">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    </div>
                     <div class="dropdown-menu w-100 mt-1" style="max-height: 160px; overflow-y: auto; position: absolute; top: 100%; z-index: 1000; border: 1px solid #ddd; border-radius: 0.375rem; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);" [class.show]="showCustomerDropdown && (customerSearch || getFilteredCustomers().length > 0)">
                         @for(customer of getFilteredCustomers(); track customer){
-                            <button type="button" class="dropdown-item" style="padding: 0.5rem 1rem; cursor: pointer; height: 32px; line-height: 20px;" (click)="selectCustomerForFilter(customer)">
+                            <button type="button" class="dropdown-item" [class.active]="customer.id === selectedCustomerId" style="padding: 0.5rem 1rem; cursor: pointer; height: 32px; line-height: 20px;" (click)="selectCustomerForFilter(customer)">
                                 {{customer.name}}
                             </button>
                         }
                     </div>
                 </div>
-                <button *ngIf="selectedCustomerId" type="button" class="btn btn-outline-danger btn-sm mt-1" (click)="clearCustomerFilter()" title="Müşteri filtresini kaldır">
-                    <i class="fa-solid fa-times me-1"></i>Filtreyi Kaldır
-                </button>
-            </div>
-        </div>
+
+            </div>        </div>
 
         <div class="form-group row mt-2">
             <!-- Add date filtering controls -->
@@ -70,7 +72,7 @@
                         <th>Tarih</th>
                         <th>Fatura No</th>
                         <th>Ürünler</th>
-                        <th>Cari</th>
+                        <th>Müşteri</th>
                         <th>Tutar</th>
                         <th>Ödenen</th>
                         <th>Kalan</th>
@@ -108,10 +110,11 @@
                                 <i class="fa-solid fa-print"></i>
                             </button>
                             @if(data.amount - data.paidAmount > 0){
-                            <button (click)="openPaymentModal(data)" class="btn btn-outline-success btn-sm">
+                            <button (click)="openPaymentModal(data)" class="btn btn-outline-success btn-sm me-1">
                                 <i class="fa-solid fa-money-bill-wave"></i>
                             </button>
                             }
+
                         </td>
                     </tr>
                     }
@@ -160,16 +163,14 @@
                                     </div>
                                     <div class="dropdown-menu w-100 mt-1" style="max-height: 160px; overflow-y: auto; position: absolute; top: 100%; z-index: 1000; border: 1px solid #ddd; border-radius: 0.375rem; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);" [class.show]="showCustomerDropdown && (customerSearch || getFilteredCustomers().length > 0)">
                                         @for(customer of getFilteredCustomers(); track customer){
-                                            <button type="button" class="dropdown-item" style="padding: 0.5rem 1rem; cursor: pointer; height: 32px; line-height: 20px;" (click)="selectCustomerForCreateModal(customer)">
+                                            <button type="button" class="dropdown-item" [class.active]="customer.id === createModel.customerId" style="padding: 0.5rem 1rem; cursor: pointer; height: 32px; line-height: 20px;" (click)="selectCustomerForCreateModal(customer, $event)">
                                                 {{customer.name}}
                                             </button>
                                         }
                                     </div>
                                     <input type="hidden" [(ngModel)]="createModel.customerId" [ngModelOptions]="{standalone:true}">
                                 </div>
-                                <div class="invalid-feedback"></div>
-                                <small *ngIf="createModel.customerId" class="text-success">Müşteri seçildi</small>
-                            </div>
+                                <small *ngIf="createModel.customerId" class="text-success"> {{ getSelectedCustomerName() }}</small>                            </div>
                         </div>
 
                         <div class="col-6">
@@ -204,18 +205,22 @@
                             <div class="form-group">
                                 <label>Ürün</label>
                                 <div class="position-relative">
-                                    <input type="text" class="form-control" placeholder="Ürün ara..." [(ngModel)]="productSearch" [ngModelOptions]="{standalone:true}" (input)="onProductSearchChange($event)" (focus)="onProductSearchFocus()" (blur)="onProductSearchBlur()">
-                                    <div class="dropdown-menu w-100 mt-1" style="max-height: 160px; overflow-y: auto; position: absolute; top: 100%; z-index: 1000; border: 1px solid #ddd; border-radius: 0.375rem; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);" [class.show]="showProductDropdown && (productSearch || (products | product:productSearch).length > 0)">
-                                        @for(product of products | product:productSearch; track product){
-                                            <button type="button" class="dropdown-item" style="padding: 0.5rem 1rem; cursor: pointer; height: 32px; line-height: 20px;" (click)="selectProduct(product)">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Ürün ara..." [(ngModel)]="productSearch" [ngModelOptions]="{standalone:true}" (input)="onProductSearchChange($event)" (focus)="onProductSearchFocus()" (blur)="onProductSearchBlur()">
+                                        <button *ngIf="createModel.productId" type="button" class="btn btn-outline-danger" (click)="clearProductSelection()" title="Ürün seçimini kaldır">
+                                            <i class="fa-solid fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <div class="dropdown-menu w-100 mt-1" style="max-height: 160px; overflow-y: auto; position: absolute; top: 100%; z-index: 1000; border: 1px solid #ddd; border-radius: 0.375rem; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);" [class.show]="showProductDropdown && (productSearch || getFilteredProducts().length > 0)">
+                                        @for(product of getFilteredProducts(); track product){
+                                            <button type="button" class="dropdown-item" [class.active]="product.id === createModel.productId" style="padding: 0.5rem 1rem; cursor: pointer; height: 32px; line-height: 20px;" (click)="selectProductForCreate(product, $event)">
                                                 {{product.productCode}} - {{product.name}}
                                             </button>
                                         }
                                     </div>
                                     <input type="hidden" [(ngModel)]="createModel.productId" [ngModelOptions]="{standalone:true}">
                                 </div>
-
-                                <div class="invalid-feedback"></div>
+                                
                             </div>
                         </div>
                         <div class="col-2">
@@ -297,7 +302,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title fs-5">Fatura Güncelleme Formu</h3>
-                <button type="button" #updateModalCloseBtn class="btn btn-outline-danger" data-dismiss="modal">
+                <button type="button" #updateModalCloseBtn class="btn btn-outline-danger" data-dismiss="modal" (click)="resetUpdateForm()">
                     <i class="fa-solid fa-x"></i>
                 </button>
             </div>
@@ -316,19 +321,16 @@
                                     </div>
                                     <div class="dropdown-menu w-100 mt-1" style="max-height: 160px; overflow-y: auto; position: absolute; top: 100%; z-index: 1000; border: 1px solid #ddd; border-radius: 0.375rem; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);" [class.show]="showCustomerDropdownUpdate && (customerSearchUpdate || getFilteredCustomersForUpdate().length > 0)">
                                         @for(customer of getFilteredCustomersForUpdate(); track customer){
-                                            <button type="button" class="dropdown-item" style="padding: 0.5rem 1rem; cursor: pointer; height: 32px; line-height: 20px;" (click)="selectCustomerForUpdate(customer)">
+                                            <button type="button" class="dropdown-item" [class.active]="customer.id === updateModel.customerId" style="padding: 0.5rem 1rem; cursor: pointer; height: 32px; line-height: 20px;" (click)="selectCustomerForUpdate(customer, $event)">
                                                 {{customer.name}}
                                             </button>
                                         }
                                     </div>
                                     <input type="hidden" [(ngModel)]="updateModel.customerId" [ngModelOptions]="{standalone:true}">
                                 </div>
-                                <div class="invalid-feedback"></div>
-                                <small *ngIf="updateModel.customerId" class="text-success">Müşteri seçildi</small>
+                                <small *ngIf="updateModel.customerId" class="text-success"> {{ getSelectedCustomerNameForUpdate() }}</small>
                             </div>
-                        </div>
-
-                        <div class="col-6">
+                        </div>                        <div class="col-6">
                             <div class="form-group">
                                 <label>Tarih</label>
                                 <input type="date" required [(ngModel)]="updateModel.date" class="form-control" name="updateDate">
@@ -360,10 +362,15 @@
                             <div class="form-group">
                                 <label>Ürün</label>
                                 <div class="position-relative">
-                                    <input type="text" class="form-control" placeholder="Ürün ara..." [(ngModel)]="productSearchUpdate" [ngModelOptions]="{standalone:true}" (input)="onProductSearchUpdateChange($event)" (focus)="onProductSearchUpdateFocus()" (blur)="onProductSearchUpdateBlur()">
-                                    <div class="dropdown-menu w-100 mt-1" style="max-height: 160px; overflow-y: auto; position: absolute; top: 100%; z-index: 1000; border: 1px solid #ddd; border-radius: 0.375rem; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);" [class.show]="showProductDropdownUpdate && (productSearchUpdate || (products | product:productSearchUpdate).length > 0)">
-                                        @for(product of products | product:productSearchUpdate; track product){
-                                            <button type="button" class="dropdown-item" style="padding: 0.5rem 1rem; cursor: pointer; height: 32px; line-height: 20px;" (click)="selectProductForUpdate(product)">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Ürün ara..." [(ngModel)]="productSearchUpdate" [ngModelOptions]="{standalone:true}" (input)="onProductSearchUpdateChange($event)" (focus)="onProductSearchUpdateFocus()" (blur)="onProductSearchUpdateBlur()">
+                                        <button *ngIf="updateModel.productId" type="button" class="btn btn-outline-danger" (click)="clearProductUpdateSelection()" title="Ürün seçimini kaldır">
+                                            <i class="fa-solid fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <div class="dropdown-menu w-100 mt-1" style="max-height: 160px; overflow-y: auto; position: absolute; top: 100%; z-index: 1000; border: 1px solid #ddd; border-radius: 0.375rem; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);" [class.show]="showProductDropdownUpdate && (productSearchUpdate || getFilteredProductsForUpdate().length > 0)">
+                                        @for(product of getFilteredProductsForUpdate(); track product){
+                                            <button type="button" class="dropdown-item" [class.active]="product.id === updateModel.productId" style="padding: 0.5rem 1rem; cursor: pointer; height: 32px; line-height: 20px;" (click)="selectProductForUpdate(product, $event)">
                                                 {{product.productCode}} - {{product.name}}
                                             </button>
                                         }
@@ -371,7 +378,6 @@
                                     <input type="hidden" [(ngModel)]="updateModel.productId" [ngModelOptions]="{standalone:true}">
                                 </div>
 
-                                <div class="invalid-feedback"></div>
                             </div>
                         </div>
                         <div class="col-2">
@@ -522,6 +528,29 @@
                     <button type="submit" class="btn btn-success w-100">Ödemeyi Al</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Print Options Modal -->
+<div class="modal fade" id="printOptionsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Yazdırma Seçenekleri</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Lütfen bir yazdırma seçeneği belirleyin:</p>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-primary btn-lg" (click)="downloadPdf()">
+                        <i class="fa-solid fa-file-pdf me-2"></i>PDF İndir
+                    </button>
+                    <button type="button" class="btn btn-success btn-lg" (click)="printDirect()">
+                        <i class="fa-solid fa-print me-2"></i>Yazdır
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

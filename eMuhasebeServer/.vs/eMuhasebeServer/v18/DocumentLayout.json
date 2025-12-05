@@ -60,7 +60,7 @@
               "RelativeDocumentMoniker": "eMuhasebeServer.WebAPI\\Middlewares\\ExtensionsMiddleware.cs",
               "ToolTip": "C:\\eMuhasebe\\eMuhasebeServer\\eMuhasebeServer.WebAPI\\Middlewares\\ExtensionsMiddleware.cs",
               "RelativeToolTip": "eMuhasebeServer.WebAPI\\Middlewares\\ExtensionsMiddleware.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-04T09:16:44.619Z",
               "EditorCaption": ""
@@ -87,8 +87,7 @@
               "RelativeToolTip": "eMuhasebeServer.Domain\\Repositories\\IBankDetailRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-04T08:46:55.363Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-04T08:46:55.363Z"
             },
             {
               "$type": "Document",

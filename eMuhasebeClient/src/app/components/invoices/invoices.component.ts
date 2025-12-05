@@ -64,10 +64,11 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     private router: Router
   ){
     this.createModel.date = this.date.transform(new Date(),"yyyy-MM-dd") ?? "";
-    // Initialize date range to 6 months: from 6 months ago to today
+    // Initialize date range to 1 month: from 1 month ago to today
     const today = new Date();
-    const sixMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 6, today.getDate());
-    this.startDate = this.date.transform(sixMonthsAgo, 'yyyy-MM-dd') ?? "";
+    const monthAgo = new Date(today);
+    monthAgo.setMonth(today.getMonth() - 1);
+    this.startDate = this.date.transform(monthAgo, 'yyyy-MM-dd') ?? "";
     this.endDate = this.date.transform(today, 'yyyy-MM-dd') ?? "";
   }
 
@@ -152,21 +153,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         return;
       }
 
-      // Prepare data in the format backend expects (CreateInvoiceCommand)
-      const createData = {
-        date: this.createModel.date, // yyyy-MM-dd format
-        invoiceNumber: this.createModel.invoiceNumber || null, // Optional
-        customerId: this.createModel.customerId, // Guid string
-        description: this.createModel.description || "", // Optional but send empty string if null
-        details: this.createModel.details.map(detail => ({
-          productId: detail.productId, // Guid string
-          quantity: detail.quantity, // number
-          price: detail.price // number
-          // Don't send: id, invoiceId, product object
-        }))
-      };
-
-      this.http.post<string>("Invoices/Create", createData, (res)=> {
+      this.http.post<string>("Invoices/Create",this.createModel,(res)=> {
         this.swal.callToast(res);
         this.resetCreateForm(); // Reset the form to default values
         form.resetForm(); // Reset the form
@@ -187,27 +174,32 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
   get(model: InvoiceModel){
     this.updateModel = {...model};
-    // Set customer search text for update modal
-    if (model.customer) {
-      this.customerSearchUpdate = model.customer.name;
+
+    // Initialize product search field if there's a selected product
+    if (this.updateModel.productId) {
+      const selectedProduct = this.products.find(p => p.id === this.updateModel.productId);
+      if (selectedProduct) {
+        this.productSearchUpdate = selectedProduct.productCode + " - " + selectedProduct.name;
+      }
     } else {
+      // Clear product search if no product is selected
+      this.productSearchUpdate = "";
+    }
+
+    // Initialize customer search field if there's a selected customer
+    if (this.updateModel.customerId) {
+      const selectedCustomer = this.customers.find(c => c.id === this.updateModel.customerId);
+      if (selectedCustomer) {
+        this.customerSearchUpdate = selectedCustomer.name;
+      }
+    } else {
+      // Clear customer search if no customer is selected
       this.customerSearchUpdate = "";
     }
-    // Ensure details array exists and has product information
-    if (this.updateModel.details) {
-      this.updateModel.details = this.updateModel.details.map(detail => {
-        // If detail doesn't have product object, try to find it from products array
-        if (!detail.product && detail.productId) {
-          const product = this.products.find(p => p.id === detail.productId);
-          if (product) {
-            return { ...detail, product: product };
-          }
-        }
-        return detail;
-      });
-    } else {
-      this.updateModel.details = [];
-    }
+
+    // Hide dropdowns when initializing
+    this.showProductDropdownUpdate = false;
+    this.showCustomerDropdownUpdate = false;
   }
 
   update(form: NgForm){
@@ -224,38 +216,13 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         return;
       }
 
-      // Store the original invoice ID for deletion
-      const originalInvoiceId = this.updateModel.id;
-
-      // Prepare data in the format backend expects (CreateInvoiceCommand)
-      const updateData = {
-        date: this.updateModel.date, // yyyy-MM-dd format
-        invoiceNumber: this.updateModel.invoiceNumber || null, // Optional
-        customerId: this.updateModel.customerId, // Guid string
-        description: this.updateModel.description || "", // Optional but send empty string if null
-        details: this.updateModel.details.map(detail => ({
-          productId: detail.productId, // Guid string
-          quantity: detail.quantity, // number
-          price: detail.price // number
-          // Don't send: id, invoiceId, product object
-        }))
-      };
-
-      // Delete old invoice first, then create new one
-      this.http.post<string>("Invoices/DeleteById", {id: originalInvoiceId}, (res)=> {
-        // After successful deletion, create the updated invoice
-        this.http.post<string>("Invoices/Create", updateData, (res)=> {
+      this.http.post<string>("Invoices/DeleteById",{id: this.updateModel.id},(res)=> {
+        this.http.post<string>("Invoices/Create",this.updateModel,(res)=> {
           this.swal.callToast(res, "info");
           form.resetForm(); // Reset the form
           this.closeUpdateModal(); // Use proper modal closing
           this.getAll();
-        }, (err) => {
-          // If create fails, show error
-          this.swal.callToast("Fatura güncellenirken hata oluştu", "error");
         });
-      }, (err) => {
-        // If delete fails, show error
-        this.swal.callToast("Eski fatura silinirken hata oluştu", "error");
       });
     }
   }
@@ -355,6 +322,9 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   }
 
   closeUpdateModal() {
+    // Reset the update form
+    this.resetUpdateForm();
+
     // TEMİZ KAPATMA KODU
     const modal = this.getModalInstance('updateModal');
     if(modal) {
@@ -394,6 +364,14 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.createModel.quantity = 0;
     this.createModel.price = 0;
     this.productSearch = ""; // Clear product search after adding
+
+    // Focus back on the product search field for quick re-entry
+    setTimeout(() => {
+      const productSearchInput = document.querySelector('input[placeholder="Ürün ara..."]') as HTMLInputElement;
+      if (productSearchInput) {
+        productSearchInput.focus();
+      }
+    }, 10);
   }
 
   removeDetailItem(index: number){
@@ -415,39 +393,43 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
   // Method to handle product search blur
   onProductSearchBlur() {
-    // Use a small delay to allow click events on dropdown items to register
+    // Use a longer delay to allow click events on dropdown items to register
     setTimeout(() => {
       this.showProductDropdown = false;
-    }, 200);
+      // If no product is selected after blur, clear the search term
+      if (!this.createModel.productId) {
+        this.productSearch = "";
+      }
+    }, 300);
   }
+  // Method to select a product for create modal
+  selectProductForCreate(product: ProductModel, event?: Event) {
+    // Prevent the blur event from hiding the dropdown before selection
+    if (event) {
+      event.stopPropagation();
+    }
 
-  // Method to select a product from the dropdown
-  selectProduct(product: ProductModel) {
     this.createModel.productId = product.id;
     this.productSearch = product.productCode + " - " + product.name;
-    this.showProductDropdown = false;
 
-    // Make sure the input field gets focus after selection
+    // Set default quantity to 1 and price to product's withdrawal price
+    this.createModel.quantity = 1;
+    this.createModel.price = product.withdrawal || 0;
+
+    // Log for debugging
+    console.log('Product selected:', product);
+    console.log('Product ID set to:', this.createModel.productId);
+
+    // Trigger change detection
     setTimeout(() => {
-      const productSearchInput = document.querySelector('input[placeholder="Ürün kodu veya adı girin"]') as HTMLInputElement;
-      if (productSearchInput) {
-        productSearchInput.focus();
-      }
-    }, 10);
+      // Force UI update
+      this.productSearch = this.productSearch;
+    }, 0);
 
-    // Don't call addDetail() here, let the user click "Ekle" button
-  }
-
-  // Method to select a product for create modal
-  selectProductForCreate(product: ProductModel) {
-    this.createModel.productId = product.id;
-    this.productSearch = product.name;
-    this.showProductDropdown = false;
-  }
-
-  // Method to handle product selection in create modal
-  onProductSelect(productId: string) {
-    this.createModel.productId = productId;
+    // Hide the dropdown after a short delay so the user can see the selected item
+    setTimeout(() => {
+      this.showProductDropdown = false;
+    }, 1000);
   }
 
   addDetailForUpdate(){
@@ -479,6 +461,14 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.updateModel.quantity = 0;
     this.updateModel.price = 0;
     this.productSearchUpdate = ""; // Clear product search after adding
+
+    // Focus back on the product search field for quick re-entry
+    setTimeout(() => {
+      const productSearchInputs = document.querySelectorAll('input[placeholder="Ürün ara..."]') as NodeListOf<HTMLInputElement>;
+      if (productSearchInputs.length > 1) {
+        productSearchInputs[1].focus(); // Focus on the second input (update modal)
+      }
+    }, 10);
   }
 
   removeDetailItemForUpdate(index: number){
@@ -494,27 +484,55 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   // Method to handle product search focus for update modal
   onProductSearchUpdateFocus() {
     this.showProductDropdownUpdate = true;
-    // Clear the search term when focusing to show all products
-    this.productSearchUpdate = "";
+    // Yalnızca seçim yoksa arama metnini temizle
+    if (!this.updateModel.productId) {
+      this.productSearchUpdate = "";
+    }
   }
 
   // Method to handle product search blur for update modal
   onProductSearchUpdateBlur() {
-    // Use a small delay to allow click events on dropdown items to register
+    // Use a longer delay to allow click events on dropdown items to register
     setTimeout(() => {
       this.showProductDropdownUpdate = false;
-    }, 200);
+      // If no product is selected after blur, clear the search term
+      if (!this.updateModel.productId) {
+        this.productSearchUpdate = "";
+      }
+    }, 300);
   }
-
   // Method to select a product from the dropdown for update modal
-  selectProductForUpdate(product: ProductModel) {
+  selectProductForUpdate(product: ProductModel, event?: Event) {
+    // Prevent the blur event from hiding the dropdown before selection
+    if (event) {
+      event.stopPropagation();
+    }
+
     this.updateModel.productId = product.id;
     this.productSearchUpdate = product.productCode + " - " + product.name;
-    this.showProductDropdownUpdate = false;
+
+    // Set default quantity to 1 and price to product's withdrawal price
+    this.updateModel.quantity = 1;
+    this.updateModel.price = product.withdrawal || 0;
+
+    // Log for debugging
+    console.log('Product selected for update:', product);
+    console.log('Product ID set to:', this.updateModel.productId);
+
+    // Trigger change detection
+    setTimeout(() => {
+      // Force UI update
+      this.productSearchUpdate = this.productSearchUpdate;
+    }, 0);
+
+    // Hide the dropdown after a short delay so the user can see the selected item
+    setTimeout(() => {
+      this.showProductDropdownUpdate = false;
+    }, 1000);
 
     // Make sure the input field gets focus after selection
     setTimeout(() => {
-      const productSearchInputs = document.querySelectorAll('input[placeholder="Ürün kodu veya adı girin"]') as NodeListOf<HTMLInputElement>;
+      const productSearchInputs = document.querySelectorAll('input[placeholder="Ürün ara..."]') as NodeListOf<HTMLInputElement>;
       if (productSearchInputs.length > 1) {
         productSearchInputs[1].focus(); // Focus on the second input (update modal)
       }
@@ -550,11 +568,10 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   }
 
   printInvoice(model: InvoiceModel){
-    // Remove modal overlays before printing (especially important for mobile)
-    this.removeModalOverlays();
-    
-    // Use window.open for better mobile compatibility
-    const printWindow = window.open('', '_blank');
+    // Use iframe-based printing to avoid print dialog blocking the UI
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
 
     const fmt = (n: number) => n.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const details = model.details || [];
@@ -605,7 +622,9 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     const currentInvoiceRemaining = model.amount - model.paidAmount;
 
     // Calculate outstanding balance outside of this invoice (others' remaining)
-    const outstandingBalance = totalRemaining - currentInvoiceRemaining;
+    // Fix: Only include OTHER invoices, not the current one
+    const otherInvoices = customerInvoices.filter(invoice => invoice.id !== model.id);
+    const outstandingBalance = otherInvoices.reduce((sum, invoice) => sum + (invoice.amount - invoice.paidAmount), 0);
 
     // New total should be the total remaining across all invoices (this excludes already paid amounts)
     // This ensures we don't add the full invoice amount again (which would double-count payments)
@@ -615,22 +634,12 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 <html>
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Fatura ${model.invoiceNumber ?? ''}</title>
 <style>
   @page { size: A4; margin: 15mm; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #000; }
   .container { padding: 10mm; }
-  
-  /* Mobile-friendly styles */
-  @media screen and (max-width: 768px) {
-    body { font-size: 9pt; }
-    .container { padding: 5mm; }
-    .logo { max-width: 200px !important; }
-    table { font-size: 8pt; }
-    thead th, tbody td { padding: 4px; }
-  }
 
   .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 10px; }
   .logo-section { flex: 1; }
@@ -751,51 +760,28 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   <script>
     // Ensure logo is visible when printing
     window.onload = function() {
-      // Small delay to ensure content is loaded
-      setTimeout(function() {
-        window.print();
-        // Close window after printing (or after user cancels)
-        setTimeout(function() {
-          window.close();
-        }, 1000);
-      }, 250);
+      window.print();
     };
   </script>
 </body>
 </html>`;
-    
-    if (printWindow) {
-      // Use window.open approach (better for mobile)
-      printWindow.document.write(html);
-      printWindow.document.close();
-    } else {
-      // Fallback to iframe approach
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.style.position = 'fixed';
-      iframe.style.width = '0';
-      iframe.style.height = '0';
-      iframe.style.border = 'none';
-      document.body.appendChild(iframe);
-      
-      const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-      if (iframeDoc) {
-        iframeDoc.write(html);
-        iframeDoc.close();
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (iframeDoc) {
+      iframeDoc.write(html);
+      iframeDoc.close();
 
-        // Print when iframe loads
-        iframe.onload = () => {
+      // Print when iframe loads
+      iframe.onload = () => {
+        try {
+          iframe.contentWindow?.print();
+        } catch(e) {}
+        // Remove iframe after a short delay
+        setTimeout(() => {
           try {
-            iframe.contentWindow?.print();
+            document.body.removeChild(iframe);
           } catch(e) {}
-          // Remove iframe after a short delay
-          setTimeout(() => {
-            try {
-              document.body.removeChild(iframe);
-            } catch(e) {}
-          }, 1000);
-        };
-      }
+        }, 1000);
+      };
     }
   }
 
@@ -1079,10 +1065,14 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
   // Get filtered invoices based on showOnlyUnpaid flag
   getFilteredInvoices() {
-    if (this.showOnlyUnpaid) {
-      return this.invoices.filter(invoice => (invoice.amount - invoice.paidAmount) > 0);
+    let list = this.invoices;
+    if (this.selectedCustomerId) {
+      list = list.filter(invoice => invoice.customerId === this.selectedCustomerId);
     }
-    return this.invoices;
+    if (this.showOnlyUnpaid) {
+      list = list.filter(invoice => (invoice.amount - invoice.paidAmount) > 0);
+    }
+    return list;
   }
 
   // Get totals for all invoices
@@ -1129,31 +1119,36 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   // Method to handle customer search input changes
   onCustomerSearchChange(event: any) {
     this.showCustomerDropdown = true;
-    // If a customer is already selected and user starts typing, clear the selection
-    if (this.createModel.customerId && this.customerSearch !== event.target.value) {
-      this.createModel.customerId = "";
+    // Eğer kullanıcı yazıyorsa, mevcut seçimleri temizle
+    if (this.customerSearch !== event.target.value) {
+      if (this.createModel.customerId) {
+        this.createModel.customerId = "";
+      }
+      if (this.selectedCustomerId) {
+        this.selectedCustomerId = "";
+      }
     }
   }
 
   // Method to handle customer search focus
   onCustomerSearchFocus() {
     this.showCustomerDropdown = true;
-    // Only clear the search term if no customer is selected
-    if (!this.createModel.customerId) {
+    // Müşteri seçili değilse metni temizle
+    if (!this.createModel.customerId && !this.selectedCustomerId) {
       this.customerSearch = "";
     }
   }
 
   // Method to handle customer search blur
   onCustomerSearchBlur() {
-    // Don't hide the dropdown immediately to allow clicking on items
+    // Use a longer delay to allow click events on dropdown items to register
     setTimeout(() => {
       this.showCustomerDropdown = false;
-      // If no customer is selected after blur, clear the search term
-      if (!this.createModel.customerId) {
+      // Müşteri seçili değilse metni temizle
+      if (!this.createModel.customerId && !this.selectedCustomerId) {
         this.customerSearch = "";
       }
-    }, 200);
+    }, 300);
   }
 
   // Method to handle customer search input changes for update modal
@@ -1176,20 +1171,40 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
   // Method to handle customer search blur for update modal
   onCustomerSearchUpdateBlur() {
+    // Use a longer delay to allow click events on dropdown items to register
     setTimeout(() => {
       this.showCustomerDropdownUpdate = false;
       // If no customer is selected after blur, clear the search term
       if (!this.updateModel.customerId) {
         this.customerSearchUpdate = "";
       }
-    }, 200);
+    }, 300);
   }
 
   // Method to select a customer for create modal
-  selectCustomerForCreateModal(customer: CustomerModel) {
+  selectCustomerForCreateModal(customer: CustomerModel, event?: Event) {
+    // Prevent the blur event from hiding the dropdown before selection
+    if (event) {
+      event.stopPropagation();
+    }
+
     this.createModel.customerId = customer.id;
-    this.customerSearch = customer.name; // Keep just the name for simplicity
-    this.showCustomerDropdown = false;
+    this.customerSearch = customer.name; // Show just the name after selection
+
+    // Log for debugging
+    console.log('Customer selected:', customer);
+    console.log('Customer ID set to:', this.createModel.customerId);
+
+    // Trigger change detection
+    setTimeout(() => {
+      // Force UI update
+      this.customerSearch = this.customerSearch;
+    }, 0);
+
+    // Hide the dropdown after a short delay so the user can see the selected item
+    setTimeout(() => {
+      this.showCustomerDropdown = false;
+    }, 1000);
 
     // Make sure the input field gets focus after selection
     setTimeout(() => {
@@ -1206,17 +1221,48 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.customerSearch = "";
   }
 
+  // Method to clear product selection
+  clearProductSelection() {
+    this.createModel.productId = "";
+    this.productSearch = "";
+  }
+
   // Method to clear customer selection in update modal
   clearCustomerUpdateSelection() {
     this.updateModel.customerId = "";
     this.customerSearchUpdate = "";
   }
 
+  // Method to clear product selection in update modal
+  clearProductUpdateSelection() {
+    this.updateModel.productId = "";
+    this.productSearchUpdate = "";
+  }
+
   // Method to select a customer from the dropdown for update modal
-  selectCustomerForUpdate(customer: CustomerModel) {
+  selectCustomerForUpdate(customer: CustomerModel, event?: Event) {
+    // Prevent the blur event from hiding the dropdown before selection
+    if (event) {
+      event.stopPropagation();
+    }
+
     this.updateModel.customerId = customer.id;
-    this.customerSearchUpdate = customer.name; // Keep just the name for simplicity
-    this.showCustomerDropdownUpdate = false;
+    this.customerSearchUpdate = customer.name; // Show just the name after selection
+
+    // Log for debugging
+    console.log('Customer selected for update:', customer);
+    console.log('Customer ID set to:', this.updateModel.customerId);
+
+    // Trigger change detection
+    setTimeout(() => {
+      // Force UI update
+      this.customerSearchUpdate = this.customerSearchUpdate;
+    }, 0);
+
+    // Hide the dropdown after a short delay so the user can see the selected item
+    setTimeout(() => {
+      this.showCustomerDropdownUpdate = false;
+    }, 1000);
 
     // Make sure the input field gets focus after selection
     setTimeout(() => {
@@ -1286,6 +1332,14 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.productSearch = ""; // Clear product search
   }
 
+  // Method to reset the update form
+  resetUpdateForm() {
+    this.productSearchUpdate = "";
+    this.customerSearchUpdate = "";
+    this.showProductDropdownUpdate = false;
+    this.showCustomerDropdownUpdate = false;
+  }
+
   // Method to select a customer for filtering
   selectCustomerForFilter(customer: CustomerModel) {
     this.selectedCustomerId = customer.id;
@@ -1309,4 +1363,291 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.onCustomerFilterChange(); // Apply the filter immediately
   }
 
+  // Method to get the name of the selected customer
+  getSelectedCustomerName(): string {
+    if (!this.createModel.customerId) {
+      return '';
+    }
+
+    const customer = this.customers.find(c => c.id === this.createModel.customerId);
+    return customer ? customer.name : '';
+  }
+
+  // Method to get the name of the selected customer in update modal
+  getSelectedCustomerNameForUpdate(): string {
+    if (!this.updateModel.customerId) {
+      return '';
+    }
+
+    const customer = this.customers.find(c => c.id === this.updateModel.customerId);
+    return customer ? customer.name : '';
+  }
+
+  // Method to get the name of the selected product
+  getSelectedProductName(): string {
+    if (!this.createModel.productId) {
+      return '';
+    }
+
+    const product = this.products.find(p => p.id === this.createModel.productId);
+    return product ? (product.productCode + " - " + product.name) : '';
+  }
+
+  // Method to get the name of the selected product in update modal
+  getSelectedProductNameForUpdate(): string {
+    if (!this.updateModel.productId) {
+      return '';
+    }
+
+    const product = this.products.find(p => p.id === this.updateModel.productId);
+    return product ? (product.productCode + " - " + product.name) : '';
+  }
+
+  // Method to open print options modal
+  openPrintOptions() {
+    const modal = document.getElementById('printOptionsModal');
+    if (modal) {
+      const bootstrap = (window as any).bootstrap;
+      if (bootstrap && bootstrap.Modal) {
+        // Try to get existing instance first
+        let printModal = bootstrap.Modal.getInstance(modal);
+        if (!printModal) {
+          // Create new instance if it doesn't exist
+          printModal = new bootstrap.Modal(modal);
+        }
+        printModal.show();
+      } else {
+        // Fallback for older Bootstrap versions or if bootstrap is not available
+        modal.classList.add('show');
+        modal.style.display = 'block';
+        document.body.classList.add('modal-open');
+      }
+    }
+  }
+
+  // Method to download PDF
+  downloadPdf() {
+    // Close the modal first
+    const modal = document.getElementById('printOptionsModal');
+    if (modal) {
+      const bootstrap = (window as any).bootstrap;
+      if (bootstrap && bootstrap.Modal) {
+        const printModal = bootstrap.Modal.getInstance(modal);
+        if (printModal) {
+          printModal.hide();
+        }
+      }
+    }
+    
+    // Get filtered invoices based on current filters
+    const filteredInvoices = this.getFilteredInvoices();
+    
+    // Format the date range for display
+    const startDateFormatted = this.startDate ? new Date(this.startDate).toLocaleDateString('tr-TR') : '';
+    const endDateFormatted = this.endDate ? new Date(this.endDate).toLocaleDateString('tr-TR') : '';
+    const dateRange = startDateFormatted && endDateFormatted ?
+      `${startDateFormatted} - ${endDateFormatted}` :
+      'Tüm Tarihler';
+    
+    // Calculate totals
+    const totalAmount = filteredInvoices.reduce((sum, invoice) => sum + invoice.amount, 0);
+    const totalPaid = filteredInvoices.reduce((sum, invoice) => sum + invoice.paidAmount, 0);
+    const totalRemaining = totalAmount - totalPaid;
+    
+    // Create a new window with printable content
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      // Write HTML content to the new window
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Fatura Listesi</title>
+          <style>
+            body { 
+              font-family: Arial, sans-serif; 
+              font-size: 12px;
+              margin: 20px;
+            }
+            .header {
+              text-align: center;
+              margin-bottom: 20px;
+              border-bottom: 2px solid #000;
+              padding-bottom: 10px;
+            }
+            .title {
+              font-size: 18px;
+              font-weight: bold;
+            }
+            .date-range {
+              font-size: 14px;
+              margin: 10px 0;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 10px;
+            }
+            th, td {
+              border: 1px solid #000;
+              padding: 6px;
+              text-align: left;
+            }
+            th {
+              background-color: #f2f2f2;
+              font-weight: bold;
+            }
+            .text-right {
+              text-align: right;
+            }
+            .text-center {
+              text-align: center;
+            }
+            .total-row {
+              font-weight: bold;
+            }
+            .footer {
+              margin-top: 20px;
+              text-align: center;
+              font-size: 10px;
+              color: #666;
+            }
+            @media print {
+              body {
+                margin: 0;
+                padding: 10px;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="title">FATURA LİSTESİ</div>
+            <div class="date-range">Tarih Aralığı: ${dateRange}</div>
+          </div>
+          
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tarih</th>
+                <th>Fatura No</th>
+                <th>Ürünler</th>
+                <th>Cari</th>
+                <th>Tutar</th>
+                <th>Ödenen</th>
+                <th>Kalan</th>
+                <th>Durum</th>
+              </tr>
+            </thead>
+            <tbody>`);
+      
+      // Add invoice rows
+      filteredInvoices.forEach((invoice, index) => {
+        const remaining = invoice.amount - invoice.paidAmount;
+        const status = remaining <= 0 ? 'Ödendi' : 'Bekliyor';
+        const productCodes = this.getProductCodes(invoice);
+        
+        printWindow.document.write(`
+          <tr>
+            <td>${index + 1}</td>
+            <td>${invoice.date ? new Date(invoice.date).toLocaleDateString('tr-TR') : ''}</td>
+            <td>${invoice.invoiceNumber}</td>
+            <td>${productCodes}</td>
+            <td>${invoice.customer?.name || ''}</td>
+            <td class="text-right">${invoice.amount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
+            <td class="text-right">${invoice.paidAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
+            <td class="text-right">${remaining.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
+            <td>${status}</td>
+          </tr>`);
+      });
+      
+      // Add totals row
+      printWindow.document.write(`
+            </tbody>
+            <tfoot>
+              <tr class="total-row">
+                <td colspan="5" class="text-right"><strong>TOPLAM:</strong></td>
+                <td class="text-right"><strong>${totalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</strong></td>
+                <td class="text-right"><strong>${totalPaid.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</strong></td>
+                <td class="text-right"><strong>${totalRemaining.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</strong></td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+          
+          <div class="footer">
+            Bu belge sistem tarafından oluşturulmuştur. - ${new Date().toLocaleDateString('tr-TR')}
+          </div>
+          
+          <script>
+            // Automatically show print dialog when page loads
+            window.onload = function() {
+              // Add a small delay to ensure content is fully loaded before printing
+              setTimeout(function() {
+                window.print();
+              }, 1000);
+            };
+          </script>
+        </body>
+        </html>`);
+      
+      printWindow.document.close();
+    } else {
+      // Fallback to CSV download if popup is blocked
+      this.downloadCsvFallback(filteredInvoices, dateRange, totalAmount, totalPaid, totalRemaining);
+    }
+  }
+  
+  // Fallback method to download CSV if popup is blocked
+  private downloadCsvFallback(filteredInvoices: InvoiceModel[], dateRange: string, totalAmount: number, totalPaid: number, totalRemaining: number) {
+    // Create CSV content
+    let csvContent = '\uFEFF'; // Add BOM for Turkish characters
+    csvContent += `FATURA LİSTESİ\n`;
+    csvContent += `Tarih Aralığı: ${dateRange}\n\n`;
+    csvContent += `#,Tarih,Fatura No,Ürünler,Cari,Tutar,Ödenen,Kalan,Durum\n`;
+    
+    filteredInvoices.forEach((invoice, index) => {
+      const remaining = invoice.amount - invoice.paidAmount;
+      const status = remaining <= 0 ? 'Ödendi' : 'Bekliyor';
+      const productCodes = this.getProductCodes(invoice);
+      
+      csvContent += `${index + 1},${invoice.date ? new Date(invoice.date).toLocaleDateString('tr-TR') : ''},${invoice.invoiceNumber},"${productCodes}","${invoice.customer?.name || ''}",${invoice.amount.toFixed(2)},${invoice.paidAmount.toFixed(2)},${remaining.toFixed(2)},${status}\n`;
+    });
+    
+    csvContent += `\n,,,,TOPLAM,${totalAmount.toFixed(2)},${totalPaid.toFixed(2)},${totalRemaining.toFixed(2)},\n`;
+    
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `fatura_listesi_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  // Method to print directly
+  printDirect() {
+    // Close the modal first
+    const modal = document.getElementById('printOptionsModal');
+    if (modal) {
+      const bootstrap = (window as any).bootstrap;
+      if (bootstrap && bootstrap.Modal) {
+        const printModal = bootstrap.Modal.getInstance(modal);
+        if (printModal) {
+          printModal.hide();
+        }
+      }
+    }
+    
+    // Add a small delay to ensure modal is closed before printing
+    setTimeout(() => {
+      // Call the existing printInvoices method
+      this.printInvoices();
+    }, 300);
+  }
 }

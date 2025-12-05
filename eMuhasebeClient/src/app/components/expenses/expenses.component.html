@@ -29,7 +29,7 @@
                     <input type="text" class="form-control" placeholder="Kategori ara..." [(ngModel)]="categorySearch" [ngModelOptions]="{standalone:true}" (input)="onCategorySearchChange($event)" (focus)="onCategorySearchFocus()" (blur)="onCategorySearchBlur()">
                     <div class="dropdown-menu w-100 mt-1" style="max-height: 160px; overflow-y: auto; position: absolute; top: 100%; z-index: 1000; border: 1px solid #ddd; border-radius: 0.375rem; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);" [class.show]="showCategoryDropdown && (categorySearch || getFilteredCategories().length > 0)">
                         @for(category of getFilteredCategories(); track category){
-                            <button type="button" class="dropdown-item" style="padding: 0.5rem 1rem; cursor: pointer; height: 32px; line-height: 20px;" (click)="selectCategoryForFilter(category)">
+                            <button type="button" class="dropdown-item" [class.active]="category.value === selectedCategoryId" style="padding: 0.5rem 1rem; cursor: pointer; height: 32px; line-height: 20px;" (click)="selectCategoryForFilter(category)">
                                 {{category.name}}
                             </button>
                         }
