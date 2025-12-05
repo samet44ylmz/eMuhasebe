@@ -412,8 +412,8 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.createModel.productId = product.id;
     this.productSearch = product.productCode + " - " + product.name;
 
-    // Set default quantity to 1 and price to product's withdrawal price
-    this.createModel.quantity = 1;
+    // Set default quantity to 0 and price to product's withdrawal price
+    this.createModel.quantity = 0;
     this.createModel.price = product.withdrawal || 0;
 
     // Log for debugging
@@ -511,8 +511,8 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.updateModel.productId = product.id;
     this.productSearchUpdate = product.productCode + " - " + product.name;
 
-    // Set default quantity to 1 and price to product's withdrawal price
-    this.updateModel.quantity = 1;
+    // Set default quantity to 0 and price to product's withdrawal price
+    this.updateModel.quantity = 0;
     this.updateModel.price = product.withdrawal || 0;
 
     // Log for debugging
@@ -1328,6 +1328,8 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   resetCreateForm() {
     this.createModel = new InvoiceModel();
     this.createModel.date = this.date.transform(new Date(),"yyyy-MM-dd") ?? "";
+    this.createModel.quantity = 0; // Set default quantity to 0
+    this.createModel.price = 0; // Set default price to 0
     this.customerSearch = ""; // Clear customer search
     this.productSearch = ""; // Clear product search
   }
