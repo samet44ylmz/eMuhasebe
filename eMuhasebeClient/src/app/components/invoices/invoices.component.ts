@@ -64,10 +64,10 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     private router: Router
   ){
     this.createModel.date = this.date.transform(new Date(),"yyyy-MM-dd") ?? "";
-    // Initialize date range to 7 days (1 week): from 7 days ago to today
+    // Initialize date range to 6 months: from 6 months ago to today
     const today = new Date();
-    const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-    this.startDate = this.date.transform(sevenDaysAgo, 'yyyy-MM-dd') ?? "";
+    const sixMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 6, today.getDate());
+    this.startDate = this.date.transform(sixMonthsAgo, 'yyyy-MM-dd') ?? "";
     this.endDate = this.date.transform(today, 'yyyy-MM-dd') ?? "";
   }
 
@@ -152,7 +152,21 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this.http.post<string>("Invoices/Create",this.createModel,(res)=> {
+      // Prepare data in the format backend expects (CreateInvoiceCommand)
+      const createData = {
+        date: this.createModel.date, // yyyy-MM-dd format
+        invoiceNumber: this.createModel.invoiceNumber || null, // Optional
+        customerId: this.createModel.customerId, // Guid string
+        description: this.createModel.description || "", // Optional but send empty string if null
+        details: this.createModel.details.map(detail => ({
+          productId: detail.productId, // Guid string
+          quantity: detail.quantity, // number
+          price: detail.price // number
+          // Don't send: id, invoiceId, product object
+        }))
+      };
+
+      this.http.post<string>("Invoices/Create", createData, (res)=> {
         this.swal.callToast(res);
         this.resetCreateForm(); // Reset the form to default values
         form.resetForm(); // Reset the form
@@ -173,6 +187,27 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
   get(model: InvoiceModel){
     this.updateModel = {...model};
+    // Set customer search text for update modal
+    if (model.customer) {
+      this.customerSearchUpdate = model.customer.name;
+    } else {
+      this.customerSearchUpdate = "";
+    }
+    // Ensure details array exists and has product information
+    if (this.updateModel.details) {
+      this.updateModel.details = this.updateModel.details.map(detail => {
+        // If detail doesn't have product object, try to find it from products array
+        if (!detail.product && detail.productId) {
+          const product = this.products.find(p => p.id === detail.productId);
+          if (product) {
+            return { ...detail, product: product };
+          }
+        }
+        return detail;
+      });
+    } else {
+      this.updateModel.details = [];
+    }
   }
 
   update(form: NgForm){
@@ -189,13 +224,38 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this.http.post<string>("Invoices/DeleteById",{id: this.updateModel.id},(res)=> {
-        this.http.post<string>("Invoices/Create",this.updateModel,(res)=> {
+      // Store the original invoice ID for deletion
+      const originalInvoiceId = this.updateModel.id;
+
+      // Prepare data in the format backend expects (CreateInvoiceCommand)
+      const updateData = {
+        date: this.updateModel.date, // yyyy-MM-dd format
+        invoiceNumber: this.updateModel.invoiceNumber || null, // Optional
+        customerId: this.updateModel.customerId, // Guid string
+        description: this.updateModel.description || "", // Optional but send empty string if null
+        details: this.updateModel.details.map(detail => ({
+          productId: detail.productId, // Guid string
+          quantity: detail.quantity, // number
+          price: detail.price // number
+          // Don't send: id, invoiceId, product object
+        }))
+      };
+
+      // Delete old invoice first, then create new one
+      this.http.post<string>("Invoices/DeleteById", {id: originalInvoiceId}, (res)=> {
+        // After successful deletion, create the updated invoice
+        this.http.post<string>("Invoices/Create", updateData, (res)=> {
           this.swal.callToast(res, "info");
           form.resetForm(); // Reset the form
           this.closeUpdateModal(); // Use proper modal closing
           this.getAll();
+        }, (err) => {
+          // If create fails, show error
+          this.swal.callToast("Fatura güncellenirken hata oluştu", "error");
         });
+      }, (err) => {
+        // If delete fails, show error
+        this.swal.callToast("Eski fatura silinirken hata oluştu", "error");
       });
     }
   }
@@ -490,10 +550,11 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   }
 
   printInvoice(model: InvoiceModel){
-    // Use iframe-based printing to avoid print dialog blocking the UI
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
+    // Remove modal overlays before printing (especially important for mobile)
+    this.removeModalOverlays();
+    
+    // Use window.open for better mobile compatibility
+    const printWindow = window.open('', '_blank');
 
     const fmt = (n: number) => n.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const details = model.details || [];
@@ -554,12 +615,22 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 <html>
 <head>
 <meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Fatura ${model.invoiceNumber ?? ''}</title>
 <style>
   @page { size: A4; margin: 15mm; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #000; }
   .container { padding: 10mm; }
+  
+  /* Mobile-friendly styles */
+  @media screen and (max-width: 768px) {
+    body { font-size: 9pt; }
+    .container { padding: 5mm; }
+    .logo { max-width: 200px !important; }
+    table { font-size: 8pt; }
+    thead th, tbody td { padding: 4px; }
+  }
 
   .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 10px; }
   .logo-section { flex: 1; }
@@ -680,28 +751,51 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   <script>
     // Ensure logo is visible when printing
     window.onload = function() {
-      window.print();
+      // Small delay to ensure content is loaded
+      setTimeout(function() {
+        window.print();
+        // Close window after printing (or after user cancels)
+        setTimeout(function() {
+          window.close();
+        }, 1000);
+      }, 250);
     };
   </script>
 </body>
 </html>`;
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-    if (iframeDoc) {
-      iframeDoc.write(html);
-      iframeDoc.close();
+    
+    if (printWindow) {
+      // Use window.open approach (better for mobile)
+      printWindow.document.write(html);
+      printWindow.document.close();
+    } else {
+      // Fallback to iframe approach
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.style.position = 'fixed';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = 'none';
+      document.body.appendChild(iframe);
+      
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+      if (iframeDoc) {
+        iframeDoc.write(html);
+        iframeDoc.close();
 
-      // Print when iframe loads
-      iframe.onload = () => {
-        try {
-          iframe.contentWindow?.print();
-        } catch(e) {}
-        // Remove iframe after a short delay
-        setTimeout(() => {
+        // Print when iframe loads
+        iframe.onload = () => {
           try {
-            document.body.removeChild(iframe);
+            iframe.contentWindow?.print();
           } catch(e) {}
-        }, 1000);
-      };
+          // Remove iframe after a short delay
+          setTimeout(() => {
+            try {
+              document.body.removeChild(iframe);
+            } catch(e) {}
+          }, 1000);
+        };
+      }
     }
   }
 

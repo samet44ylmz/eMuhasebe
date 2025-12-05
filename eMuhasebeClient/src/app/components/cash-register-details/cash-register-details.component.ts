@@ -63,10 +63,10 @@ currencyTypes = CurrencyTypes;
   ){
     this.activated.params.subscribe(res=> {
       this.cashRegisterId = res["id"];
-      // Initialize date range to 7 days (1 week): from 7 days ago to today
+      // Initialize date range to 6 months: from 6 months ago to today
       const today = new Date();
-      const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-      this.startDate = this.date.transform(sevenDaysAgo, 'yyyy-MM-dd') ?? "";
+      const sixMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 6, today.getDate());
+      this.startDate = this.date.transform(sixMonthsAgo, 'yyyy-MM-dd') ?? "";
       this.endDate = this.date.transform(today, 'yyyy-MM-dd') ?? "";
       this.createModel.date = this.date.transform(new Date(), 'yyyy-MM-dd') ?? "";
       this.createModel.cashRegisterId = this.cashRegisterId;

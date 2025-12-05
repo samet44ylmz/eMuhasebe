@@ -64,11 +64,11 @@ export class ExpensesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.createModel.date = this.getToday();
-    // Initialize date range to 7 days (1 week): from 7 days ago to today
+    // Initialize date range to 6 months: from 6 months ago to today
     const today = new Date();
-    const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const sixMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 6, today.getDate());
     const pad = (n: number) => n.toString().padStart(2, '0');
-    this.startDate = `${sevenDaysAgo.getFullYear()}-${pad(sevenDaysAgo.getMonth()+1)}-${pad(sevenDaysAgo.getDate())}`;
+    this.startDate = `${sixMonthsAgo.getFullYear()}-${pad(sixMonthsAgo.getMonth()+1)}-${pad(sixMonthsAgo.getDate())}`;
     this.endDate = this.getToday();
     this.getAll();
     this.getCashRegisters();
